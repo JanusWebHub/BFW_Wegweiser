@@ -3,7 +3,7 @@ import os
 import matplotlib.pyplot as plt
 from collections import deque
 
-nutzer_eingabe = input("Geben Sie den Zielpunkt ein (ost_1, ost_2, nord_1, nord_2, nord_west_1, west_1, west_2, sued_west): ")
+nutzer_eingabe = input("Geben Sie bitte den Zielpunkt ein (ost_1, ost_2, nord_1, nord_2, nord_west_1, west_1, west_2, sued_west): ")
 print(nutzer_eingabe)
 
 print("Aktueller Ordner:")
