@@ -9,6 +9,7 @@ Local-only working tracker. Not part of the committed project documentation.
 - `main` remains based on `4763d6c`.
 - The documentation restructuring is intentional and remains uncommitted until reviewed.
 - A temporary local branch tracks the tracker and restructuring; the ignored tracker is force-added.
+- Checkpoint pattern: documentation commit, tracker update naming it, tracker commit.
 - The obsolete commit `0de4f03` must not remain in the final `main` or feature-branch ancestry.
 - The local `backup-before-reset` branch may be deleted after verification.
 - Final documentation files are committed directly on `main`; the temporary branch is then deleted.
@@ -18,7 +19,7 @@ Local-only working tracker. Not part of the committed project documentation.
 ### Order
 
 1. Create the temporary local branch and force-add the tracker.
-2. Review and finish the documentation restructuring.
+2. Review, checkpoint, and finish the documentation restructuring.
 3. Commit the final documentation files on `main`.
 4. Delete the temporary branch.
 5. Rebase `feature/east-wing-prototype` onto the migrated `main`, removing `0de4f03` from its ancestry.
@@ -26,6 +27,11 @@ Local-only working tracker. Not part of the committed project documentation.
 7. Merge the feature into `main`.
 8. Delete `backup-before-reset` after verification.
 9. Remove the old remote, add the FLOORFOX remote, and push the finished history.
+
+### Live status
+
+- `1` done — branch created; tracker committed as `6246384`.
+- `2` active — documentation checkpointed in `7312b93` and `65c0590`.
 
 ## Open decisions
 
