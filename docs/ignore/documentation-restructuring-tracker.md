@@ -1,4 +1,4 @@
-# Migration review tracker
+# Documentation Restructuring Tracker
 
 Local-only working tracker. Not part of the committed project documentation.
 
@@ -32,6 +32,7 @@ Local-only working tracker. Not part of the committed project documentation.
 
 - `1` done — branch created; tracker committed as `6246384`.
 - `2` active — documentation checkpointed in `7312b93` and `65c0590`.
+- Archive cleanup done — dated snapshots removed; east-wing worktree retained.
 
 ## Open decisions
 
@@ -41,7 +42,7 @@ Local-only working tracker. Not part of the committed project documentation.
 - Portals as points: currently retained; revisit decision remains open.
 - Routing algorithm: Dijkstra is the current leaning; decision remains open.
 - Rulebook numbering and append-only status: no current rule.
-- Rulebook filename: `rulebook.md` or `rulebook_sorted.md`.
+- Approved active rulebook: `rulebook_sorted.md`; `rulebook.md` is archived.
 - `edges` versus `connections`: naming rule has no current home.
 
 ## Review status
@@ -65,7 +66,7 @@ Status: `done` · `open` · `blocked`
 | 11 | `glossary.md` | done | Retired. Core/Derived/Movement/Roles -> rulebook D.2, D.4, D.14. Rejected-words table dropped (Q3 resolved). `edges` rule survives as roadmap Phase 2 task. |
 | 12 | `design_recap.md` | done | Retired. Sections 1-3, 5 already in `working_notes.md`; 7 in `zoning_guidelines.md`; 6, 8, 9 dropped as covered by `roadmap.md`; 4 dropped with Q3. |
 | 13 | `graphic_strategy.md` | done | Retired. §1 decision already ADR 5; viewBox guarantee -> `zoning_guidelines.md`; pipeline diagram dropped (superseded by rulebook R.5). Phase B covered by roadmap P2 + geometry added. Phase C -> `working_notes.md`. §5 split: two items covered by roadmap P2, `data-kind` hook added there, multi-floor group -> `zoning_guidelines.md`, verification loop -> README step 4. |
-| 14 | `rulebook.md` (new) | done | Replaces `axioms.md`. D.1-17, C.1-6, R.1-5, S.1-7, T.1-6. |
+| 14 | `rulebook_sorted.md` | done | Approved active rulebook. `rulebook.md` is archived. D.1-17, C.1-6, R.1-5, S.1-7, T.1-6. |
 
 ### Decision record
 
@@ -139,5 +140,5 @@ Status: `done` · `open` · `blocked`
 
 ## Archive
 
-Backups are in `docs/ignore/wegweiser-dmgram-260916/docs/ignore/retired`.
-Unused documents are in `docs/ignore/wegweiser-dmgram-260916/docs/ignore/archived`.
+Backups are in `docs/ignore/archive`.
+Non-documentation artifacts are in `docs/ignore/archive/other`.
