@@ -35,6 +35,29 @@ Local-only working tracker. Not part of the committed project documentation.
 - Rulebook checkpoint — renamed to `rulebook.md` in `a2d9648`.
 - Archive cleanup done — dated snapshots removed; east-wing worktree retained.
 
+## Rulebook review plan
+
+### Process
+
+1. Create a checkpoint. — done
+2. Make reorder-only changes in small independent blocks. — done
+3. Validate the reordered rulebook and checkpoint. — done
+4. Apply obvious, low-risk content changes. — done
+5. Validate and checkpoint again. — done
+6. Rework the zone/boundary/wall relationship carefully. — open
+7. Rework the graph definitions and derivation sequence. — open
+8. Revisit the pipeline explanation and diagram last. — open
+
+Each block remains separate and increasingly invasive.
+
+### Decisions
+
+- Cluster 1: keep zone, wall, portal, and segment distinct. Treat boundary and wall together; walls separate rooms architecturally and are represented as zone boundaries after zoning. Virtual walls may separate zones without physical obstacles. Move the two-dimensional premise and exterior into this cluster.
+- Cluster 2: order walkable/non-walkable part, obstacle, movement zone, movement line; preserve their distinctions.
+- Cluster 3: keep zoning first; replace the graph table with sequential adjacency, connectivity, and routing definitions. Defer pipeline prose and diagram review.
+- Cluster 4: keep query, state, search, costs, and result in dependency order. The query includes manual zone-based self-location; remove route notation if the result prose is sufficient.
+- Cluster 5: absorb its entries into Cluster 1; do not leave a standalone cluster.
+
 ## Open decisions
 
 - `edges` versus `connections`: naming rule has no current home.
