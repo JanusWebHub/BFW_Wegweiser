@@ -46,7 +46,7 @@ Status: `done` · `active` · `open` · `blocked`
 ### Documents
 
 | # | Document | Status | Note |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | 1 | `convergences.md` | done | Retired. Title + intro survive in `research_notes.md`. Deleted. |
 | 2 | `docs_guidelines.md` | done | Line-endings rule added (CRLF working tree, LF repo, `.gitattributes`, repo-wide). Converted to CRLF. |
 | 3 | `research_notes.md` | done | Poincare removed, row 6 reworded, sections merged, project refs stripped, intro rewritten. |
@@ -65,7 +65,7 @@ Status: `done` · `active` · `open` · `blocked`
 ### Decision record
 
 | # | Item | Decision |
-|---|---|---|
+| --- | --- | --- |
 | D1 | Q1 — glossary definitions | Resolved — into `rulebook.md`: partition into D.2, portal-need-not-be-a-door and virtual portal into D.4, role table into D.14 |
 | D2 | Q2 — graphic_strategy §1 | Resolved — decision stays ADR 5; the shared-`viewBox` consequence went to `zoning_guidelines.md`, not the rulebook, since it follows from a tooling decision not from the model |
 | D3 | Q3 — discarded/rejected terms | Resolved — table dropped entirely. Hub dead; branch/leaf superseded by D.16; crossable now a rulebook property (D.7) so rejecting it would be wrong; junction and decision point still live but not worth a doc |
@@ -79,7 +79,7 @@ Status: `done` · `active` · `open` · `blocked`
 ### Flags — substantive
 
 | # | Flag | Where |
-|---|---|---|
+| --- | --- | --- |
 | F10 | `roadmap.md`, `working_notes.md`, and `zoning_guidelines.md` cite retired `axioms.md`; `zoning_guidelines.md` also reserves zone id `aussen` where the rulebook says "exterior" | roadmap, working_notes, zoning_guidelines |
 | F9 | `docs_guidelines.md` has no rule for code naming; `edges` not `connections` has no home outside roadmap Phase 2 | docs_guidelines |
 | F1 | Resolved — the axioms 17–18 reading is discarded. A doorless portal from splitting a zone is an ordinary portal | glossary |
@@ -94,7 +94,7 @@ Status: `done` · `active` · `open` · `blocked`
 ### Flags — editorial
 
 | # | Flag | Where |
-|---|---|---|
+| --- | --- | --- |
 | E1 | Intro describes only the convergences table; doc now also holds graph theory notes and node/edge paragraph | research_notes |
 | E2 | Naming rules appear twice (contract rule 3 + Naming conventions section) | zoning_guidelines |
 | E3 | Source hierarchy appears twice (GS Phase A + design_recap §7) | zoning_guidelines |
@@ -113,7 +113,7 @@ Status: `done` · `active` · `open` · `blocked`
 ### Final wrap-up
 
 | # | Item | Status |
-|---|---|---|
+| --- | --- | --- |
 | W1 | Devlog entry for the documentation restructuring. The old commit `0de4f03` was reset out of history, so no entry is owed for it. | open |
 | W2 | Review final state of all files | open |
 | W3 | Line endings: convert files edited in chat to CRLF | open |
@@ -126,7 +126,7 @@ Status: `done` · `active` · `open` · `blocked`
 ### Housekeeping
 
 | # | Item | Status |
-|---|---|---|
+| --- | --- | --- |
 | H1 | `_to_delete/` removed; retired docs deleted in place from now on | done |
 | H2 | `.gitattributes` with `* text=auto` at project root | open — own commit; renormalises the whole repo once |
 | H3 | Convert `working_notes.md` and `docs_guidelines.md` to CRLF | done |
@@ -136,3 +136,17 @@ Status: `done` · `active` · `open` · `blocked`
 
 Backups are in `docs/ignore/archive`.
 Non-documentation artifacts are in `docs/ignore/archive/other`.
+
+## Docs review mentality
+
+- State each fact once, where readers naturally seek it.
+- Remove repetition and explanatory scaffolding.
+- Derive rather than assert what follows from prior rules.
+- Preserve distinctions that change model semantics.
+- Treat wording as semantic precision.
+- Keep designer choices explicit where topology cannot decide.
+- Reject assistant-invented infrastructure.
+- Separate model truth from procedure, rationale, uncertainty, and implementation.
+- Keep entries only when they earn their existence.
+- Cut duplication without erasing necessary distinctions.
+- Consolidate only after conceptual dependencies are understood.
