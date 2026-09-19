@@ -105,7 +105,7 @@ The routing graph is built from the connectivity graph. Each portal becomes a no
 
 ### 4.1
 
-A query names a start zone and a target zone.
+A query names a start zone and a target zone. Because the user manually inputs both positions as zones, the position within the start or target zone is not counted.
 
 ### 4.2
 
@@ -121,14 +121,4 @@ Special costs are assigned by the designer to individual states. They are separa
 
 ### 4.5
 
-The result of a query is a chain of portals. The zone each segment lies in gives the sequence of zones crossed.
-
-A route is one strictly alternating sequence, beginning and ending with a zone:
-
-```text
-zone₁ portal₁ zone₂ portal₂ zone₃ … portalₙ zoneₙ₊₁
-```
-
-### 4.6
-
-user's position within a zone is not counted, because the program has no precise positioning due to manual self-location.
+The result of a query is an alternating sequence of zones and portals, beginning with the start zone and ending with the target zone.
