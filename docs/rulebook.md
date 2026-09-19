@@ -38,13 +38,17 @@ The exterior is a single zone surrounding the building. A route may begin or end
 
 ### 2.1
 
-An obstacle is a fixed thing inside a zone that is not walkable and that nobody routes to or through. Two-dimensional.
+A zone divides into a walkable part and a non-walkable part.
 
 ### 2.2
 
-A zone divides into a walkable part and a non-walkable part. Obstacles lie in the non-walkable part. The movement zone is the circulation space within the walkable part, where people usually move.
+An obstacle is a fixed obstruction in the non-walkable part of a zone; routes neither end at nor pass through it.
 
 ### 2.3
+
+The movement zone is the circulation space within the walkable part.
+
+### 2.4
 
 A movement line is the route people actually take through a movement zone: a single spine in a corridor, bent or branched in a hall. Drawn by the designer.
 
