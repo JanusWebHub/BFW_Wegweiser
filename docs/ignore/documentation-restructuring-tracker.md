@@ -36,18 +36,11 @@ Local-only working tracker. Not part of the committed project documentation.
 
 ## Open decisions
 
-- Rulebook section headings: hold or revise.
-- Rulebook 2.3 and 2.5: movement zones versus movement lines; both remain for now.
-- Rulebook 1.2: revise if movement zones replace movement lines.
-- Portals as points: currently retained; revisit decision remains open.
-- Routing algorithm: Dijkstra is the current leaning; decision remains open.
-- Rulebook numbering and append-only status: no current rule.
-- Approved active rulebook: `rulebook_sorted.md`; `rulebook.md` is archived.
 - `edges` versus `connections`: naming rule has no current home.
 
 ## Review status
 
-Status: `done` · `open` · `blocked`
+Status: `done` · `active` · `open` · `blocked`
 
 ### Documents
 
@@ -66,7 +59,7 @@ Status: `done` · `open` · `blocked`
 | 11 | `glossary.md` | done | Retired. Core/Derived/Movement/Roles -> rulebook D.2, D.4, D.14. Rejected-words table dropped (Q3 resolved). `edges` rule survives as roadmap Phase 2 task. |
 | 12 | `design_recap.md` | done | Retired. Sections 1-3, 5 already in `working_notes.md`; 7 in `zoning_guidelines.md`; 6, 8, 9 dropped as covered by `roadmap.md`; 4 dropped with Q3. |
 | 13 | `graphic_strategy.md` | done | Retired. §1 decision already ADR 5; viewBox guarantee -> `zoning_guidelines.md`; pipeline diagram dropped (superseded by rulebook R.5). Phase B covered by roadmap P2 + geometry added. Phase C -> `working_notes.md`. §5 split: two items covered by roadmap P2, `data-kind` hook added there, multi-floor group -> `zoning_guidelines.md`, verification loop -> README step 4. |
-| 14 | `rulebook_sorted.md` | done | Approved active rulebook. `rulebook.md` is archived. D.1-17, C.1-6, R.1-5, S.1-7, T.1-6. |
+| 14 | `rulebook_sorted.md` | active | Approved active rulebook; internal merging is the next step. `rulebook.md` is archived. |
 
 ### Decision record
 
