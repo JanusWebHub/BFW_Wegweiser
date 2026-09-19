@@ -6,15 +6,19 @@ What is true in this model, such that every drawing, script and algorithm in the
 
 ### 1.1
 
+The building is represented on its floor plan. Height is discarded, so every element loses one dimension relative to reality. Movement between floors is a special cost, not a geometry.
+
+### 1.2
+
 A zone is a two-dimensional space, created via zoning process by converting enclosed spaces, such as rooms, halls and corridors, into areas in which every portal is reachable from every other without obstruction. Zones partition the plan without gaps or overlaps. Every zone has at least one portal.
 
 A zone is marked crossable or not. A non-crossable zone may be a start or a target but is never passed through. Marking further zones non-crossable produces a variant of the routing data, in which those zones may still be reached but not traversed.
 
-### 1.2
+### 1.3
 
 A wall is a boundary between two enclosed spaces in the architectural plan. represented after zoning as one-dimensional (their thickness being neglegted, incorporated into zones). Not crossable.
 
-### 1.3
+### 1.4
 
 A portal represents the crossable portion of a boundary between two zones. Physically an opening is a line on a floor plan, here it is modelled as a single point at midpoint, which ensures the possibility of exactly one segment per portal pair per zone.
 
@@ -22,9 +26,13 @@ A boundary is a line, and three areas can share a point but never a line. A port
 
 A portal need not be a door, a doorless opening, or a line drawn across a corridor at a corner, is equally considered a portal by the model. One that has no physical counterpart is called a virtual portal, created by the designer when splitting a single enclosed space into multiple zones.
 
-### 1.4
+### 1.5
 
 A segment is a traversal of one zone, from one of its portals to another. One-dimensional, lying in the interior of that zone. All travel is of this kind: there is no movement that is not a segment.
+
+### 1.6
+
+The exterior is a single zone surrounding the building. A route may begin or end there but never cross it.
 
 ## 2. Cluster 2 — obstacle and movement geometry
 
@@ -101,11 +109,11 @@ A query names a start zone and a target zone.
 
 ### 4.2
 
-The search is multi-source and multi-target. The start set is the outbound states of the start zone, one per portal; the target set is the inbound states of the target zone. The search runs from the start set and ends when it reaches the first state of the target set.
+A state is written `zone_from | portal | zone_to`. Each portal yields exactly two, one per direction. The order gives the direction, and both zones are named, so a state stands alone without lookup.
 
 ### 4.3
 
-A state is written `zone_from | portal | zone_to`. Each portal yields exactly two, one per direction. The order gives the direction, and both zones are named, so a state stands alone without lookup.
+The search is multi-source and multi-target. The start set is the outbound states of the start zone, one per portal; the target set is the inbound states of the target zone. The search runs from the start set and ends when it reaches the first state of the target set.
 
 ### 4.4
 
@@ -124,13 +132,3 @@ zone₁ portal₁ zone₂ portal₂ zone₃ … portalₙ zoneₙ₊₁
 ### 4.6
 
 user's position within a zone is not counted, because the program has no precise positioning due to manual self-location.
-
-## 5. Cluster 5 — standing alone
-
-### 5.1
-
-The building is represented on its floor plan. Height is discarded, so every element loses one dimension relative to reality. Movement between floors is a special cost, not a geometry.
-
-### 5.2
-
-The exterior is a single zone surrounding the building. A route may begin or end there but never cross it.
