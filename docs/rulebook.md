@@ -2,7 +2,7 @@
 
 What is true in this model, such that every drawing, script and algorithm in the project agrees. This is the source of truth. Other documents implement it; they do not restate or renegotiate it.
 
-## 1. Cluster 1 — elements: zone, wall, portal, segment
+## 1. Cluster 1 — elements: zone, separator, portal, segment
 
 ### 1.1
 
@@ -10,21 +10,23 @@ The building is represented on its floor plan. Height is discarded, so every ele
 
 ### 1.2
 
-A zone is a two-dimensional space, created via zoning process by converting enclosed spaces, such as rooms, halls and corridors, into areas in which every portal is reachable from every other without obstruction. Zones partition the plan without gaps or overlaps. Every zone has at least one portal.
+A zone is a two-dimensional space that partitions the simplified floor plan without gaps or overlaps.
 
 A zone is marked crossable or not. A non-crossable zone may be a start or a target but is never passed through. Marking further zones non-crossable produces a variant of the routing data, in which those zones may still be reached but not traversed.
 
 ### 1.3
 
-A wall is a boundary between two enclosed spaces in the architectural plan. represented after zoning as one-dimensional (their thickness being neglegted, incorporated into zones). Not crossable.
+A separator is a fixed, non-crossable element separating two spaces in the architectural plan. After zoning, it is represented by a one-dimensional boundary between two zones; its thickness is neglected. A virtual boundary may separate zones where no physical separator exists.
 
 ### 1.4
 
-A portal represents the crossable portion of a boundary between two zones. Physically an opening is a line on a floor plan, here it is modelled as a single point at midpoint, which ensures the possibility of exactly one segment per portal pair per zone.
+A portal represents the crossable portion of a boundary between two zones. Although drawn as a line on a floor plan, it is represented in the model by its midpoint.
 
-A boundary is a line, and three areas can share a point but never a line. A portal therefore joins exactly two zones, always. Where three corridors meet, the meeting point is not a portal: each pair has its own shared boundary and its own portal, giving three portals close together. This matches how people walk, cutting the corner rather than passing through the meeting point.
+A portal may correspond to a physical door or other opening between distinct architectural spaces, or to a virtual opening on a virtual boundary.
 
-A portal need not be a door, a doorless opening, or a line drawn across a corridor at a corner, is equally considered a portal by the model. One that has no physical counterpart is called a virtual portal, created by the designer when splitting a single enclosed space into multiple zones.
+A portal always joins exactly two zones. Because a boundary is a line, multiple zones may meet at a point but do not share a portal there; each pair of zones has its own shared boundary and portal.
+
+Every zone has at least one portal, and every portal is reachable from every other without obstruction.
 
 ### 1.5
 
@@ -56,14 +58,14 @@ A movement line is the route people actually take through a movement zone: a sin
 
 ### 3.1
 
-Zoning is the designer's step between the adjacency graph and the simplified floor plan:
+Zoning is the designer's process of converting enclosed spaces such as rooms, halls, and corridors into zones and preparing the simplified floor plan:
 
 - splitting halls and corridors into zones
 - placing portals that have no door
 - declaring obstacles
 - drawing movement zones and movement lines
 
-Which enclosed spaces on the architectural plan become zones of their own, which are absorbed into a larger zone, and which become obstacles is decided by the designer. It does not follow from the topology. Governed by `zoning_guidelines.md`.
+Which enclosed spaces become zones of their own, which are absorbed into a larger zone, and which become obstacles is decided by the designer. It does not follow from the topology. Governed by `zoning_guidelines.md`.
 
 ### 3.2
 
@@ -71,13 +73,13 @@ There are three graphs.
 
 | Graph | Nodes | Edges |
 | --- | --- | --- |
-| Adjacency | rooms | walls |
+| Adjacency | spaces | separators |
 | Connectivity | zones | boundaries |
 | Routing | portals | segments |
 
 ### 3.3
 
-The connectivity graph is derived from the adjacency graph by zoning. Zoning replaces rooms with zones: one room may become several zones, and several rooms may be absorbed into one. Each wall corresponds to the boundary between the zones its rooms became.
+The connectivity graph is derived from the adjacency graph by zoning. Zoning replaces spaces with zones: one space may become several zones, and several spaces may be absorbed into one. Each separator corresponds to the boundary between the zones its spaces became.
 
 ### 3.4
 
