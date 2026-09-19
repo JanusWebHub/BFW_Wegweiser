@@ -150,3 +150,6 @@ Non-documentation artifacts are in `docs/ignore/archive/other`.
 - Keep entries only when they earn their existence.
 - Cut duplication without erasing necessary distinctions.
 - Consolidate only after conceptual dependencies are understood.
+- Order items by dependency, establishing what needs the fewest other statements first, then building progressively throughout the document.
+- Use top-down or bottom-up progression, from wholes to parts or parts to wholes, as a secondary ordering criterion.
+- Express schemas, pipelines, and derivations in prose; use diagrams or explanatory structure only when they carry source-of-truth reasoning.
