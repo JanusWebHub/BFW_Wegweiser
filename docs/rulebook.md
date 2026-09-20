@@ -1,22 +1,22 @@
 # Rulebook
 
-What is true in this model, such that every drawing, script and algorithm in the project agrees. This is the source of truth. Other documents implement it; they do not restate or renegotiate it.
+This rulebook defines the project's navigation model and is its source of truth. Every project file that concerns the navigation model must conform to it.
 
 ## 1. Cluster 1 — elements: zone, separator, portal, segment
 
 ### 1.1
 
-The building is represented on its floor plan. Height is discarded, so every element loses one dimension relative to reality. Movement between floors is a special cost, not a geometry.
+Architectural and simplified floor plans are two-dimensional representations of the building. The simplified plan is derived from the architectural, retaining only features relevant to navigation.
 
 ### 1.2
 
 A zone is a two-dimensional space that partitions the simplified floor plan without gaps or overlaps.
 
-A zone is marked crossable or not. A non-crossable zone may be a start or a target but is never passed through. Marking further zones non-crossable produces a variant of the routing data, in which those zones may still be reached but not traversed.
+A zone may be crossable or non-crossable. A non-crossable zone may be a route's start or target, but cannot be passed through.
 
 ### 1.3
 
-A separator is a fixed, non-crossable element separating two spaces in the architectural plan. After zoning, it is represented by a one-dimensional boundary between two zones; its thickness is neglected. A virtual boundary may separate zones where no physical separator exists.
+A separator is a fixed, non-crossable division between two spaces in the architectural plan. In the simplified floor plan, it is represented as a one-dimensional boundary between two zones. A virtual boundary may separate zones where no physical separator exists.
 
 ### 1.4
 
@@ -30,7 +30,7 @@ Every zone has at least one portal, and every portal is reachable from every oth
 
 ### 1.5
 
-A segment is a traversal of one zone, from one of its portals to another. One-dimensional, lying in the interior of that zone. All travel is of this kind: there is no movement that is not a segment.
+A segment is a traversal through one zone, from one portal to another. It lies in the zone’s interior.
 
 ### 1.6
 
@@ -52,7 +52,7 @@ The movement zone is the circulation space within the walkable part.
 
 ### 2.4
 
-A movement line is the route people actually take through a movement zone: a single spine in a corridor, bent or branched in a hall. Drawn by the designer.
+A movement line is a designer-drawn representation of the route people actually take through a movement zone.
 
 ## 3. Cluster 3 — zoning and the three graphs
 
@@ -84,6 +84,8 @@ The connectivity graph is derived from the adjacency graph by zoning. Zoning rep
 ### 3.4
 
 The routing graph is built from the connectivity graph. Each portal becomes a node; two portals are linked when they lie on the same crossable zone, and the link is the segment between them.
+
+Marking additional zones as non-crossable creates a routing variant in which those zones remain reachable but cannot be passed through.
 
 ### 3.5
 
