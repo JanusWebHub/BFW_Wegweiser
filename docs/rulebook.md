@@ -16,17 +16,17 @@ A zone may be crossable or non-crossable. A non-crossable zone may be a route's 
 
 ### 1.3
 
-A separator is a fixed, non-crossable division between two spaces in the architectural plan. In the simplified floor plan, it is represented as a one-dimensional boundary between two zones. A virtual boundary may separate zones where no physical separator exists.
+A separator is a fixed, non-crossable division between two spaces in the architectural plan.
+
+A boundary is a one-dimensional division between two zones in the simplified floor plan. It may represent a physical separator or be virtual.
 
 ### 1.4
 
-A portal represents the crossable portion of a boundary between two zones. Although drawn as a line on a floor plan, it is represented in the model by its midpoint.
+A portal represents the crossable portion of a boundary and is drawn in the simplified floor plan as a highlighted section with its midpoint marked. In the navigation model, it is represented by that midpoint.
 
 A portal may correspond to a physical door or other opening between distinct architectural spaces, or to a virtual opening on a virtual boundary.
 
 A portal always joins exactly two zones. Because a boundary is a line, multiple zones may meet at a point but do not share a portal there; each pair of zones has its own shared boundary and portal.
-
-Every zone has at least one portal, and every portal is reachable from every other without obstruction.
 
 ### 1.5
 
@@ -52,7 +52,7 @@ The movement zone is the circulation space within the walkable part.
 
 ### 2.4
 
-A movement line is a designer-drawn representation of the route people actually take through a movement zone.
+A movement line is a designer-drawn representation of the path people actually take through a movement zone.
 
 ## 3. Cluster 3 — zoning and the three graphs
 
@@ -66,6 +66,8 @@ Zoning is the designer's process of converting enclosed spaces such as rooms, ha
 - drawing movement zones and movement lines
 
 Which enclosed spaces become zones of their own, which are absorbed into a larger zone, and which become obstacles is decided by the designer. It does not follow from the topology. Governed by `zoning_guidelines.md`.
+
+Every zone must have at least one portal. Within each zone, every portal must be reachable from every other portal without obstruction.
 
 ### 3.2
 
@@ -113,20 +115,22 @@ Marking additional zones as non-crossable creates a routing variant in which tho
 
 ### 4.1
 
-A query names a start zone and a target zone. Because the user manually inputs both positions as zones, the position within the start or target zone is not counted.
+A query is a user's request for navigation from one location to another. Start and target locations can only be specified as zones. Precise positions within those zones are not represented.
 
 ### 4.2
 
-A state is written `zone_from | portal | zone_to`. Each portal yields exactly two, one per direction. The order gives the direction, and both zones are named, so a state stands alone without lookup.
+A state is a directed transition from one zone through a portal into another zone. It is written `zone_from | portal | zone_to`. A state may be assigned special costs.
 
 ### 4.3
 
-The search is multi-source and multi-target. The start set is the outbound states of the start zone, one per portal; the target set is the inbound states of the target zone. The search runs from the start set and ends when it reaches the first state of the target set.
+A segment between two consecutive states is written `portal | zone | portal`. A segment may be assigned special costs in addition to its distance cost.
 
 ### 4.4
 
-Special costs are assigned by the designer to individual states. They are separate from distance.
+A route is an alternating sequence of zones and portals, beginning with the start zone and ending with the target zone. It is written `zone | portal | zone | ... | portal | zone`.
+
+Total route cost is the sum of distances and special costs from its segments and states.
 
 ### 4.5
 
-The result of a query is an alternating sequence of zones and portals, beginning with the start zone and ending with the target zone.
+The search is multi-source and multi-target, from the outbound states of the start zone to the inbound states of the target zone. It returns the route with the lowest total cost.
