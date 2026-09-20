@@ -34,6 +34,7 @@ Local-only working tracker. Not part of the committed project documentation.
 - `2` active — documentation checkpointed in `7312b93` and `65c0590`.
 - Rulebook checkpoint — renamed to `rulebook.md` in `a2d9648`.
 - Rulebook definition refinement — opening, 1.1-1.3, 1.5, and 2.4 revised; the routing-variant rule moved to 3.4 in `f27143c` after tracker update `90a83c1`.
+- Rulebook model refinement — Cluster 1/2 wording and Cluster 4 query, state, segment, route, cost, and search structure revised in `fcedb6a` after tracker update `f6fa1b3`.
 - Archive cleanup done — dated snapshots removed; east-wing worktree retained.
 
 ## Rulebook review plan
@@ -55,9 +56,9 @@ Each block remains separate and increasingly invasive.
 
 - Structure: the rulebook progressed from lettered layers to numbered subject sections and then five conceptual clusters; Cluster 5 was absorbed into Cluster 1, leaving four active clusters.
 - Cluster 1: keep zone, separator, portal, and segment distinct. Treat boundary and separator together; separators divide spaces architecturally and are represented as zone boundaries after zoning. Virtual boundaries may separate zones without physical separators. Move the two-dimensional premise and exterior into this cluster. Define the simplified plan as derived from the architectural plans, retaining features relevant to navigation. Define portals as crossable boundary portions represented by midpoints; they may correspond to physical or virtual openings, always join exactly two zones, and remain pair-specific where zones meet at a point.
-- Cluster 2: order walkable/non-walkable part, obstacle, movement zone, movement line; preserve their distinctions. Clarify obstacles as fixed obstructions in the non-walkable part of a zone; routes neither end at nor pass through them. Define a movement line as a designer-drawn representation of the route people actually take through a movement zone.
+- Cluster 2: order walkable/non-walkable part, obstacle, movement zone, movement line; preserve their distinctions. Clarify obstacles as fixed obstructions in the non-walkable part of a zone; routes neither end at nor pass through them. Define a movement line as a designer-drawn representation of the path people actually take through a movement zone.
 - Cluster 3: keep zoning first; replace room/wall graph terminology with space/separator terminology and replace the graph table with sequential adjacency, connectivity, and routing definitions. Place the routing-variant rule after the routing graph definition. Defer pipeline prose and diagram review.
-- Cluster 4: keep query, state, search, costs, and result in dependency order, with state preceding search. The query includes manual zone-based self-location. Remove the redundant route-notation section; the result is an alternating sequence of zones and portals.
+- Cluster 4: keep query, state, segment, route, and search in dependency order, with search last. Define the query as a zone-level request, states as directed `zone | portal | zone` transitions with special costs, segments as `portal | zone | portal` portions between consecutive states with distance and special costs, routes as alternating zone/portal sequences with total costs, and search as multi-source/multi-target selection of the lowest-cost route. — done (`fcedb6a`)
 - Cluster 5: absorb its entries into Cluster 1; do not leave a standalone cluster.
 
 ## Open decisions
@@ -85,7 +86,7 @@ Status: `done` · `active` · `open` · `blocked`
 | 11 | `glossary.md` | done | Retired. Core/Derived/Movement/Roles -> rulebook D.2, D.4, D.14. Rejected-words table dropped (Q3 resolved). `edges` rule survives as roadmap Phase 2 task. |
 | 12 | `design_recap.md` | done | Retired. Sections 1-3, 5 already in `working_notes.md`; 7 in `zoning_guidelines.md`; 6, 8, 9 dropped as covered by `roadmap.md`; 4 dropped with Q3. |
 | 13 | `graphic_strategy.md` | done | Retired. §1 decision already ADR 5; viewBox guarantee -> `zoning_guidelines.md`; pipeline diagram dropped (superseded by rulebook R.5). Phase B covered by roadmap P2 + geometry added. Phase C -> `working_notes.md`. §5 split: two items covered by roadmap P2, `data-kind` hook added there, multi-floor group -> `zoning_guidelines.md`, verification loop -> README step 4. |
-| 14 | `rulebook.md` | active | Definition refinement checkpointed in `f27143c`; Cluster 3 graph rewrite and pipeline review remain open. |
+| 14 | `rulebook.md` | active | Model refinement checkpointed in `fcedb6a`. |
 
 ### Decision record
 
