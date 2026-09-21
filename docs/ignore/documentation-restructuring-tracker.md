@@ -7,7 +7,7 @@ Local-only working tracker. Not part of the committed project documentation.
 ### Restructuring Decisions
 
 - `main` remains based on `4763d6c`.
-- The documentation restructuring is intentional and remains uncommitted until reviewed.
+- The documentation restructuring is intentional and remains on the temporary branch until reviewed and transferred to `main`.
 - A temporary local branch tracks the tracker and restructuring; the ignored tracker is force-added.
 - Checkpoint pattern: documentation commit, tracker update naming it, tracker commit.
 - The obsolete commit `0de4f03` must not remain in the final `main` or feature-branch ancestry.
@@ -66,7 +66,7 @@ Each block remains separate and increasingly invasive.
 
 ## Open decisions
 
-- `edges` versus `connections`: naming rule has no current home.
+- ~~`edges` versus `connections`: naming rule has no current home.~~ Resolved as `edges`, consistent with the rulebook.
 
 ## Review status
 
@@ -111,10 +111,10 @@ Status: `done` · `active` · `open` · `blocked`
 | --- | --- | --- |
 | F10 | `roadmap.md`, `working_notes.md`, and `zoning_guidelines.md` cite retired `axioms.md`; `zoning_guidelines.md` also reserves zone id `aussen` where the rulebook says "exterior" | roadmap, working_notes, zoning_guidelines |
 | F9 | `docs_guidelines.md` has no rule for code naming; `edges` not `connections` has no home outside roadmap Phase 2 | docs_guidelines |
-| F1 | Resolved — the axioms 17–18 reading is discarded. A doorless portal from splitting a zone is an ordinary portal | glossary |
+| F1 | ~~Resolved — the axioms 17–18 reading is discarded. A doorless portal from splitting a zone is an ordinary portal~~ | glossary |
 | F2 | "Rooms are never crossed" contradicts axioms 8/19 | working_notes recap entry |
 | F3 | Contract rule 5 merges two rules ("…its two zones must share a wall") | zoning_guidelines |
-| F4 | Resolved — "segment" is the term. `working_notes.md` still says "path" in places | working_notes |
+| F4 | ~~Resolved — "segment" is the term. `working_notes.md` still says "path" in places~~ | working_notes |
 | F5 | Obstacle rule conflict: glossary "booths → obstacle always" vs working_notes "designer's decision, case by case" | glossary, working_notes, zoning_guidelines |
 | F6 | `validate_plan.py` not in repo; roadmap path `docs/ignore/files_260911/` does not exist | roadmap |
 | F7 | Roadmap P2 says `start_point` is orphaned; code no longer is | roadmap |
