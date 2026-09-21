@@ -4,7 +4,9 @@ Local-only working tracker. Not part of the committed project documentation.
 
 ## Control
 
-### Restructuring Decisions
+### Made Decisions
+
+#### Restructuring Decisions
 
 - `main` remains based on `4763d6c`.
 - The documentation restructuring is intentional and remains on the temporary branch until reviewed and transferred to `main`.
@@ -13,10 +15,23 @@ Local-only working tracker. Not part of the committed project documentation.
 - The obsolete commit `0de4f03` must not remain in the final `main` or feature-branch ancestry.
 - The local `backup-before-reset` branch may be deleted after verification.
 - Final documentation files are committed directly on `main`; the temporary branch is then deleted.
+- `adr.md` is retired. Preserve a local copy under `docs/ignore/` and remove it from Git tracking.
+- The canonical filenames remain `rulebook.md` and `devlog.md`; `model-specification.md` and `development-log.md` are not adopted as replacements.
 - The JanusWebHub remote will be removed entirely at the end.
 - `FLOORFOX/BFW_Wegweiser` becomes the final remote only after the migration and feature work are complete.
 
-### Order
+#### Rulebook Decisions
+
+- Structure: the rulebook progressed from lettered layers to numbered subject sections and then five conceptual clusters; Cluster 5 was absorbed into Cluster 1, leaving four active clusters.
+- Cluster 1: keep zone, separator, portal, and segment distinct. Treat boundary and separator together; separators divide spaces architecturally and are represented as zone boundaries after zoning. Virtual boundaries may separate zones without physical separators. Move the two-dimensional premise and exterior into this cluster. Define the simplified plan as derived from the architectural plans, retaining features relevant to navigation. Define portals as crossable boundary portions represented by midpoints; they may correspond to physical or virtual openings, always join exactly two zones, and remain pair-specific where zones meet at a point.
+- Cluster 2: order walkable/non-walkable part, obstacle, movement zone, movement line; preserve their distinctions. Clarify obstacles as fixed obstructions in the non-walkable part of a zone; routes neither end at nor pass through them. Define a movement line as a designer-drawn representation of the path people actually take through a movement zone.
+- Cluster 3: define adjacency, zoning and connectivity, and routing in that order using space/separator, zone/portal, and portal/segment terminology. Keep the routing-variant rule after the routing graph definition. Remove the redundant pipeline diagram after reviewing its content against the graph and search definitions.
+- Cluster 4: keep query, state, segment, route, and search in dependency order, with search last. Define the query as a zone-level request, states as directed `zone | portal | zone` transitions with special costs, segments as `portal | zone | portal` portions between consecutive states with distance and special costs, routes as alternating zone/portal sequences with total costs, and search as multi-source/multi-target selection of the lowest-cost route. — done (`fcedb6a`)
+- Cluster 5: absorb its entries into Cluster 1; do not leave a standalone cluster.
+
+### Sequence
+
+#### Review Order
 
 1. Create the temporary local branch and force-add the tracker.
 2. Review, checkpoint, and finish the documentation restructuring.
@@ -28,21 +43,7 @@ Local-only working tracker. Not part of the committed project documentation.
 8. Delete `backup-before-reset` after verification.
 9. Remove the old remote, add the FLOORFOX remote, and push the finished history.
 
-### Live status
-
-- `1` done — branch created; tracker committed as `6246384`.
-- `2` active — documentation checkpointed in `7312b93` and `65c0590`.
-- Rulebook checkpoint — renamed to `rulebook.md` in `a2d9648`.
-- Rulebook definition refinement — opening, 1.1-1.3, 1.5, and 2.4 revised; the routing-variant rule moved to 3.4 in `f27143c` after tracker update `90a83c1`.
-- Rulebook model refinement — Cluster 1/2 wording and Cluster 4 query, state, segment, route, cost, and search structure revised in `fcedb6a` after tracker update `f6fa1b3`.
-- Abstraction process description added to `working_notes.md` in `9070003`.
-- Cluster 3 graph model and derivation sequence overhauled in `rulebook.md` in `6aacf4d`.
-- Visual representation terminology clarified in `working_notes.md` in `a4c78b2`.
-- Archive cleanup done — dated snapshots removed; east-wing worktree retained.
-
-## Rulebook review plan
-
-### Process
+### Rulebook review order
 
 1. Create a checkpoint. — done
 2. Make reorder-only changes in small independent blocks. — done
@@ -55,22 +56,25 @@ Local-only working tracker. Not part of the committed project documentation.
 
 Each block remains separate and increasingly invasive.
 
-### Rulebook Decisions
+## Status
 
-- Structure: the rulebook progressed from lettered layers to numbered subject sections and then five conceptual clusters; Cluster 5 was absorbed into Cluster 1, leaving four active clusters.
-- Cluster 1: keep zone, separator, portal, and segment distinct. Treat boundary and separator together; separators divide spaces architecturally and are represented as zone boundaries after zoning. Virtual boundaries may separate zones without physical separators. Move the two-dimensional premise and exterior into this cluster. Define the simplified plan as derived from the architectural plans, retaining features relevant to navigation. Define portals as crossable boundary portions represented by midpoints; they may correspond to physical or virtual openings, always join exactly two zones, and remain pair-specific where zones meet at a point.
-- Cluster 2: order walkable/non-walkable part, obstacle, movement zone, movement line; preserve their distinctions. Clarify obstacles as fixed obstructions in the non-walkable part of a zone; routes neither end at nor pass through them. Define a movement line as a designer-drawn representation of the path people actually take through a movement zone.
-- Cluster 3: define adjacency, zoning and connectivity, and routing in that order using space/separator, zone/portal, and portal/segment terminology. Keep the routing-variant rule after the routing graph definition. Remove the redundant pipeline diagram after reviewing its content against the graph and search definitions.
-- Cluster 4: keep query, state, segment, route, and search in dependency order, with search last. Define the query as a zone-level request, states as directed `zone | portal | zone` transitions with special costs, segments as `portal | zone | portal` portions between consecutive states with distance and special costs, routes as alternating zone/portal sequences with total costs, and search as multi-source/multi-target selection of the lowest-cost route. — done (`fcedb6a`)
-- Cluster 5: absorb its entries into Cluster 1; do not leave a standalone cluster.
-
-## Open decisions
-
-- ~~`edges` versus `connections`: naming rule has no current home.~~ Resolved as `edges`, consistent with the rulebook.
-
-## Review status
+### Overall status
 
 Status: `done` · `active` · `open` · `blocked`
+
+### Live status
+
+- `1` done — branch created; tracker committed as `6246384`.
+- `2` active — documentation checkpointed in `7312b93` and `65c0590`.
+- Rulebook checkpoint — renamed to `rulebook.md` in `a2d9648`.
+- Rulebook definition refinement — opening, 1.1-1.3, 1.5, and 2.4 revised; the routing-variant rule moved to 3.4 in `f27143c` after tracker update `90a83c1`.
+- Rulebook model refinement — Cluster 1/2 wording and Cluster 4 query, state, segment, route, cost, and search structure revised in `fcedb6a` after tracker update `f6fa1b3`.
+- Abstraction process description added to `working_notes.md` in `9070003`.
+- Cluster 3 graph model and derivation sequence overhauled in `rulebook.md` in `6aacf4d`.
+- Visual representation terminology clarified in `working_notes.md` in `a4c78b2`.
+- Archive cleanup done — dated snapshots removed; east-wing worktree retained.
+- ADR retirement decided — move `adr.md` to ignored `docs/ignore/` and remove it from the Git index.
+- Filename decision reversed — retain `rulebook.md` and `devlog.md`.
 
 ### Documents
 
@@ -84,26 +88,29 @@ Status: `done` · `active` · `open` · `blocked`
 | 6 | `roadmap.md` | open | |
 | 7 | `README.md` | done | Relative links removed, `.gitattributes` added to tree, inline doc descriptors, Python 3.10+, Milestones deduplicated, verification loop added as Quick Start step 4. |
 | 8 | `axioms.md` | done | Retired to `docs/ignore/retired`. Replaced by `rulebook.md`. |
-| 9 | `adr.md` | open | |
+| 9 | `adr.md` | open | Retired; move to ignored `docs/ignore/` and remove from Git tracking. |
 | 10 | `devlog.md` | done | Byte-identical to backup (13 801 B, same mtime). Untouched, as required. |
 | 11 | `glossary.md` | done | Retired. Core/Derived/Movement/Roles -> rulebook D.2, D.4, D.14. Rejected-words table dropped (Q3 resolved). `edges` rule survives as roadmap Phase 2 task. |
 | 12 | `design_recap.md` | done | Retired. Sections 1-3, 5 already in `working_notes.md`; 7 in `zoning_guidelines.md`; 6, 8, 9 dropped as covered by `roadmap.md`; 4 dropped with Q3. |
 | 13 | `graphic_strategy.md` | done | Retired. §1 decision already ADR 5; viewBox guarantee -> `zoning_guidelines.md`; pipeline diagram dropped (superseded by rulebook R.5). Phase B covered by roadmap P2 + geometry added. Phase C -> `working_notes.md`. §5 split: two items covered by roadmap P2, `data-kind` hook added there, multi-floor group -> `zoning_guidelines.md`, verification loop -> README step 4. |
 | 14 | `rulebook.md` | active | Model refinement checkpointed in `fcedb6a`; Cluster 3 graph model overhauled in `6aacf4d`. |
 
-### Decision record
+## Open items
+
+### Open Decisions
+
+- ~~`edges` versus `connections`: naming rule has no current home.~~ Resolved as `edges`, consistent with the rulebook.
 
 | # | Item | Decision |
 | --- | --- | --- |
-| D1 | Q1 — glossary definitions | Resolved — into `rulebook.md`: partition into D.2, portal-need-not-be-a-door and virtual portal into D.4, role table into D.14 |
-| D2 | Q2 — graphic_strategy §1 | Resolved — decision stays ADR 5; the shared-`viewBox` consequence went to `zoning_guidelines.md`, not the rulebook, since it follows from a tooling decision not from the model |
-| D3 | Q3 — discarded/rejected terms | Resolved — table dropped entirely. Hub dead; branch/leaf superseded by D.16; crossable now a rulebook property (D.7) so rejecting it would be wrong; junction and decision point still live but not worth a doc |
-| D4 | ADR 4 rewrite | Text quoted; awaiting rewrite. Last purge hit in a kept doc |
-| D5 | Axiom 12 vs multi-source formulation | Resolved — merged in rulebook S.2: outbound/inbound states plus the stopping rule |
-| D6 | Two axiom candidates | Resolved — "routing graph is portals and segments only" is D.15; "every segment lies in one zone" is D.5 |
-| D7 | GS Phase B — roadmap topology.json lacks zone geometry | Resolved — geometry added to roadmap Phase 2 |
-| D8 | GS Phase C — OpenCV pipeline uncovered | Resolved — in `working_notes.md` after the Options table |
-| D9 | GS §5 — `data-kind` CSS hook, `<g id="floor:eg">`, verification loop | Resolved — all three applied |
+| ~~D1~~ | ~~Q1 — glossary definitions~~ | ~~Resolved — into `rulebook.md`: partition into D.2, portal-need-not-be-a-door and virtual portal into D.4, role table into D.14~~ |
+| ~~D2~~ | ~~Q2 — graphic_strategy §1~~ | ~~Resolved — decision stays ADR 5; the shared-`viewBox` consequence went to `zoning_guidelines.md`, not the rulebook, since it follows from a tooling decision not from the model~~ |
+| ~~D3~~ | ~~Q3 — discarded/rejected terms~~ | ~~Resolved — table dropped entirely. Hub dead; branch/leaf superseded by D.16; crossable now a rulebook property (D.7) so rejecting it would be wrong; junction and decision point still live but not worth a doc~~ |
+| ~~D5~~ | ~~Axiom 12 vs multi-source formulation~~ | ~~Resolved — merged in rulebook S.2: outbound/inbound states plus the stopping rule~~ |
+| ~~D6~~ | ~~Two axiom candidates~~ | ~~Resolved — "routing graph is portals and segments only" is D.15; "every segment lies in one zone" is D.5~~ |
+| ~~D7~~ | ~~GS Phase B — roadmap topology.json lacks zone geometry~~ | ~~Resolved — geometry added to roadmap Phase 2~~ |
+| ~~D8~~ | ~~GS Phase C — OpenCV pipeline uncovered~~ | ~~Resolved — in `working_notes.md` after the Options table~~ |
+| ~~D9~~ | ~~GS §5 — `data-kind` CSS hook, `<g id="floor:eg">`, verification loop~~ | ~~Resolved — all three applied~~ |
 
 ### Flags — substantive
 
@@ -165,20 +172,3 @@ Status: `done` · `active` · `open` · `blocked`
 
 Backups are in `docs/ignore/archive`.
 Non-documentation artifacts are in `docs/ignore/archive/other`.
-
-## Docs review mentality
-
-- State each fact once, where readers naturally seek it.
-- Remove repetition and explanatory scaffolding.
-- Derive rather than assert what follows from prior rules.
-- Preserve distinctions that change model semantics.
-- Treat wording as semantic precision.
-- Keep designer choices explicit where topology cannot decide.
-- Reject assistant-invented infrastructure.
-- Separate model truth from procedure, rationale, uncertainty, and implementation.
-- Keep entries only when they earn their existence.
-- Cut duplication without erasing necessary distinctions.
-- Consolidate only after conceptual dependencies are understood.
-- Order items by dependency, establishing what needs the fewest other statements first, then building progressively throughout the document.
-- Use top-down or bottom-up progression, from wholes to parts or parts to wholes, as a secondary ordering criterion.
-- Express schemas, pipelines, and derivations in prose; use diagrams or explanatory structure only when they carry source-of-truth reasoning.

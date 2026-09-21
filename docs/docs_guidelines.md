@@ -45,3 +45,20 @@ Conventions for writing commit messages, `README.md` and everything in `docs/`.
 - `.gitattributes` with `* text=auto` performs the conversion on commit and
   checkout, and applies to every file in the repository, not only to docs.
 - Files written by an AI assistant arrive as LF and need converting.
+
+## Docs review mentality
+
+- State each fact once, where readers naturally seek it.
+- Remove repetition and explanatory scaffolding.
+- Derive rather than assert what follows from prior rules.
+- Preserve distinctions that change model semantics.
+- Treat wording as semantic precision.
+- Keep designer choices explicit where topology cannot decide.
+- Reject assistant-invented infrastructure.
+- Separate model truth from procedure, rationale, uncertainty, and implementation.
+- Keep entries only when they earn their existence.
+- Cut duplication without erasing necessary distinctions.
+- Consolidate only after conceptual dependencies are understood.
+- Order items by dependency, establishing what needs the fewest other statements first, then building progressively throughout the document.
+- Use top-down or bottom-up progression, from wholes to parts or parts to wholes, as a secondary ordering criterion.
+- Express schemas, pipelines, and derivations in prose; use diagrams or explanatory structure only when they carry source-of-truth reasoning.
