@@ -26,7 +26,9 @@ Useful terminology:
 - **JSON encoding** or **JSON representation**: the graph’s JSON form
 - **JSON object**: the technical JSON equivalent of a dictionary
 - **nodes, edges, and attributes**: the contents of the graph representation
-- **visual graph representation** or **graph visualization**: a diagram of the graph
+- **simplified floor plan**: represents zones, boundaries, portals, obstacles, movement zones, and movement lines
+- **spatial routing plan**: represents the routing graph in its building locations, optionally using the simplified floor plan as a faded spatial reference
+- **graph visualization**: represents graph structure abstractly, without preserving building locations
 - **spatial representation**: a plan or map showing geometry
 - **symbolic representation**: an abstract notation using identifiers and relations
 - **semantic interpretation**: assigning model meaning to features in a plan
