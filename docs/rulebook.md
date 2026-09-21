@@ -2,7 +2,9 @@
 
 This rulebook defines the project's navigation model and is its source of truth. Every project file that concerns the navigation model must conform to it.
 
-## 1. Cluster 1 — elements: zone, separator, portal, segment
+## 1. Structural elements and topology
+
+Defines the spaces, zones, boundaries, portals, and segment relations that structure navigation.
 
 ### 1.1
 
@@ -36,7 +38,9 @@ A segment is a traversal through one zone, from one portal to another. It lies i
 
 The exterior is a single zone surrounding the building. A route may begin or end there but never cross it.
 
-## 2. Cluster 2 — obstacle and movement geometry
+## 2. Movement geometry and constraints
+
+Defines walkable space, obstacles, movement zones, movement lines, and segment geometry.
 
 ### 2.1
 
@@ -54,7 +58,9 @@ The movement zone is the circulation space within the walkable part.
 
 A movement line is a designer-drawn representation of the path people actually take through a movement zone.
 
-## 3. Cluster 3 — zoning and the three graphs
+## 3. Zoning and graph construction
+
+Defines how the architectural plan becomes zones and how the adjacency, connectivity, and routing graphs are derived.
 
 ### 3.1
 
@@ -111,7 +117,9 @@ Marking additional zones as non-crossable creates a routing variant in which tho
    routing graph ─────────────► search ───────────────┘
 ```
 
-## 4. Cluster 4 — query, search, route
+## 4. Queries and search
+
+Defines queries, states, routes, costs, and the search for lowest-cost routes.
 
 ### 4.1
 
