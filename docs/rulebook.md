@@ -60,62 +60,25 @@ A movement line is a designer-drawn representation of the path people actually t
 
 ## 3. Zoning and graph construction
 
-Defines how the architectural plan becomes zones and how the adjacency, connectivity, and routing graphs are derived.
+Defines how the simplified floor plans are produced from the architectural plans, and how the adjacency, connectivity, and routing graphs are derived.
 
 ### 3.1
 
-Zoning is the designer's process of converting enclosed spaces such as rooms, halls, and corridors into zones and preparing the simplified floor plan:
-
-- splitting halls and corridors into zones
-- placing portals that have no door
-- declaring obstacles
-- drawing movement zones and movement lines
-
-Which enclosed spaces become zones of their own, which are absorbed into a larger zone, and which become obstacles is decided by the designer. It does not follow from the topology. Governed by `zoning_guidelines.md`.
-
-Every zone must have at least one portal. Within each zone, every portal must be reachable from every other portal without obstruction.
+The adjacency graph is the machine-readable abstraction of the spaces and separators in the architectural plans. Its nodes are spaces and its edges are separators.
 
 ### 3.2
 
-There are three graphs.
+Zoning is the process of converting spaces and separators into zones and boundaries and creating portals, movement zones, and movement lines that form essential elements of the navigation model.
 
-| Graph | Nodes | Edges |
-| --- | --- | --- |
-| Adjacency | spaces | separators |
-| Connectivity | zones | boundaries |
-| Routing | portals | segments |
+The connectivity graph is produced alongside the simplified floor plans. Its nodes are zones and its edges are portals.
+
+Every zone must have at least one portal, and its portals must be mutually reachable without obstruction.
 
 ### 3.3
 
-The connectivity graph is derived from the adjacency graph by zoning. Zoning replaces spaces with zones: one space may become several zones, and several spaces may be absorbed into one. Each separator corresponds to the boundary between the zones its spaces became.
-
-### 3.4
-
-The routing graph is built from the connectivity graph. Each portal becomes a node; two portals are linked when they lie on the same crossable zone, and the link is the segment between them.
+The routing graph is constructed from the connectivity graph using movement geometry and routing decisions. Its nodes are portals, and its edges are segments.
 
 Marking additional zones as non-crossable creates a routing variant in which those zones remain reachable but cannot be passed through.
-
-### 3.5
-
-```text
-   architectural plans                     navigation instructions
-           │                                          ▲
-           ▼                                          │
-   adjacency graph                         zone sequence
-           │                                          ▲
-           ▼  zoning                                  │
-           │                                          │
-   simplified floor plan (SVG)             zone of each segment
-   ├ zones, portals, obstacles                        ▲
-   └ movement zones and lines                         │
-           │                                          │
-           ▼                                          │
-   connectivity graph                      portal chain
-           │                                          ▲
-           ▼  segments from movement lines            │
-           │                                          │
-   routing graph ─────────────► search ───────────────┘
-```
 
 ## 4. Queries and search
 
@@ -141,4 +104,8 @@ Total route cost is the sum of distances and special costs from its segments and
 
 ### 4.5
 
-The search is multi-source and multi-target, from the outbound states of the start zone to the inbound states of the target zone. It returns the route with the lowest total cost.
+The search is multi-source and multi-target and returns the route with the lowest total cost. The routing graph is searched from the outbound states of the start zone to the inbound states of the target zone.
+
+### 4.6
+
+The search produces a portal chain. The portal chain determines the zone sequence and the zone of each segment. The route is interpreted as navigation instructions and rendered on the building plan.
