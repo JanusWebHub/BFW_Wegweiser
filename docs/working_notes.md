@@ -1,8 +1,39 @@
 # Working notes
 
 Ideas as they are thought of or discussed, dated. Not a specification;
-`axioms.md` is. Entries here feed the axioms, ADRs and roadmap, and are
-pruned once absorbed.
+`rulebook.md` is.
+
+---
+
+## 2026-09-21 Abstraction Process Description (latest approved)
+
+The abstraction process is a **human-in-the-loop, computer-assisted modeling pipeline** with two complementary representation types:
+
+- **Visual representations**: architectural plans, simplified floor plans, spatial routing plans, and graph visualizations.
+- **Machine-readable symbolic representations**: serialized graph models containing nodes, edges, and attributes.
+
+The adjacency, connectivity, and routing graphs are **interdependent abstractions of the same building**, developed within one modeling process. Zoning is the central design activity in that process.
+
+1. Architectural plans are visual source representations of the building and are digitally interpreted into a machine-readable adjacency graph.
+2. The plans and adjacency graph are used in zoning to produce the simplified floor plans as visual representations and the connectivity graph as a machine-readable symbolic representation.
+3. The designer constructs the routing graph from the connectivity graph, serializes it as machine-readable data, and renders it as a graph visualization.
+
+Useful terminology:
+
+- **graph model**: the abstract mathematical structure
+- **graph representation**: a concrete way of expressing that model
+- **graph serialization**: storing the graph in a machine-readable format
+- **JSON encoding** or **JSON representation**: the graph’s JSON form
+- **JSON object**: the technical JSON equivalent of a dictionary
+- **nodes, edges, and attributes**: the contents of the graph representation
+- **visual graph representation** or **graph visualization**: a diagram of the graph
+- **spatial representation**: a plan or map showing geometry
+- **symbolic representation**: an abstract notation using identifiers and relations
+- **semantic interpretation**: assigning model meaning to features in a plan
+- **digitization**: converting source material into digital data
+- **abstraction**: reducing a detailed physical reality to model-relevant elements
+- **human-in-the-loop modeling**: computational assistance with human decisions remaining authoritative
+- **computer-assisted authoring**: tools support the designer’s work without replacing the designer
 
 ---
 
