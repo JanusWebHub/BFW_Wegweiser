@@ -10,11 +10,19 @@ Read this section first in any new conversation — it stands in for re-explaini
 
 `rulebook.md` (canon, already overhauled to the new model) → `system-design.md` (in-progress technical spec of that model, being drafted now) → `implementation-plan.md` (future-facing, rewritten after system-design is done) → `devlog.md` (past-facing, immutable historical record — hands off).
 
-Source material being harvested and retired to archive: `roadmap.md`, `working_notes.md`, `zoning_guidelines.md` — mined into system-design/implementation-plan, then archived. `adr.md` retires alongside them (see Documents table).
+Source material being harvested and retired to archive: `roadmap.md`, `working_notes.md` still pending; `zoning_guidelines.md` fully harvested and deleted. `adr.md` retires alongside the remaining two (see Documents table).
 
 Critical distinction: the working code/program files still implement the *old* model and are out of compliance with the new rulebook/system-design. Expected, untouched for now — code changes come last, after docs are settled.
 
 Sequencing: (1) docs cleanup [current phase] — finish `system-design.md`, then revise `implementation-plan.md`, then archive the retired docs; (2) only then bring code into compliance with rulebook/system-design.
+
+`implementation-plan.md`'s Phases are ordered by actual build dependency, not by mirroring the model's pipeline structure, read the doc for current content. Still needs roadmap.md/working_notes.md harvested in.
+
+Connectivity graph: produced *alongside* the floor plan during zoning (rulebook §3.2), not derived after. `system-design.md` §2.2 still lists it as "derived," unreconciled but not a real conflict, both true from different angles.
+
+`docs/references/` (tracked): `docs_guidelines.md`, `funnel_algorithm.md`, `funnel.svg`, `research_notes.md`.
+
+East-wing prototype (`feature/east-wing-prototype`): working zone/segment derivation and route search exist, but zones/portals are hardcoded, not parsed from the SVG, and terminology (e.g. "walls") isn't rulebook-aligned. Reference for what's reusable vs. new work per Phase.
 
 ### Branch picture (as of 2026-09-22)
 
