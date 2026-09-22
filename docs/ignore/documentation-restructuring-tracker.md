@@ -115,6 +115,7 @@ Status: `done` · `active` · `open` · `blocked`
 - Hard line-wrapping removed repo-wide, whitespace-only — `abfc0fd`.
 - `zoning_guidelines.md` struck — see Documents #4/#16. Catch-up entry; `6a4586d`/`abfc0fd` too small to log individually.
 - `zoning_guidelines.md` fully struck, nothing left unstruck — `1286c29`. Ready for archive.
+- `zoning_guidelines.md` deleted; implementation-plan.md Phases and Phase 1 detail restructured — `c282fb9`.
 
 ### Documents
 
@@ -123,7 +124,7 @@ Status: `done` · `active` · `open` · `blocked`
 | 1 | `convergences.md` | done | Retired. Title + intro survive in `research_notes.md`. Deleted. |
 | 2 | `docs_guidelines.md` | done | Line-endings rule added (CRLF working tree, LF repo, `.gitattributes`, repo-wide). Converted to CRLF. |
 | 3 | `research_notes.md` | done | Poincare removed, row 6 reworded, sections merged, project refs stripped, intro rewritten. |
-| 4 | `zoning_guidelines.md` | done | Fully struck (`1286c29`); Phase A migrated to implementation-plan.md. Ready for archive. |
+| 4 | `zoning_guidelines.md` | done | Deleted; Phase A migrated to implementation-plan.md. |
 | 5 | `working_notes.md` | open | |
 | 6 | `roadmap.md` | open | |
 | 7 | `README.md` | done | Relative links removed, `.gitattributes` added to tree, inline doc descriptors, Python 3.10+, Milestones deduplicated, verification loop added as Quick Start step 4. |
@@ -135,7 +136,7 @@ Status: `done` · `active` · `open` · `blocked`
 | 13 | `graphic_strategy.md` | done | Retired. §1 decision already ADR 5; viewBox guarantee -> `zoning_guidelines.md`; pipeline diagram dropped (superseded by rulebook R.5). Phase B covered by roadmap P2 + geometry added. Phase C -> `working_notes.md`. §5 split: two items covered by roadmap P2, `data-kind` hook added there, multi-floor group -> `zoning_guidelines.md`, verification loop -> README step 4. |
 | 14 | `rulebook.md` | active | Model refinement checkpointed in `fcedb6a`; Cluster 3 graph model overhauled in `6aacf4d`. |
 | 15 | `system-design.md` | active | Opening description, Modeling pipeline, Representations, Costs sections settled in `fee1077`. Still to receive harvest from roadmap/working_notes/zoning_guidelines. |
-| 16 | `implementation-plan.md` | active | Opening, Phases, SVG contract settled in `fee1077`; validator script and two zoning_guidelines items added in `6a4586d`/`3c266ca`. Still to harvest roadmap/working_notes. |
+| 16 | `implementation-plan.md` | active | Opening, Phases, and Phase 1 detail restructured; zoning_guidelines migrated in. Still to harvest roadmap/working_notes. |
 
 ## Open items
 
