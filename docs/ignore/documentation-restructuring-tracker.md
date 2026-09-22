@@ -2,6 +2,42 @@
 
 Local-only working tracker. Not part of the committed project documentation.
 
+## Orientation (as of 2026-09-22)
+
+Read this section first in any new conversation — it stands in for re-explaining the project from scratch.
+
+### Authority order (current)
+
+`rulebook.md` (canon, already overhauled to the new model) → `system-design.md` (in-progress technical spec of that model, being drafted now) → `implementation-plan.md` (future-facing, rewritten after system-design is done) → `devlog.md` (past-facing, immutable historical record — hands off).
+
+Source material being harvested and retired to archive: `roadmap.md`, `working_notes.md`, `zoning_guidelines.md` — mined into system-design/implementation-plan, then archived. `adr.md` retires alongside them (see Documents table).
+
+Critical distinction: the working code/program files still implement the *old* model and are out of compliance with the new rulebook/system-design. Expected, untouched for now — code changes come last, after docs are settled.
+
+Sequencing: (1) docs cleanup [current phase] — finish `system-design.md`, then revise `implementation-plan.md`, then archive the retired docs; (2) only then bring code into compliance with rulebook/system-design.
+
+### Branch picture (as of 2026-09-22)
+
+- `main` (tip `4763d6c`): original implementation. Upload → German→English cleanup, type hints, tests, devlog/ADR introduction → src/web restructure → JSON compiler/web client split → roadmap docs. Baseline all other branches fork from.
+- `feature/east-wing-prototype` (2 commits ahead of `4763d6c`): `a39e341` east-wing routing prototype + `5fc294c` rulebook update. Small, self-contained. To be reworked against the new model/system-design after it lands on `main`.
+- `local/documentation-restructuring` (27 commits ahead of main, ending `67f1c2d`): the broad docs-restructuring effort — tracker-checkpoint commits interleaved with substantive rulebook refinement (foundations → definitions → model → graph model → cluster headings → abstraction process → visual graph representations).
+- `docs/restructure` (branched from `local/documentation-restructuring` at `67f1c2d`, 1 commit ahead: `140d58d` "Restructure project documentation"): current, most focused pass, currently HEAD.
+- `backup-before-reset`: orphaned safety branch off main tip, holds one extra commit `0de4f03` ("Document semantic floor plans and portal graph architecture") never merged anywhere. This is a false start, not salvageable material — explicitly obsolete, must never re-enter `main` or feature-branch ancestry (see Restructuring Decisions). No devlog entry owed for it (W1). Branch slated for deletion once verified (W5).
+
+### Branch/merge sequence — two alternatives under consideration
+
+Not yet settled which one governs; both recorded until decided.
+
+**A — direct-to-main (original decision, line 11 and Review Order below):** `main` stays based on `4763d6c`; final documentation files are committed directly on `main`; `local/documentation-restructuring` and `docs/restructure` are scratch/temporary branches discarded (not merged forward) once their content lands on `main`; then `feature/east-wing-prototype` rebases onto migrated `main`, dropping `0de4f03` from its ancestry, and merges in.
+
+**B — forward-merge chain (newer, being reconsidered):** `docs/restructure` merges into `local/documentation-restructuring` → that merges or is cherry-picked into `main` → `feature/east-wing-prototype` rebases onto that post-restructuring `main` commit, merges in, and is then reworked to match the new model/system-design, eventually becoming the new `main`.
+
+Both alternatives agree on: `0de4f03` never enters final ancestry; east-wing rebases (not merges as-is) onto a post-restructuring `main`; east-wing gets reworked to the new model after landing.
+
+### FLOORFOX migration — distinctly separate, far downstream
+
+Not part of the docs restructuring or branch-merge work above. Only relevant after all of the above (docs cleanup, code brought into compliance, branch consolidation) is complete: remove the JanusWebHub remote entirely, then add `FLOORFOX/BFW_Wegweiser` as the final remote, then push finished history. Do not conflate this with the nearer-term branch/merge sequencing.
+
 ## Control
 
 ### Made Decisions
