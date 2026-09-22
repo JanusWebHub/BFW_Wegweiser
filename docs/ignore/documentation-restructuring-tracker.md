@@ -111,6 +111,7 @@ Status: `done` · `active` · `open` · `blocked`
 - Archive cleanup done — dated snapshots removed; east-wing worktree retained.
 - ADR retirement decided — move `adr.md` to ignored `docs/ignore/` and remove it from the Git index.
 - Filename decision reversed — retain `rulebook.md` and `devlog.md`.
+- system-design.md / implementation-plan.md refined — see Documents #15/#16. Committed as `fee1077`.
 
 ### Documents
 
@@ -130,6 +131,8 @@ Status: `done` · `active` · `open` · `blocked`
 | 12 | `design_recap.md` | done | Retired. Sections 1-3, 5 already in `working_notes.md`; 7 in `zoning_guidelines.md`; 6, 8, 9 dropped as covered by `roadmap.md`; 4 dropped with Q3. |
 | 13 | `graphic_strategy.md` | done | Retired. §1 decision already ADR 5; viewBox guarantee -> `zoning_guidelines.md`; pipeline diagram dropped (superseded by rulebook R.5). Phase B covered by roadmap P2 + geometry added. Phase C -> `working_notes.md`. §5 split: two items covered by roadmap P2, `data-kind` hook added there, multi-floor group -> `zoning_guidelines.md`, verification loop -> README step 4. |
 | 14 | `rulebook.md` | active | Model refinement checkpointed in `fcedb6a`; Cluster 3 graph model overhauled in `6aacf4d`. |
+| 15 | `system-design.md` | active | Opening description, Modeling pipeline, Representations, Costs sections settled in `fee1077`. Still to receive harvest from roadmap/working_notes/zoning_guidelines. |
+| 16 | `implementation-plan.md` | active | Opening description, Phases (unordered), SVG implementation contract settled in `fee1077`. Still to receive harvest from roadmap/working_notes/zoning_guidelines. |
 
 ## Open items
 
@@ -137,8 +140,8 @@ Status: `done` · `active` · `open` · `blocked`
 
 | # | Item | Source | Target |
 | --- | --- | --- | --- |
-| C1 | Concrete cost model: distance + turn/door/floor-change penalties. Rulebook §4.2-4.3 only mention "special costs" abstractly, no concrete penalty table. | `docs/ignore/archive/wegweiser-design.md` §3 | `system-design.md` search/cost section |
-| C2 | Algorithm evaluation (BFS vs Dijkstra vs A\* vs Voronoi/arc-flags/HPA\*) against real building shape (star + eastern block with cycles). | `docs/ignore/archive/eval.md` | `implementation-plan.md` |
+| ~~C1~~ | ~~Concrete cost model: distance + turn/door/floor-change penalties. Rulebook §4.2-4.3 only mention "special costs" abstractly, no concrete penalty table.~~ | ~~`docs/ignore/archive/wegweiser-design.md` §3~~ | ~~Resolved — light-touch clarification only, no penalty table (would over-prescribe). Landed as `system-design.md` §3 Costs in `fee1077`.~~ |
+| ~~C2~~ | ~~Algorithm evaluation (BFS vs Dijkstra vs A\* vs Voronoi/arc-flags/HPA\*) against real building shape (star + eastern block with cycles).~~ | ~~`docs/ignore/archive/eval.md`~~ | ~~Resolved — discarded. Algorithm choice deferred to when implementation-plan actually needs it; nothing to harvest now without prescribing.~~ |
 
 ### Open Decisions
 
