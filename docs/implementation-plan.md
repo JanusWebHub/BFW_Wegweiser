@@ -40,3 +40,7 @@ A validator script:
 - verifies zone convexity as a proxy for portal reachability within a zone
 - verifies no overlapping zones
 - verifies connectivity of the resulting graph
+
+The plan and the route overlay share one frame of reference, so they cannot drift apart.
+
+The wing boundary made explicit as its own labeled zone. Virtual boundaries are drawn as dashed lines.
