@@ -33,3 +33,10 @@ The SVG representation has:
 - no dangling portal references
 - no editor metadata in routing assets
 - consistent coordinate conventions across floors
+
+A validator script:
+
+- checks the authored SVG against this contract
+- verifies zone convexity as a proxy for portal reachability within a zone
+- verifies no overlapping zones
+- verifies connectivity of the resulting graph
