@@ -133,6 +133,13 @@ Status: `done` · `active` · `open` · `blocked`
 
 ## Open items
 
+### Circle-back items — harvested from archive
+
+| # | Item | Source | Target |
+| --- | --- | --- | --- |
+| C1 | Concrete cost model: distance + turn/door/floor-change penalties. Rulebook §4.2-4.3 only mention "special costs" abstractly, no concrete penalty table. | `docs/ignore/archive/wegweiser-design.md` §3 | `system-design.md` search/cost section |
+| C2 | Algorithm evaluation (BFS vs Dijkstra vs A\* vs Voronoi/arc-flags/HPA\*) against real building shape (star + eastern block with cycles). | `docs/ignore/archive/eval.md` | `implementation-plan.md` |
+
 ### Open Decisions
 
 - ~~`edges` versus `connections`: naming rule has no current home.~~ Resolved as `edges`, consistent with the rulebook.
@@ -153,7 +160,7 @@ Status: `done` · `active` · `open` · `blocked`
 | # | Flag | Where |
 | --- | --- | --- |
 | F10 | `roadmap.md`, `working_notes.md`, and `zoning_guidelines.md` cite retired `axioms.md`; `zoning_guidelines.md` also reserves zone id `aussen` where the rulebook says "exterior" | roadmap, working_notes, zoning_guidelines |
-| F9 | `docs_guidelines.md` has no rule for code naming; `edges` not `connections` has no home outside roadmap Phase 2 | docs_guidelines |
+| F9 | `docs/references/docs_guidelines.md` has no rule for code naming; `edges` not `connections` has no home outside roadmap Phase 2 | docs_guidelines |
 | F1 | ~~Resolved — the axioms 17–18 reading is discarded. A doorless portal from splitting a zone is an ordinary portal~~ | glossary |
 | F2 | "Rooms are never crossed" contradicts axioms 8/19 | working_notes recap entry |
 | F3 | Contract rule 5 merges two rules ("…its two zones must share a wall") | zoning_guidelines |
@@ -191,7 +198,7 @@ Status: `done` · `active` · `open` · `blocked`
 | W3 | Line endings: convert files edited in chat to CRLF | open |
 | W4 | After the feature merge, remove the old remote, add FLOORFOX, and push the finished history | open |
 | W5 | Delete branch `backup-before-reset` once satisfied | open |
-| W6 | Place `funnel_algorithm.md`, `funnel.svg`, and `convex-segments.svg` if still required | open |
+| W6 | Place `funnel_algorithm.md`, `funnel.svg`, and `convex-segments.svg` if still required | partly done — `funnel_algorithm.md` and `funnel.svg` moved from `docs/ignore/research_references/` to tracked `docs/references/`; `docs_guidelines.md` also moved there. `convex-segments.svg` still unplaced. |
 | W7 | Promote `validate_plan.py` into `src/` if still required | open |
 | W8 | Correct the funnel wording in `research_notes.md` | open |
 
@@ -201,7 +208,7 @@ Status: `done` · `active` · `open` · `blocked`
 | --- | --- | --- |
 | H1 | `_to_delete/` removed; retired docs deleted in place from now on | done |
 | H2 | `.gitattributes` with `* text=auto` at project root | open — own commit; renormalises the whole repo once |
-| H3 | Convert `working_notes.md` and `docs_guidelines.md` to CRLF | done |
+| H3 | Convert `working_notes.md` and `docs/references/docs_guidelines.md` to CRLF | done |
 | H4 | Future prompts: ban all git commands, not only write operations | noted |
 
 ## Archive
