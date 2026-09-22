@@ -18,7 +18,7 @@ Sequencing: (1) docs cleanup [current phase] — finish `system-design.md`, then
 
 `implementation-plan.md`'s Phases are ordered by actual build dependency, not by mirroring the model's pipeline structure, read the doc for current content. Still needs roadmap.md/working_notes.md harvested in.
 
-Connectivity graph: produced *alongside* the floor plan during zoning (rulebook §3.2), not derived after. `system-design.md` §2.2 still lists it as "derived," unreconciled but not a real conflict, both true from different angles.
+Connectivity graph: produced *alongside* the floor plan during zoning (rulebook §3.2), not derived after. `system-design.md` §2.2 still lists it as "derived," unreconciled but not a real conflict, both true from different angles. Internally, though, §1 and §2.2 disagree; see F11.
 
 `docs/references/` (tracked): `docs_guidelines.md`, `funnel_algorithm.md`, `funnel.svg`, `research_notes.md`.
 
@@ -184,6 +184,11 @@ Status: `done` · `active` · `open` · `blocked`
 | F6 | `validate_plan.py` not in repo; roadmap path `docs/ignore/files_260911/` does not exist | roadmap |
 | F7 | Roadmap P2 says `start_point` is orphaned; code no longer is | roadmap |
 | F8 | Recap "This is not places linked by corridors" left without its positive counterpart after the purge | working_notes |
+| F11 | §1 step 2 says zoning produces the connectivity graph, §2.2 lists it as derived | system-design |
+| F12 | SVG contents listed three times, three memberships: §2.1, Phase 1 prose, Phase 1 contract | system-design, implementation-plan |
+| F13 | §3 says "a traversal", collapsing the rulebook's split of costs across states and segments | system-design |
+| F14 | Adjacency graph is produced at §1 step 1 but appears in neither §2 list | system-design |
+| F15 | Convexity proxy is stricter than rulebook §3.2 requires, and is stated only as a validator bullet | implementation-plan |
 
 ### Flags — editorial
 
@@ -201,6 +206,7 @@ Status: `done` · `active` · `open` · `blocked`
 | E10 | Roadmap open questions 1–2 reverted to recap wording — verify | roadmap |
 | E11 | Recap entry dated to month only ("2026-09"); evidence points to 09-10/11 | working_notes |
 | E12 | Phase A Rationale and Residual risk migrated though not in the mapping | zoning_guidelines |
+| E13 | Closing fragment "Reading the source: a door is a line plus a quarter-circle arc" belongs to no section | implementation-plan |
 
 ## Completion
 
