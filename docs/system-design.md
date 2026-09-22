@@ -1,15 +1,8 @@
 # System design
 
-This document specifies the current system design.
+The rulebook defines the model theoretically, covering its terms and their relationships. This document specifies the current system design by making the system-level design decisions that conform strictly to the model, using tools such as clarifying and exemplifying rulebook terms and resolving what the rulebook deliberately leaves open.
 
-## 1. System architecture
-
-The system has two parts:
-
-- [src/](../src/) contains the offline Python tooling used to process the building model and generate routing data.
-- [web/](../web/) contains the static browser client used to present the building plan and render route output.
-
-## 2. Modeling pipeline
+## 1. Modeling pipeline
 
 The system implements a human-in-the-loop, computer-assisted modeling pipeline with two complementary representation types:
 
@@ -22,9 +15,9 @@ The system implements a human-in-the-loop, computer-assisted modeling pipeline w
 4. Routing data is serialized for the browser client.
 5. The browser renders routes on the building plan.
 
-## 3. Representations
+## 2. Representations
 
-### 3.1 Authored representation
+### 2.1 Authored representation
 
 The authored floor-plan asset is a semantic SVG used to encode the model’s zone and portal structure.
 
@@ -35,7 +28,7 @@ It contains:
 - obstacles
 - the exterior zone
 
-### 3.2 Derived representations
+### 2.2 Derived representations
 
 The following are derived from the authored representation rather than authored directly:
 
@@ -45,18 +38,6 @@ The following are derived from the authored representation rather than authored 
 - routing graph
 - serialized routing data (computed)
 
-## 4. SVG implementation contract
+## 3. Costs
 
-authored SVG is subject to an operational contract that ensures parseability and conformance with the model.
-
-The SVG representation has:
-
-- semantic groups for zones, portals, and obstacles
-- absolute coordinates in the shared `viewBox`
-- stable ids for zones and portals
-- portals that reference exactly two zones
-- at least one portal for every zone
-- no transforms on routing groups
-- no dangling portal references
-- no editor metadata in routing assets
-- consistent coordinate conventions across floors
+A special cost is any factor beyond distance that makes a traversal harder or easier for a person, for example a turn, a door, or a floor change. These factors and their weights are a tuning decision, made when the routing graph is constructed from the connectivity graph.
