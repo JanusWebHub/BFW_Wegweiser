@@ -112,6 +112,8 @@ Status: `done` · `active` · `open` · `blocked`
 - ADR retirement decided — move `adr.md` to ignored `docs/ignore/` and remove it from the Git index.
 - Filename decision reversed — retain `rulebook.md` and `devlog.md`.
 - system-design.md / implementation-plan.md refined — see Documents #15/#16. Committed as `fee1077`.
+- Hard line-wrapping removed repo-wide, whitespace-only — `abfc0fd`.
+- `zoning_guidelines.md` struck — see Documents #4/#16. Catch-up entry; `6a4586d`/`abfc0fd` too small to log individually.
 
 ### Documents
 
@@ -120,7 +122,7 @@ Status: `done` · `active` · `open` · `blocked`
 | 1 | `convergences.md` | done | Retired. Title + intro survive in `research_notes.md`. Deleted. |
 | 2 | `docs_guidelines.md` | done | Line-endings rule added (CRLF working tree, LF repo, `.gitattributes`, repo-wide). Converted to CRLF. |
 | 3 | `research_notes.md` | done | Poincare removed, row 6 reworded, sections merged, project refs stripped, intro rewritten. |
-| 4 | `zoning_guidelines.md` | open | Most sources, known duplication. |
+| 4 | `zoning_guidelines.md` | open | Struck down to intro + Phase A (`30bfbb3`/`3c266ca`); two items migrated to `implementation-plan.md` first. |
 | 5 | `working_notes.md` | open | |
 | 6 | `roadmap.md` | open | |
 | 7 | `README.md` | done | Relative links removed, `.gitattributes` added to tree, inline doc descriptors, Python 3.10+, Milestones deduplicated, verification loop added as Quick Start step 4. |
@@ -132,7 +134,7 @@ Status: `done` · `active` · `open` · `blocked`
 | 13 | `graphic_strategy.md` | done | Retired. §1 decision already ADR 5; viewBox guarantee -> `zoning_guidelines.md`; pipeline diagram dropped (superseded by rulebook R.5). Phase B covered by roadmap P2 + geometry added. Phase C -> `working_notes.md`. §5 split: two items covered by roadmap P2, `data-kind` hook added there, multi-floor group -> `zoning_guidelines.md`, verification loop -> README step 4. |
 | 14 | `rulebook.md` | active | Model refinement checkpointed in `fcedb6a`; Cluster 3 graph model overhauled in `6aacf4d`. |
 | 15 | `system-design.md` | active | Opening description, Modeling pipeline, Representations, Costs sections settled in `fee1077`. Still to receive harvest from roadmap/working_notes/zoning_guidelines. |
-| 16 | `implementation-plan.md` | active | Opening description, Phases (unordered), SVG implementation contract settled in `fee1077`. Still to receive harvest from roadmap/working_notes/zoning_guidelines. |
+| 16 | `implementation-plan.md` | active | Opening, Phases, SVG contract settled in `fee1077`; validator script and two zoning_guidelines items added in `6a4586d`/`3c266ca`. Still to harvest roadmap/working_notes. |
 
 ## Open items
 
@@ -145,7 +147,7 @@ Status: `done` · `active` · `open` · `blocked`
 
 ### Open Decisions
 
-- ~~`edges` versus `connections`: naming rule has no current home.~~ Resolved as `edges`, consistent with the rulebook.
+~~- `edges` versus `connections`: naming rule has no current home. Resolved as `edges`, consistent with the rulebook.~~
 
 | # | Item | Decision |
 | --- | --- | --- |
@@ -162,12 +164,12 @@ Status: `done` · `active` · `open` · `blocked`
 
 | # | Flag | Where |
 | --- | --- | --- |
-| F10 | `roadmap.md`, `working_notes.md`, and `zoning_guidelines.md` cite retired `axioms.md`; `zoning_guidelines.md` also reserves zone id `aussen` where the rulebook says "exterior" | roadmap, working_notes, zoning_guidelines |
+| F10 | ~~zoning_guidelines side resolved — `axioms.md` citation and `aussen`-reserved-zone-id content struck with the rest of the Data Model table (`30bfbb3`)~~. `roadmap.md` and `working_notes.md` still cite retired `axioms.md` | roadmap, working_notes |
 | F9 | `docs/references/docs_guidelines.md` has no rule for code naming; `edges` not `connections` has no home outside roadmap Phase 2 | docs_guidelines |
 | F1 | ~~Resolved — the axioms 17–18 reading is discarded. A doorless portal from splitting a zone is an ordinary portal~~ | glossary |
 | F2 | "Rooms are never crossed" contradicts axioms 8/19 | working_notes recap entry |
-| F3 | Contract rule 5 merges two rules ("…its two zones must share a wall") | zoning_guidelines |
-| F4 | ~~Resolved — "segment" is the term. `working_notes.md` still says "path" in places~~ | working_notes |
+~~| F3 | Resolved — the whole Authoring Contract section (including rule 5) was struck (`30bfbb3`) | zoning_guidelines |~~
+| F4 | Not resolved — "segment" is the term, but `working_notes.md` still uses "path" throughout, including a whole element-table row (Elements section, ~line 130-220) | working_notes |
 | F5 | Obstacle rule conflict: glossary "booths → obstacle always" vs working_notes "designer's decision, case by case" | glossary, working_notes, zoning_guidelines |
 | F6 | `validate_plan.py` not in repo; roadmap path `docs/ignore/files_260911/` does not exist | roadmap |
 | F7 | Roadmap P2 says `start_point` is orphaned; code no longer is | roadmap |
@@ -178,9 +180,9 @@ Status: `done` · `active` · `open` · `blocked`
 | # | Flag | Where |
 | --- | --- | --- |
 | E1 | Intro describes only the convergences table; doc now also holds graph theory notes and node/edge paragraph | research_notes |
-| E2 | Naming rules appear twice (contract rule 3 + Naming conventions section) | zoning_guidelines |
-| E3 | Source hierarchy appears twice (GS Phase A + design_recap §7) | zoning_guidelines |
-| E4 | Duplicate portals covered twice (GS §2 paragraph + glossary section) | zoning_guidelines |
+~~| E2 | Resolved — both copies (contract rule 3 and the standalone Naming Conventions section) struck (`30bfbb3`) | zoning_guidelines |~~
+~~| E3 | zoning_guidelines side resolved — the "Floor plan work" copy struck; Phase A's copy is now the only one left in this file (`3c266ca`) | zoning_guidelines |~~
+~~| E4 | zoning_guidelines side resolved — both the inline sentence and the standalone "Duplicate portals" section struck (`30bfbb3`) | zoning_guidelines |~~
 | E5 | "To purge" section still lists wrong framings and retired docs by name | working_notes |
 | E6 | 13 relative links remain (README 2, roadmap 11), against the new rule | README, roadmap |
 | E7 | Options table row says "deferred to Phase C" — only valid if Phase C lands (see D8) | working_notes |
