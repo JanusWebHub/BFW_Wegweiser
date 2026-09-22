@@ -114,6 +114,7 @@ Status: `done` · `active` · `open` · `blocked`
 - system-design.md / implementation-plan.md refined — see Documents #15/#16. Committed as `fee1077`.
 - Hard line-wrapping removed repo-wide, whitespace-only — `abfc0fd`.
 - `zoning_guidelines.md` struck — see Documents #4/#16. Catch-up entry; `6a4586d`/`abfc0fd` too small to log individually.
+- `zoning_guidelines.md` fully struck, nothing left unstruck — `1286c29`. Ready for archive.
 
 ### Documents
 
@@ -122,7 +123,7 @@ Status: `done` · `active` · `open` · `blocked`
 | 1 | `convergences.md` | done | Retired. Title + intro survive in `research_notes.md`. Deleted. |
 | 2 | `docs_guidelines.md` | done | Line-endings rule added (CRLF working tree, LF repo, `.gitattributes`, repo-wide). Converted to CRLF. |
 | 3 | `research_notes.md` | done | Poincare removed, row 6 reworded, sections merged, project refs stripped, intro rewritten. |
-| 4 | `zoning_guidelines.md` | open | Struck down to intro + Phase A (`30bfbb3`/`3c266ca`); two items migrated to `implementation-plan.md` first. |
+| 4 | `zoning_guidelines.md` | done | Fully struck (`1286c29`); Phase A migrated to implementation-plan.md. Ready for archive. |
 | 5 | `working_notes.md` | open | |
 | 6 | `roadmap.md` | open | |
 | 7 | `README.md` | done | Relative links removed, `.gitattributes` added to tree, inline doc descriptors, Python 3.10+, Milestones deduplicated, verification loop added as Quick Start step 4. |
