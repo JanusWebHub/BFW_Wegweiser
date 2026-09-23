@@ -10,15 +10,15 @@ Read this section first in any new conversation — it stands in for re-explaini
 
 `rulebook.md` (canon, already overhauled to the new model) → `system-design.md` (in-progress technical spec of that model, being drafted now) → `implementation-plan.md` (future-facing, rewritten after system-design is done) → `devlog.md` (past-facing, immutable historical record — hands off).
 
-Source material being harvested and retired to archive: `roadmap.md`, `working_notes.md` still pending; `zoning_guidelines.md` fully harvested and deleted. `adr.md` retires alongside the remaining two (see Documents table).
+Source material being harvested and retired to archive: `roadmap.md` deleted; `working_notes.md` still pending; `zoning_guidelines.md` fully harvested and deleted. `adr.md` retired.
 
 Critical distinction: the working code/program files still implement the *old* model and are out of compliance with the new rulebook/system-design. Expected, untouched for now — code changes come last, after docs are settled.
 
 Sequencing: (1) docs cleanup [current phase] — finish `system-design.md`, then revise `implementation-plan.md`, then archive the retired docs; (2) only then bring code into compliance with rulebook/system-design.
 
-`implementation-plan.md`'s Phases are ordered by actual build dependency, not by mirroring the model's pipeline structure, read the doc for current content. Still needs roadmap.md/working_notes.md harvested in.
+`implementation-plan.md`'s Phases are ordered by actual build dependency.
 
-Connectivity graph: produced *alongside* the floor plan during zoning (rulebook §3.2), not derived after. `system-design.md` §2.2 still lists it as "derived," unreconciled but not a real conflict, both true from different angles. Internally, though, §1 and §2.2 disagree; see F11.
+Connectivity graph produced alongside the floor plan during zoning. clarified in core docs.
 
 `docs/references/` (tracked): `docs_guidelines.md`, `funnel_algorithm.md`, `funnel.svg`, `research_notes.md`.
 
@@ -29,7 +29,7 @@ East-wing prototype (`feature/east-wing-prototype`): working zone/segment deriva
 - `main` (tip `4763d6c`): original implementation. Upload → German→English cleanup, type hints, tests, devlog/ADR introduction → src/web restructure → JSON compiler/web client split → roadmap docs. Baseline all other branches fork from.
 - `feature/east-wing-prototype` (2 commits ahead of `4763d6c`): `a39e341` east-wing routing prototype + `5fc294c` rulebook update. Small, self-contained. To be reworked against the new model/system-design after it lands on `main`.
 - `local/documentation-restructuring` (27 commits ahead of main, ending `67f1c2d`): the broad docs-restructuring effort — tracker-checkpoint commits interleaved with substantive rulebook refinement (foundations → definitions → model → graph model → cluster headings → abstraction process → visual graph representations).
-- `docs/restructure` (branched from `local/documentation-restructuring` at `67f1c2d`, 1 commit ahead: `140d58d` "Restructure project documentation"): current, most focused pass, currently HEAD.
+- `docs/restructure` (branched from `local/documentation-restructuring` at `67f1c2d`, 20 commits ahead, ending `633baed`): current, most focused pass, currently HEAD.
 - `backup-before-reset`: orphaned safety branch off main tip, holds one extra commit `0de4f03` ("Document semantic floor plans and portal graph architecture") never merged anywhere. This is a false start, not salvageable material — explicitly obsolete, must never re-enter `main` or feature-branch ancestry (see Restructuring Decisions). No devlog entry owed for it (W1). Branch slated for deletion once verified (W5).
 
 ### Branch/merge sequence — two alternatives under consideration
@@ -125,6 +125,7 @@ Status: `done` · `active` · `open` · `blocked`
 - `zoning_guidelines.md` fully struck, nothing left unstruck — `1286c29`. Ready for archive.
 - `zoning_guidelines.md` deleted; implementation-plan.md Phases and Phase 1 detail restructured — `c282fb9`.
 - system-design/implementation-plan consistency flags F11-F15 resolved; adjacency graph added to implementation-plan Future direction — `c26df5c`.
+- README.md rewritten; system-design/implementation-plan pipeline split; roadmap.md deleted — `97a7a1f`.
 
 ### Documents
 
@@ -135,8 +136,8 @@ Status: `done` · `active` · `open` · `blocked`
 | 3 | `research_notes.md` | done | Poincare removed, row 6 reworded, sections merged, project refs stripped, intro rewritten. |
 | 4 | `zoning_guidelines.md` | done | Deleted; Phase A migrated to implementation-plan.md. |
 | 5 | `working_notes.md` | open | |
-| 6 | `roadmap.md` | open | |
-| 7 | `README.md` | done | Relative links removed, `.gitattributes` added to tree, inline doc descriptors, Python 3.10+, Milestones deduplicated, verification loop added as Quick Start step 4. |
+| 6 | `roadmap.md` | done | Deleted — `97a7a1f`. |
+| 7 | `README.md` | done | Rewritten to match the current model — `97a7a1f`. |
 | 8 | `axioms.md` | done | Retired to `docs/ignore/retired`. Replaced by `rulebook.md`. |
 | 9 | `adr.md` | open | Retired; move to ignored `docs/ignore/` and remove from Git tracking. |
 | 10 | `devlog.md` | done | Byte-identical to backup (13 801 B, same mtime). Untouched, as required. |
@@ -144,8 +145,8 @@ Status: `done` · `active` · `open` · `blocked`
 | 12 | `design_recap.md` | done | Retired. Sections 1-3, 5 already in `working_notes.md`; 7 in `zoning_guidelines.md`; 6, 8, 9 dropped as covered by `roadmap.md`; 4 dropped with Q3. |
 | 13 | `graphic_strategy.md` | done | Retired. §1 decision already ADR 5; viewBox guarantee -> `zoning_guidelines.md`; pipeline diagram dropped (superseded by rulebook R.5). Phase B covered by roadmap P2 + geometry added. Phase C -> `working_notes.md`. §5 split: two items covered by roadmap P2, `data-kind` hook added there, multi-floor group -> `zoning_guidelines.md`, verification loop -> README step 4. |
 | 14 | `rulebook.md` | active | Model refinement checkpointed in `fcedb6a`; Cluster 3 graph model overhauled in `6aacf4d`. |
-| 15 | `system-design.md` | active | Opening description, Modeling pipeline, Costs sections settled in `fee1077`. Representations section dropped and cost wording fixed (F11/F13/F14) in `c26df5c`. Still to receive harvest from roadmap/working_notes/zoning_guidelines. |
-| 16 | `implementation-plan.md` | active | Opening, Phases, and Phase 1 detail restructured; zoning_guidelines migrated in. Cost-assignment phase, SVG contract, validator, and Future direction fixed (F12/F15) in `c26df5c`. Still to harvest roadmap/working_notes. |
+| 15 | `system-design.md` | active | Settled in `fee1077`; F11/F13/F14 fixed in `c26df5c`; pipeline steps 3-4 split in `97a7a1f`. Still to harvest working_notes. |
+| 16 | `implementation-plan.md` | active | Restructured in `c282fb9`; F12/F15 fixed in `c26df5c`; Phase 2/3 and heading nesting fixed in `97a7a1f`. Still to harvest working_notes. |
 
 ## Open items
 
@@ -175,15 +176,15 @@ Status: `done` · `active` · `open` · `blocked`
 
 | # | Flag | Where |
 | --- | --- | --- |
-| F10 | ~~zoning_guidelines side resolved — `axioms.md` citation and `aussen`-reserved-zone-id content struck with the rest of the Data Model table (`30bfbb3`)~~. `roadmap.md` and `working_notes.md` still cite retired `axioms.md` | roadmap, working_notes |
-| F9 | `docs/references/docs_guidelines.md` has no rule for code naming; `edges` not `connections` has no home outside roadmap Phase 2 | docs_guidelines |
+| F10 | ~~zoning_guidelines side resolved — `axioms.md` citation and `aussen`-reserved-zone-id content struck with the rest of the Data Model table (`30bfbb3`)~~. ~~roadmap side resolved~~. `working_notes.md` still cites retired `axioms.md` | working_notes |
+| F9 | `docs/references/docs_guidelines.md` has no rule for code naming; `edges` not `connections` has no home at all now that `roadmap.md` is deleted | docs_guidelines |
 | F1 | ~~Resolved — the axioms 17–18 reading is discarded. A doorless portal from splitting a zone is an ordinary portal~~ | glossary |
 | F2 | "Rooms are never crossed" contradicts axioms 8/19 | working_notes recap entry |
 ~~| F3 | Resolved — the whole Authoring Contract section (including rule 5) was struck (`30bfbb3`) | zoning_guidelines |~~
 | F4 | Not resolved — "segment" is the term, but `working_notes.md` still uses "path" throughout, including a whole element-table row (Elements section, ~line 130-220) | working_notes |
 | F5 | Obstacle rule conflict: glossary "booths → obstacle always" vs working_notes "designer's decision, case by case" | glossary, working_notes, zoning_guidelines |
-| F6 | `validate_plan.py` not in repo; roadmap path `docs/ignore/files_260911/` does not exist | roadmap |
-| F7 | Roadmap P2 says `start_point` is orphaned; code no longer is | roadmap |
+~~| F6 | Moot — `roadmap.md` deleted | roadmap |~~
+~~| F7 | Moot — `roadmap.md` deleted | roadmap |~~
 | F8 | Recap "This is not places linked by corridors" left without its positive counterpart after the purge | working_notes |
 ~~| F11 | Resolved — system-design §2 (Representations) removed entirely; no more conflicting authored/derived listing to disagree with §1 | system-design |~~
 ~~| F12 | Resolved — Phase 1 prose's "movement zones and movement lines" clause removed; the pair moved into the Phase 1 contract bullet list alongside zones/portals/obstacles | implementation-plan |~~
@@ -200,11 +201,11 @@ Status: `done` · `active` · `open` · `blocked`
 ~~| E3 | zoning_guidelines side resolved — the "Floor plan work" copy struck; Phase A's copy is now the only one left in this file (`3c266ca`) | zoning_guidelines |~~
 ~~| E4 | zoning_guidelines side resolved — both the inline sentence and the standalone "Duplicate portals" section struck (`30bfbb3`) | zoning_guidelines |~~
 | E5 | "To purge" section still lists wrong framings and retired docs by name | working_notes |
-| E6 | 13 relative links remain (README 2, roadmap 11), against the new rule | README, roadmap |
+~~| E6 | Resolved — README has no relative links left (verified); roadmap's 11 went with the file | README, roadmap |~~
 | E7 | Options table row says "deferred to Phase C" — only valid if Phase C lands (see D8) | working_notes |
-| E8 | Build order dropped, but recap and roadmap disagree on multi-floor vs guidance order | roadmap |
-| E9 | Purge wording edits to verify: "Used for the graphs", roadmap P2 dropped "at the graph layer", "encodes the zones and portals" | research_notes, roadmap, zoning_guidelines |
-| E10 | Roadmap open questions 1–2 reverted to recap wording — verify | roadmap |
+~~| E8 | Moot — `roadmap.md` deleted | roadmap |~~
+| E9 | Purge wording edit to verify: "Used for the graphs" — roadmap and zoning_guidelines sides both moot/deleted | research_notes |
+~~| E10 | Moot — `roadmap.md` deleted | roadmap |~~
 | E11 | Recap entry dated to month only ("2026-09"); evidence points to 09-10/11 | working_notes |
 | E12 | Phase A Rationale and Residual risk migrated though not in the mapping | zoning_guidelines |
 | E13 | Closing fragment "Reading the source: a door is a line plus a quarter-circle arc" belongs to no section | implementation-plan |
