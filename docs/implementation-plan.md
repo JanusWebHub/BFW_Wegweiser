@@ -6,11 +6,11 @@ The rulebook and system-design define what the system is and must be. This docum
 
 Ordered by dependency: each phase builds on the previous phase's output.
 
-1. Floor plan and connectivity graph. Zoning produces the simplified floor plan, authored as a semantic SVG including movement zones and movement lines, and the connectivity graph, together. The SVG satisfies the implementation contract. Validated by its own validator script, checking SVG contract compliance and graph connectivity. Minimal smoke test only; full coverage in Phase 4.
+1. Floor plan and connectivity graph. Zoning produces the simplified floor plan, authored as a semantic SVG, and the connectivity graph, together. The SVG satisfies the implementation contract. Validated by its own validator script, checking SVG contract compliance and graph connectivity. Minimal smoke test only; full coverage in Phase 4.
 
-2. Routing graph and compiler. Parse the authored asset, derive the zone index and segment list, construct the routing graph from the connectivity graph using movement geometry, including segment distances, and serialize the resulting routing data for the browser client. Derived representations are not authored separately. Minimal smoke test only; full coverage in Phase 4.
+2. Routing graph and compiler. Parse the authored asset, derive the zone index and segment list, construct the routing graph from the connectivity graph using movement geometry, including segment distances and special costs assigned to states and segments, and serialize the resulting routing data for the browser client. Minimal smoke test only; full coverage in Phase 4.
 
-3. Zone queries and route search. Implement queries between zones, directed states, canonical alternating routes, and lowest-cost search, including special costs assigned to states and segments. Minimal smoke test only; full coverage in Phase 4.
+3. Zone queries and route search. Implement queries between zones, directed states, canonical alternating routes, and lowest-cost search. Minimal smoke test only; full coverage in Phase 4.
 
 4. Test suite. Review the minimal tests written during Phases 1-3 against the rulebook's constraints, close any gaps, and remove any duplication or contradiction between checks.
 
@@ -19,6 +19,7 @@ Ordered by dependency: each phase builds on the previous phase's output.
 Distant, surface-level ideas, not yet detailed to the level of the phases above.
 
 - Facility coverage. Extend the proven asset and compiler pipeline to the complete building.
+- Adjacency graph. Interpret architectural plans into a machine-readable adjacency graph.
 
 ## Phase 1: Floor plan and connectivity graph
 
@@ -27,6 +28,7 @@ Distant, surface-level ideas, not yet detailed to the level of the phases above.
 The SVG representation has:
 
 - semantic groups for zones, portals, and obstacles
+- movement zones and movement lines
 - absolute coordinates in the shared `viewBox`; the plan and the route overlay share one frame of reference, so they cannot drift apart
 - stable ids for zones and portals
 - portals that reference exactly two zones
@@ -43,7 +45,7 @@ The SVG representation has:
 A validator script:
 
 - checks the authored SVG against the contract above
-- verifies zone convexity as a proxy for portal reachability within a zone
+- verifies that every zone's portals are mutually reachable without obstruction
 - verifies no overlapping zones
 - verifies connectivity of the resulting graph
 

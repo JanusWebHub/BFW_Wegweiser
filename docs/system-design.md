@@ -15,29 +15,6 @@ The system implements a human-in-the-loop, computer-assisted modeling pipeline w
 4. Routing data is serialized for the browser client.
 5. The browser renders routes on the building plan.
 
-## 2. Representations
+## 2. Costs
 
-### 2.1 Authored representation
-
-The authored floor-plan asset is a semantic SVG used to encode the model’s zone and portal structure.
-
-It contains:
-
-- zones
-- portals
-- obstacles
-- the exterior zone
-
-### 2.2 Derived representations
-
-The following are derived from the authored representation rather than authored directly:
-
-- zone index
-- segment list
-- connectivity graph
-- routing graph
-- serialized routing data (computed)
-
-## 3. Costs
-
-A special cost is any factor beyond distance that makes a traversal harder or easier for a person, for example a turn, a door, or a floor change. These factors and their weights are a tuning decision, made when the routing graph is constructed from the connectivity graph.
+A special cost is any factor beyond distance that makes a state or segment harder or easier for a person, for example a turn, a door, or a floor change. These factors and their weights are a tuning decision, made when the routing graph is constructed from the connectivity graph.
