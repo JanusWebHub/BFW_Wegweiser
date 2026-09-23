@@ -10,7 +10,7 @@ Read this section first in any new conversation — it stands in for re-explaini
 
 `rulebook.md` (canon, already overhauled to the new model) → `system-design.md` (in-progress technical spec of that model, being drafted now) → `implementation-plan.md` (future-facing, rewritten after system-design is done) → `devlog.md` (past-facing, immutable historical record — hands off).
 
-Source material being harvested and retired to archive: `roadmap.md` deleted; `working_notes.md` still pending; `zoning_guidelines.md` fully harvested and deleted. `adr.md` retired.
+Source material being harvested and retired to archive: `roadmap.md`, `working_notes.md`, `zoning_guidelines.md` — all deleted, fully harvested or confirmed to hold nothing further needed. `adr.md` retired.
 
 Critical distinction: the working code/program files still implement the *old* model and are out of compliance with the new rulebook/system-design. Expected, untouched for now — code changes come last, after docs are settled.
 
@@ -126,6 +126,7 @@ Status: `done` · `active` · `open` · `blocked`
 - `zoning_guidelines.md` deleted; implementation-plan.md Phases and Phase 1 detail restructured — `c282fb9`.
 - system-design/implementation-plan consistency flags F11-F15 resolved; adjacency graph added to implementation-plan Future direction — `c26df5c`.
 - README.md rewritten; system-design/implementation-plan pipeline split; roadmap.md deleted — `97a7a1f`.
+- `working_notes.md` trimmed to two sections (kept nothing else needed) — `cb2aad8`; deleted entirely, everything else already outdated or already integrated. `962da60`.
 
 ### Documents
 
@@ -135,7 +136,7 @@ Status: `done` · `active` · `open` · `blocked`
 | 2 | `docs_guidelines.md` | done | Line-endings rule added (CRLF working tree, LF repo, `.gitattributes`, repo-wide). Converted to CRLF. |
 | 3 | `research_notes.md` | done | Poincare removed, row 6 reworded, sections merged, project refs stripped, intro rewritten. |
 | 4 | `zoning_guidelines.md` | done | Deleted; Phase A migrated to implementation-plan.md. |
-| 5 | `working_notes.md` | open | |
+| 5 | `working_notes.md` | done | Deleted — `962da60`. Nothing left to harvest; remainder was outdated terminology or already integrated into rulebook/system-design/implementation-plan. |
 | 6 | `roadmap.md` | done | Deleted — `97a7a1f`. |
 | 7 | `README.md` | done | Rewritten to match the current model — `97a7a1f`. |
 | 8 | `axioms.md` | done | Retired to `docs/ignore/retired`. Replaced by `rulebook.md`. |
@@ -145,8 +146,8 @@ Status: `done` · `active` · `open` · `blocked`
 | 12 | `design_recap.md` | done | Retired. Sections 1-3, 5 already in `working_notes.md`; 7 in `zoning_guidelines.md`; 6, 8, 9 dropped as covered by `roadmap.md`; 4 dropped with Q3. |
 | 13 | `graphic_strategy.md` | done | Retired. §1 decision already ADR 5; viewBox guarantee -> `zoning_guidelines.md`; pipeline diagram dropped (superseded by rulebook R.5). Phase B covered by roadmap P2 + geometry added. Phase C -> `working_notes.md`. §5 split: two items covered by roadmap P2, `data-kind` hook added there, multi-floor group -> `zoning_guidelines.md`, verification loop -> README step 4. |
 | 14 | `rulebook.md` | active | Model refinement checkpointed in `fcedb6a`; Cluster 3 graph model overhauled in `6aacf4d`. |
-| 15 | `system-design.md` | active | Settled in `fee1077`; F11/F13/F14 fixed in `c26df5c`; pipeline steps 3-4 split in `97a7a1f`. Still to harvest working_notes. |
-| 16 | `implementation-plan.md` | active | Restructured in `c282fb9`; F12/F15 fixed in `c26df5c`; Phase 2/3 and heading nesting fixed in `97a7a1f`. Still to harvest working_notes. |
+| 15 | `system-design.md` | active | Settled in `fee1077`; F11/F13/F14 fixed in `c26df5c`; pipeline steps 3-4 split in `97a7a1f`. Harvest complete — nothing in working_notes.md was needed. |
+| 16 | `implementation-plan.md` | active | Restructured in `c282fb9`; F12/F15 fixed in `c26df5c`; Phase 2/3 and heading nesting fixed in `97a7a1f`; E13 folded into Authoring procedure in `962da60`. Harvest complete — nothing in working_notes.md was needed. |
 
 ## Open items
 
@@ -176,16 +177,16 @@ Status: `done` · `active` · `open` · `blocked`
 
 | # | Flag | Where |
 | --- | --- | --- |
-| F10 | ~~zoning_guidelines side resolved — `axioms.md` citation and `aussen`-reserved-zone-id content struck with the rest of the Data Model table (`30bfbb3`)~~. ~~roadmap side resolved~~. `working_notes.md` still cites retired `axioms.md` | working_notes |
-| F9 | `docs/references/docs_guidelines.md` has no rule for code naming; `edges` not `connections` has no home at all now that `roadmap.md` is deleted | docs_guidelines |
+~~| F10 | zoning_guidelines side resolved — `axioms.md` citation and `aussen`-reserved-zone-id content struck with the rest of the Data Model table (`30bfbb3`). roadmap side resolved. `working_notes.md` deleted, its citation moot | working_notes |~~
+~~| F9 | `docs/references/docs_guidelines.md` has no rule for code naming; `edges` not `connections` has no home at all now that `roadmap.md` is deleted | docs_guidelines |~~
 | F1 | ~~Resolved — the axioms 17–18 reading is discarded. A doorless portal from splitting a zone is an ordinary portal~~ | glossary |
-| F2 | "Rooms are never crossed" contradicts axioms 8/19 | working_notes recap entry |
+~~| F2 | "Rooms are never crossed" contradicts axioms 8/19 — moot, the Design session recap section was deleted | working_notes recap entry |~~
 ~~| F3 | Resolved — the whole Authoring Contract section (including rule 5) was struck (`30bfbb3`) | zoning_guidelines |~~
-| F4 | Not resolved — "segment" is the term, but `working_notes.md` still uses "path" throughout, including a whole element-table row (Elements section, ~line 130-220) | working_notes |
-| F5 | Obstacle rule conflict: glossary "booths → obstacle always" vs working_notes "designer's decision, case by case" | glossary, working_notes, zoning_guidelines |
+~~| F4 | Not resolved — "segment" is the term, but `working_notes.md` still uses "path" throughout — moot, `working_notes.md` deleted | working_notes |~~
+~~| F5 | Obstacle rule conflict: glossary "booths → obstacle always" vs working_notes "designer's decision, case by case" — moot, glossary and working_notes both gone | glossary, working_notes, zoning_guidelines |~~
 ~~| F6 | Moot — `roadmap.md` deleted | roadmap |~~
 ~~| F7 | Moot — `roadmap.md` deleted | roadmap |~~
-| F8 | Recap "This is not places linked by corridors" left without its positive counterpart after the purge | working_notes |
+~~| F8 | Recap "This is not places linked by corridors" left without its positive counterpart after the purge — moot, section deleted | working_notes |~~
 ~~| F11 | Resolved — system-design §2 (Representations) removed entirely; no more conflicting authored/derived listing to disagree with §1 | system-design |~~
 ~~| F12 | Resolved — Phase 1 prose's "movement zones and movement lines" clause removed; the pair moved into the Phase 1 contract bullet list alongside zones/portals/obstacles | implementation-plan |~~
 ~~| F13 | Resolved — §2 now says "a state or a segment", matching the rulebook's split | system-design |~~
@@ -196,19 +197,19 @@ Status: `done` · `active` · `open` · `blocked`
 
 | # | Flag | Where |
 | --- | --- | --- |
-| E1 | Intro describes only the convergences table; doc now also holds graph theory notes and node/edge paragraph | research_notes |
+~~| E1 | Resolved — intro rewritten to mention IndoorGML and graph theory terms alongside the derived/established table | research_notes |~~
 ~~| E2 | Resolved — both copies (contract rule 3 and the standalone Naming Conventions section) struck (`30bfbb3`) | zoning_guidelines |~~
 ~~| E3 | zoning_guidelines side resolved — the "Floor plan work" copy struck; Phase A's copy is now the only one left in this file (`3c266ca`) | zoning_guidelines |~~
 ~~| E4 | zoning_guidelines side resolved — both the inline sentence and the standalone "Duplicate portals" section struck (`30bfbb3`) | zoning_guidelines |~~
-| E5 | "To purge" section still lists wrong framings and retired docs by name | working_notes |
+~~| E5 | "To purge" section still lists wrong framings and retired docs by name — moot, section deleted | working_notes |~~
 ~~| E6 | Resolved — README has no relative links left (verified); roadmap's 11 went with the file | README, roadmap |~~
-| E7 | Options table row says "deferred to Phase C" — only valid if Phase C lands (see D8) | working_notes |
+~~| E7 | Options table row says "deferred to Phase C" — only valid if Phase C lands (see D8) — moot, section deleted | working_notes |~~
 ~~| E8 | Moot — `roadmap.md` deleted | roadmap |~~
-| E9 | Purge wording edit to verify: "Used for the graphs" — roadmap and zoning_guidelines sides both moot/deleted | research_notes |
+~~| E9 | Resolved — phrase "Used for the graphs" not present in current research_notes.md; nothing left to verify | research_notes |~~
 ~~| E10 | Moot — `roadmap.md` deleted | roadmap |~~
-| E11 | Recap entry dated to month only ("2026-09"); evidence points to 09-10/11 | working_notes |
-| E12 | Phase A Rationale and Residual risk migrated though not in the mapping | zoning_guidelines |
-| E13 | Closing fragment "Reading the source: a door is a line plus a quarter-circle arc" belongs to no section | implementation-plan |
+~~| E11 | Recap entry dated to month only ("2026-09"); evidence points to 09-10/11 — moot, section deleted | working_notes |~~
+~~| E12 | Phase A Rationale and Residual risk migrated though not in the mapping — moot, zoning_guidelines.md deleted | zoning_guidelines |~~
+~~| E13 | Resolved — folded into Authoring procedure step 3, the verification-against-source step | implementation-plan |~~
 
 ## Completion
 
