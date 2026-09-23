@@ -8,15 +8,7 @@ Read this section first in any new conversation — it stands in for re-explaini
 
 `rulebook.md` (canon, already overhauled to the new model) → `system-design.md` (in-progress technical spec of that model, being drafted now) → `implementation-plan.md` (future-facing, rewritten after system-design is done) → `devlog.md` (past-facing, immutable historical record — hands off).
 
-~~Source material being harvested and retired to archive: `roadmap.md`, `working_notes.md`, `zoning_guidelines.md` — all deleted, fully harvested or confirmed to hold nothing further needed. `adr.md` retired.~~
-
-Critical distinction: the working code/program files still implement the *old* model and are out of compliance with the new rulebook/system-design. Expected, untouched for now — code changes come last, after docs are settled. only then bring code into compliance with rulebook/system-design.
-
-~~Sequencing: (1) docs cleanup [current phase] — finish `system-design.md`, then revise `implementation-plan.md`, then archive the retired docs; (2) ~~
-
-~~`docs/references/` deleted entirely: `docs_guidelines.md`, `funnel_algorithm.md`, `funnel.svg`, `research_notes.md` archived out of git tracking.~~
-
-~~East-wing prototype (`feature/east-wing-prototype`): working zone/segment derivation and route search exist, but zones/portals are hardcoded, not parsed from the SVG, and terminology (e.g. "walls") isn't rulebook-aligned. Reference for what's reusable vs. new work per Phase.~~
+Critical distinction: the working code/program files still implement the *old* model and are out of compliance with the new rulebook/system-design. Expected, untouched for now — code changes come only after branch merging is fully complete.
 
 ### Branch picture (as of 2026-09-23)
 
@@ -36,10 +28,6 @@ Not yet settled which one governs; both recorded until decided.
 
 Both alternatives agree on: `0de4f03` never enters final ancestry; east-wing rebases (not merges as-is) onto a post-restructuring `main`; east-wing gets reworked to the new model after landing.
 
-### FLOORFOX migration — distinctly separate, far downstream
-
-Not part of the docs restructuring or branch-merge work above. Only relevant after all of the above (docs cleanup, code brought into compliance, branch consolidation) is complete: remove the JanusWebHub remote entirely, then add `FLOORFOX/BFW_Wegweiser` as the final remote, then push finished history. Do not conflate this with the nearer-term branch/merge sequencing.
-
 ## Control
 
 ### Made Decisions
@@ -53,8 +41,6 @@ Not part of the docs restructuring or branch-merge work above. Only relevant aft
 - The obsolete commit `0de4f03` must not remain in the final `main` or feature-branch ancestry.
 - The local `backup-before-reset` branch may be deleted after verification.
 - Final documentation files are committed directly on `main`; the temporary branch is then deleted.
-~~- `adr.md` is retired. Preserve a local copy under `docs/ignore/` and remove it from Git tracking.~~
-~~- The canonical filenames remain `rulebook.md` and `devlog.md`; `model-specification.md` and `development-log.md` are not adopted as replacements.~~
 - The JanusWebHub remote will be removed entirely at the end.
 - `FLOORFOX/BFW_Wegweiser` becomes the final remote only after the migration and feature work are complete.
 
@@ -74,36 +60,14 @@ Not part of the docs restructuring or branch-merge work above. Only relevant aft
 
 ## Status
 
-### Overall status
+| Document | Status | Note |
+| --- | --- | --- |
+| `README.md` | done | Rewritten to match the current model — `97a7a1f`. |
+| `rulebook.md` | active | Renamed and checkpointed in `a2d9648`; definitions revised in `f27143c`; model refined (Cluster 1/2 wording, Cluster 4 query/state/segment/route/cost/search) in `fcedb6a`; Cluster 3 graph model and derivation sequence overhauled in `6aacf4d`. |
+| `system-design.md` | active | Settled in `fee1077`; F11/F13/F14 fixed in `c26df5c`; pipeline steps 3-4 split in `97a7a1f`. Harvest complete — nothing in `working_notes.md` was needed. |
+| `implementation-plan.md` | active | Restructured in `c282fb9`; F12/F15 fixed in `c26df5c`; Phase 2/3 and heading nesting fixed in `97a7a1f`; E13 folded into Authoring procedure in `962da60`. Harvest complete — nothing in `working_notes.md` was needed. |
 
-Status: `done` · `active` · `open` · `blocked`
-
-### Live status
-
-- Rulebook checkpoint — renamed to `rulebook.md` in `a2d9648`.
-- Rulebook definition refinement — opening, 1.1-1.3, 1.5, and 2.4 revised; the routing-variant rule moved to 3.4 in `f27143c` after tracker update `90a83c1`.
-- Rulebook model refinement — Cluster 1/2 wording and Cluster 4 query, state, segment, route, cost, and search structure revised in `fcedb6a` after tracker update `f6fa1b3`.
-- Cluster 3 graph model and derivation sequence overhauled in `rulebook.md` in `6aacf4d`.
-- Filename decision reversed — retain `rulebook.md` and `devlog.md`.
-- system-design.md / implementation-plan.md refined — see Documents #15/#16. Committed as `fee1077`.
-- `zoning_guidelines.md` deleted; implementation-plan.md Phases and Phase 1 detail restructured — `c282fb9`.
-- system-design/implementation-plan consistency flags F11-F15 resolved; adjacency graph added to implementation-plan Future direction — `c26df5c`.
-- README.md rewritten; system-design/implementation-plan pipeline split; roadmap.md deleted — `97a7a1f`.
-- `working_notes.md` trimmed to two sections (kept nothing else needed) — `cb2aad8`; deleted entirely, everything else already outdated or already integrated. `962da60`.
-- `docs/references/` deleted entirely — `docs_guidelines.md`, `research_notes.md`, `funnel_algorithm.md`, `funnel.svg` archived out of git tracking — `d14a3cd`.
-
-### Documents
-
-| # | Document | Status | Note |
-| --- | --- | --- | --- |
-| 7 | `README.md` | done | Rewritten to match the current model — `97a7a1f`. |
-| 14 | `rulebook.md` | active | Model refinement checkpointed in `fcedb6a`; Cluster 3 graph model overhauled in `6aacf4d`. |
-| 15 | `system-design.md` | active | Settled in `fee1077`; F11/F13/F14 fixed in `c26df5c`; pipeline steps 3-4 split in `97a7a1f`. Harvest complete — nothing in working_notes.md was needed. |
-| 16 | `implementation-plan.md` | active | Restructured in `c282fb9`; F12/F15 fixed in `c26df5c`; Phase 2/3 and heading nesting fixed in `97a7a1f`; E13 folded into Authoring procedure in `962da60`. Harvest complete — nothing in working_notes.md was needed. |
-
-## Completion
-
-### Final wrap-up
+## Final wrap-up
 
 | # | Item | Status |
 | --- | --- | --- |
@@ -112,9 +76,4 @@ Status: `done` · `active` · `open` · `blocked`
 | W3 | Line endings: convert files edited in chat to CRLF | open |
 | W4 | After the feature merge, remove the old remote, add FLOORFOX, and push the finished history | open |
 | W5 | Delete branch `backup-before-reset` once satisfied | open |
-
-### Housekeeping
-
-| # | Item | Status |
-| --- | --- | --- |
-| H2 | `.gitattributes` with `* text=auto` at project root | open — own commit; renormalises the whole repo once |
+| W6 | `.gitattributes` with `* text=auto` at project root | open — own commit; renormalises the whole repo once |
