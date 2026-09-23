@@ -124,6 +124,7 @@ Status: `done` · `active` · `open` · `blocked`
 - `zoning_guidelines.md` struck — see Documents #4/#16. Catch-up entry; `6a4586d`/`abfc0fd` too small to log individually.
 - `zoning_guidelines.md` fully struck, nothing left unstruck — `1286c29`. Ready for archive.
 - `zoning_guidelines.md` deleted; implementation-plan.md Phases and Phase 1 detail restructured — `c282fb9`.
+- system-design/implementation-plan consistency flags F11-F15 resolved; adjacency graph added to implementation-plan Future direction — `c26df5c`.
 
 ### Documents
 
@@ -143,8 +144,8 @@ Status: `done` · `active` · `open` · `blocked`
 | 12 | `design_recap.md` | done | Retired. Sections 1-3, 5 already in `working_notes.md`; 7 in `zoning_guidelines.md`; 6, 8, 9 dropped as covered by `roadmap.md`; 4 dropped with Q3. |
 | 13 | `graphic_strategy.md` | done | Retired. §1 decision already ADR 5; viewBox guarantee -> `zoning_guidelines.md`; pipeline diagram dropped (superseded by rulebook R.5). Phase B covered by roadmap P2 + geometry added. Phase C -> `working_notes.md`. §5 split: two items covered by roadmap P2, `data-kind` hook added there, multi-floor group -> `zoning_guidelines.md`, verification loop -> README step 4. |
 | 14 | `rulebook.md` | active | Model refinement checkpointed in `fcedb6a`; Cluster 3 graph model overhauled in `6aacf4d`. |
-| 15 | `system-design.md` | active | Opening description, Modeling pipeline, Representations, Costs sections settled in `fee1077`. Still to receive harvest from roadmap/working_notes/zoning_guidelines. |
-| 16 | `implementation-plan.md` | active | Opening, Phases, and Phase 1 detail restructured; zoning_guidelines migrated in. Still to harvest roadmap/working_notes. |
+| 15 | `system-design.md` | active | Opening description, Modeling pipeline, Costs sections settled in `fee1077`. Representations section dropped and cost wording fixed (F11/F13/F14) in `c26df5c`. Still to receive harvest from roadmap/working_notes/zoning_guidelines. |
+| 16 | `implementation-plan.md` | active | Opening, Phases, and Phase 1 detail restructured; zoning_guidelines migrated in. Cost-assignment phase, SVG contract, validator, and Future direction fixed (F12/F15) in `c26df5c`. Still to harvest roadmap/working_notes. |
 
 ## Open items
 
@@ -184,11 +185,11 @@ Status: `done` · `active` · `open` · `blocked`
 | F6 | `validate_plan.py` not in repo; roadmap path `docs/ignore/files_260911/` does not exist | roadmap |
 | F7 | Roadmap P2 says `start_point` is orphaned; code no longer is | roadmap |
 | F8 | Recap "This is not places linked by corridors" left without its positive counterpart after the purge | working_notes |
-| F11 | §1 step 2 says zoning produces the connectivity graph, §2.2 lists it as derived | system-design |
-| F12 | SVG contents listed three times, three memberships: §2.1, Phase 1 prose, Phase 1 contract | system-design, implementation-plan |
-| F13 | §3 says "a traversal", collapsing the rulebook's split of costs across states and segments | system-design |
-| F14 | Adjacency graph is produced at §1 step 1 but appears in neither §2 list | system-design |
-| F15 | Convexity proxy is stricter than rulebook §3.2 requires, and is stated only as a validator bullet | implementation-plan |
+~~| F11 | Resolved — system-design §2 (Representations) removed entirely; no more conflicting authored/derived listing to disagree with §1 | system-design |~~
+~~| F12 | Resolved — Phase 1 prose's "movement zones and movement lines" clause removed; the pair moved into the Phase 1 contract bullet list alongside zones/portals/obstacles | implementation-plan |~~
+~~| F13 | Resolved — §2 now says "a state or a segment", matching the rulebook's split | system-design |~~
+~~| F14 | Resolved — system-design §2 (Representations) removed entirely, along with the adjacency-graph omission | system-design |~~
+~~| F15 | Resolved — validator bullet now checks portal mutual reachability without obstruction directly, matching rulebook §3.2, instead of the stricter convexity proxy | implementation-plan |~~
 
 ### Flags — editorial
 
