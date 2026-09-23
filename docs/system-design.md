@@ -11,8 +11,8 @@ The system implements a human-in-the-loop, computer-assisted modeling pipeline w
 
 1. Architectural plans are interpreted into a machine-readable adjacency graph.
 2. The plans and adjacency graph are used in zoning to produce simplified floor plans and a connectivity graph.
-3. The routing graph is constructed from the connectivity graph.
-4. Routing data is serialized for the browser client.
+3. The routing graph is constructed from the connectivity graph and serialized.
+4. Routes are computed by searching the routing graph and serialized for the browser client.
 5. The browser renders routes on the building plan.
 
 ## 2. Costs

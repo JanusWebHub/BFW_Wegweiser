@@ -8,9 +8,9 @@ Ordered by dependency: each phase builds on the previous phase's output.
 
 1. Floor plan and connectivity graph. Zoning produces the simplified floor plan, authored as a semantic SVG, and the connectivity graph, together. The SVG satisfies the implementation contract. Validated by its own validator script, checking SVG contract compliance and graph connectivity. Minimal smoke test only; full coverage in Phase 4.
 
-2. Routing graph and compiler. Parse the authored asset, derive the zone index and segment list, construct the routing graph from the connectivity graph using movement geometry, including segment distances and special costs assigned to states and segments, and serialize the resulting routing data for the browser client. Minimal smoke test only; full coverage in Phase 4.
+2. Routing graph and compiler. Parse the authored asset, derive the zone index and segment list, construct the routing graph from the connectivity graph using movement geometry, including segment distances and special costs assigned to states and segments, and serialize the routing graph. Minimal smoke test only; full coverage in Phase 4.
 
-3. Zone queries and route search. Implement queries between zones, directed states, canonical alternating routes, and lowest-cost search. Minimal smoke test only; full coverage in Phase 4.
+3. Zone queries and route search. Implement queries between zones, directed states, canonical alternating routes, and lowest-cost search. Serialize the resulting routes for the browser client. Minimal smoke test only; full coverage in Phase 4.
 
 4. Test suite. Review the minimal tests written during Phases 1-3 against the rulebook's constraints, close any gaps, and remove any duplication or contradiction between checks.
 
@@ -21,9 +21,11 @@ Distant, surface-level ideas, not yet detailed to the level of the phases above.
 - Facility coverage. Extend the proven asset and compiler pipeline to the complete building.
 - Adjacency graph. Interpret architectural plans into a machine-readable adjacency graph.
 
-## Phase 1: Floor plan and connectivity graph
+## Phase details
 
-### Contract
+### Phase 1
+
+#### Contract
 
 The SVG representation has:
 
@@ -40,7 +42,7 @@ The SVG representation has:
 - the wing boundary made explicit as its own labeled zone
 - virtual boundaries drawn as dashed lines
 
-### Validator
+#### Validator
 
 A validator script:
 
@@ -49,7 +51,7 @@ A validator script:
 - verifies no overlapping zones
 - verifies connectivity of the resulting graph
 
-### Authoring procedure
+#### Authoring procedure
 
 1. Submit the source material with the contract above as explicit instructions.
 2. The model emits a schematic SVG: simplified geometry, wall thickness, door leaves, furniture and dimensions removed; zones and portals tagged.
@@ -57,3 +59,11 @@ A validator script:
 4. Correct by direct edit or by iterating with the model; normalize transforms, strip metadata and chrome.
 
 Reading the source: a door is a line plus a quarter-circle arc.
+
+### Phase 2
+
+- Serialize the routing graph.
+
+### Phase 4
+
+- Add parser tests, validator tests, a fixture SVG, and contract tests.
