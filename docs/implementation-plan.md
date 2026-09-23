@@ -55,10 +55,8 @@ A validator script:
 
 1. Submit the source material with the contract above as explicit instructions.
 2. The model emits a schematic SVG: simplified geometry, wall thickness, door leaves, furniture and dimensions removed; zones and portals tagged.
-3. Human verification against the source is the quality gate: room numbering, adjacency correctness, portal placement at real door positions, corridor connectivity, missing rooms.
+3. Human verification against the source is the quality gate: room numbering, adjacency correctness, portal placement at real door positions, corridor connectivity, missing rooms. Reading the source: a door is a line plus a quarter-circle arc.
 4. Correct by direct edit or by iterating with the model; normalize transforms, strip metadata and chrome.
-
-Reading the source: a door is a line plus a quarter-circle arc.
 
 ### Phase 2
 
