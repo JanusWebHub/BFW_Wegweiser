@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1580" height="900" viewBox="0 0 1580 900" role="img" aria-labelledby="title description">
+  <title id="title">BFW Erdgeschoss Ostflügel, vereinfachter Wegweiser-Plan</title>
+  <desc id="description">Semantischer Zonen- und Portalplan für den Wegweiser-Prototyp.</desc>
+  <defs>
+    <style>
+      .shell{fill:#fdfcfa;stroke:#2f2b26;stroke-width:12;stroke-linejoin:round}.room{fill:#e8e4dc;stroke:#9c958a;stroke-width:2}.service{fill:#ddd9d0;stroke:#8e887d;stroke-width:2}.circulation{fill:#dce9ef;stroke:#356f91;stroke-width:2}.hall{fill:#e9dfca;stroke:#9b783f;stroke-width:2}.stairs{fill:#d8ddd9;stroke:#65746e;stroke-width:2}.exterior{fill:none;stroke:#8b8275;stroke-width:2;stroke-dasharray:8 8}.obstacle{fill:#67625c;stroke:#2f2b26;stroke-width:3}.movement{fill:none;stroke:#0d6b63;stroke-width:7;stroke-linecap:round;stroke-linejoin:round;opacity:.7}.virtual{stroke:#0d6b63;stroke-width:5;stroke-dasharray:10 8}.portal{fill:#fff;stroke:#b4702a;stroke-width:4}.portal.virtual-portal{fill:#0d6b63;stroke:#fff}.label{fill:#2f2b26;font:600 22px 'Segoe UI',sans-serif;text-anchor:middle}.small{fill:#5f5a53;font:16px 'Segoe UI',sans-serif;text-anchor:middle}.portal-label{fill:#79501f;font:700 13px 'Segoe UI',sans-serif}.active-zone{filter:brightness(.92)}
+    </style>
+    <pattern id="stairs-pattern" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M0 16L16 0M8 16L16 8" stroke="#8f9994" stroke-width="2"/></pattern>
+  </defs>
+
+  <g id="shell">
+    <path class="shell" d="M130 0H1349V62H1424V240H1580V336H1424V435H1389V507H1261V540H811L689 755H612L406 396H0V170H130Z"/>
+  </g>
+
+  <g id="zones">
+    <rect id="zone-aussen" class="exterior" data-kind="exterior" data-label="Außenbereich" x="8" y="8" width="1564" height="884"/>
+    <polygon id="zone-E.61" class="room" data-kind="room" data-label="Werkstatt" points="227,0 509,0 509,170 130,170"/>
+    <rect id="zone-E.59b" class="room" data-kind="room" data-label="Büro" x="509" y="0" width="132" height="170"/>
+    <rect id="zone-E.59a" class="room" data-kind="room" data-label="Büro" x="641" y="0" width="132" height="170"/>
+    <polygon id="zone-E.59" class="room" data-kind="room" data-label="Besprechungsraum" points="773,0 1101,0 1004,170 773,170"/>
+    <polygon id="zone-elt" class="service" data-kind="service" data-label="Elektroverteilung" points="931,170 1004,170 964,240 931,240"/>
+    <path id="zone-E.52" class="hall" data-kind="hall" data-label="Eingangsbereich / Rezeption" fill-rule="evenodd" d="M1101 0H1349V62H1424V240H964L1004 170ZM1306 116H1412V220H1306Z"/>
+    <rect id="zone-wachdienst" class="room" data-kind="room" data-label="Wachdienst" x="1306" y="116" width="106" height="104"/>
+    <polygon id="zone-E.63" class="room" data-kind="room" data-label="Unterricht" points="130,170 354,170 354,396 0,396"/>
+    <rect id="zone-E.62" class="room" data-kind="room" data-label="Unterricht" x="354" y="234" width="121" height="162"/>
+    <rect id="zone-flur_west" class="circulation" data-kind="corridor" data-label="Flur West" x="354" y="170" width="323" height="64"/>
+    <polygon id="zone-atrium" class="hall" data-kind="hall" data-label="Flur Mitte / Atrium" points="677,170 931,170 931,240 964,240 875,396 770,396 677,234"/>
+    <polygon id="zone-flur_ost" class="circulation" data-kind="corridor" data-label="Flur Ost" points="964,240 1424,240 1424,336 908,336"/>
+    <rect id="zone-vr_h" class="service" data-kind="service" data-label="Vorraum WC Herren" x="475" y="234" width="75" height="44"/>
+    <rect id="zone-vr_d" class="service" data-kind="service" data-label="Vorraum WC Damen" x="550" y="234" width="75" height="44"/>
+    <rect id="zone-E.54b" class="service" data-kind="service" data-label="WC Herren" x="475" y="278" width="75" height="118"/>
+    <rect id="zone-E.54a" class="service" data-kind="service" data-label="WC Damen" x="550" y="278" width="75" height="118"/>
+    <polygon id="zone-TR9" class="stairs" data-kind="stairs" data-label="Treppenhaus" points="625,234 677,234 770,396 625,396"/>
+    <path d="M638 250H682L755 382H638Z" fill="url(#stairs-pattern)"/>
+    <polygon id="zone-E.58a" class="service" data-kind="service" data-label="Technik" points="500,396 613,396 635,435 520,435"/>
+    <polygon id="zone-R.58" class="room" data-kind="room" data-label="Konferenzraum" points="426,396 875,396 689,755 612,755"/>
+    <polygon id="zone-E.57" class="room" data-kind="room" data-label="Unterricht" points="908,336 1261,336 1261,507 811,507"/>
+    <polygon id="zone-E.56c" class="room" data-kind="room" data-label="Unterricht" points="1261,336 1333,336 1333,435 1389,435 1389,507 1261,507"/>
+    <rect id="zone-E.56b" class="room" data-kind="room" data-label="Unbekannt" x="1333" y="336" width="91" height="99"/>
+    <rect id="zone-anschluss" class="circulation" data-kind="corridor" data-label="Anschluss" x="1424" y="240" width="156" height="96"/>
+  </g>
+
+  <g id="obstacles">
+    <rect id="obstacle-reception" class="obstacle" data-zone="E.52" x="1115" y="100" width="92" height="52" rx="3"/>
+  </g>
+
+  <g id="movement-lines">
+    <path id="movement-flur_west" class="movement" data-zone="flur_west" d="M354 211L560 205L677 202"/>
+    <path id="movement-atrium" class="movement" data-zone="atrium" d="M677 202L820 285L936 288M820 285L828 396M820 285L947 240"/>
+    <path id="movement-flur_ost" class="movement" data-zone="flur_ost" d="M936 288H1424"/>
+    <path id="movement-E.52" class="movement" data-zone="E.52" d="M1107 240L1160 185L1240 180L1381 196M1240 180L1206 0"/>
+    <line class="virtual" x1="677" y1="170" x2="677" y2="234"/>
+    <line class="virtual" x1="931" y1="240" x2="964" y2="240"/>
+    <line class="virtual" x1="1424" y1="240" x2="1424" y2="336"/>
+  </g>
+
+  <g id="labels">
+    <text class="label" x="368" y="86">E.61</text><text class="small" x="368" y="112">Werkstatt</text>
+    <text class="label" x="575" y="85">E.59b</text><text class="label" x="707" y="85">E.59a</text><text class="label" x="871" y="85">E.59</text>
+    <text class="label" x="1188" y="76">E.52</text><text class="small" x="1188" y="98">Eingang / Rezeption</text>
+    <text class="small" x="1359" y="171">Wachdienst</text><text class="label" x="195" y="290">E.63</text><text class="label" x="414" y="320">E.62</text>
+    <text class="small" x="552" y="214">Flur West</text><text class="small" x="810" y="300">Atrium</text><text class="small" x="1180" y="297">Flur Ost</text>
+    <text class="small" x="512" y="258">VR H</text><text class="small" x="587" y="258">VR D</text><text class="label" x="512" y="342">E.54b</text><text class="label" x="587" y="342">E.54a</text>
+    <text class="small" x="665" y="337">TR9</text><text class="small" x="558" y="421">E.58a</text><text class="label" x="665" y="570">R.58</text>
+    <text class="label" x="1055" y="427">E.57</text><text class="label" x="1300" y="477">E.56c</text><text class="small" x="1376" y="390">E.56b</text><text class="small" x="1502" y="292">Anschluss</text>
+  </g>
+
+  <g id="portals">
+    <circle id="portal-p01" class="portal" data-a="E.63" data-b="flur_west" cx="354" cy="211" r="8"/><circle id="portal-p02" class="portal" data-a="E.61" data-b="flur_west" cx="440" cy="170" r="8"/>
+    <circle id="portal-p03" class="portal" data-a="E.59b" data-b="flur_west" cx="533" cy="170" r="8"/><circle id="portal-p04" class="portal" data-a="E.62" data-b="flur_west" cx="453" cy="234" r="8"/>
+    <circle id="portal-p05" class="portal" data-a="vr_h" data-b="flur_west" cx="500" cy="234" r="8"/><circle id="portal-p06" class="portal" data-a="vr_d" data-b="flur_west" cx="600" cy="234" r="8"/>
+    <circle id="portal-p07" class="portal" data-a="TR9" data-b="flur_west" cx="625" cy="234" r="8"/><circle id="portal-p08" class="portal virtual-portal" data-a="flur_west" data-b="atrium" cx="677" cy="202" r="9"/>
+    <circle id="portal-p09" class="portal" data-a="E.59a" data-b="atrium" cx="688" cy="170" r="8"/><circle id="portal-p11" class="portal" data-a="E.59" data-b="atrium" cx="855" cy="170" r="8"/>
+    <circle id="portal-p13" class="portal" data-a="R.58" data-b="atrium" cx="828" cy="396" r="8"/><circle id="portal-p14" class="portal" data-a="elt" data-b="atrium" cx="947" cy="240" r="8"/>
+    <circle id="portal-p15" class="portal virtual-portal" data-a="atrium" data-b="flur_ost" cx="936" cy="288" r="9"/><circle id="portal-p16" class="portal" data-a="E.52" data-b="flur_ost" cx="1107" cy="240" r="8"/>
+    <circle id="portal-p18" class="portal" data-a="E.57" data-b="flur_ost" cx="1096" cy="336" r="8"/><circle id="portal-p19" class="portal" data-a="E.56c" data-b="flur_ost" cx="1277" cy="336" r="8"/>
+    <circle id="portal-p20" class="portal" data-a="E.56b" data-b="flur_ost" cx="1373" cy="336" r="8"/><circle id="portal-p21" class="portal virtual-portal" data-a="flur_ost" data-b="anschluss" cx="1424" cy="288" r="9"/>
+    <circle id="portal-p22" class="portal" data-a="wachdienst" data-b="E.52" cx="1381" cy="196" r="8"/><circle id="portal-p24" class="portal" data-a="vr_h" data-b="E.54b" cx="495" cy="278" r="8"/>
+    <circle id="portal-p25" class="portal" data-a="vr_d" data-b="E.54a" cx="600" cy="278" r="8"/><circle id="portal-p26" class="portal" data-a="E.58a" data-b="R.58" cx="582" cy="396" r="8"/>
+    <circle id="portal-p23" class="portal" data-a="aussen" data-b="E.52" cx="1206" cy="0" r="8"/><circle id="portal-p27" class="portal" data-a="aussen" data-b="E.61" cx="435" cy="0" r="8"/>
+    <circle id="portal-p28" class="portal" data-a="aussen" data-b="E.63" cx="120" cy="186" r="8"/>
+  </g>
+</svg>

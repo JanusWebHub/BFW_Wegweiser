@@ -37,24 +37,55 @@ The repository adopts a two-tier architecture separating data preparation from p
    python -m unittest discover -s src
    ```
 
+## East-Wing Prototype
+
+The east-wing prototype follows the model in
+[docs/rulebook_sorted.md](docs/rulebook_sorted.md) and remains separate from the
+existing kiosk. Build its source database and precompute all ordered
+zone-to-zone routes:
+
+```powershell
+python src/build_database.py
+python src/calculate_routes.py
+```
+
+This writes `database.json` and `database_with_routes.json` at the repository
+root. Serve the repository root so the browser can load the routed database and
+the semantic floor-plan SVG:
+
+```powershell
+python -m http.server 8765
+```
+
+Open `http://localhost:8765/web/east_wing.html`.
+
 ## Workspace Layout
 
 ```text
 wegweiser/
 ├── .gitignore
 ├── README.md
+├── database.json
+├── database_with_routes.json
 ├── docs/
 │   ├── adr.md
 │   ├── devlog.md
+│   ├── rulebook_sorted.md
 │   └── roadmap.md
 ├── src/
+│   ├── build_database.py
+│   ├── calculate_routes.py
 │   ├── main.py
 │   └── test_main.py
 └── web/
     ├── assets/
+   │   ├── bfw-eg-ost.svg
     │   └── Grundriss_mit_Knotenpunkten.png
     ├── data.js
     ├── data.json
+   ├── east_wing.css
+   ├── east_wing.html
+   ├── east_wing.js
     ├── index.html
     ├── script.js
     └── style.css

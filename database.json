@@ -1,0 +1,3443 @@
+{
+  "meta": {
+    "schema_version": 1,
+    "model": "Wegweiser",
+    "floor": "EG Ost",
+    "coordinate_system": {
+      "view_box": [
+        0,
+        0,
+        1580,
+        900
+      ],
+      "unit": "svg-unit"
+    },
+    "svg_path": "web/assets/bfw-eg-ost.svg",
+    "rulebook": "docs/rulebook_sorted.md",
+    "cost_formula": "segment.distance + destination_state.special_cost"
+  },
+  "rooms": {
+    "circulation": {
+      "id": "circulation",
+      "label": "Flur und Atrium",
+      "zone_ids": [
+        "flur_west",
+        "atrium",
+        "flur_ost",
+        "anschluss"
+      ]
+    },
+    "E.61": {
+      "id": "E.61",
+      "label": "Werkstatt",
+      "zone_ids": [
+        "E.61"
+      ]
+    },
+    "E.59b": {
+      "id": "E.59b",
+      "label": "Büro",
+      "zone_ids": [
+        "E.59b"
+      ]
+    },
+    "E.59a": {
+      "id": "E.59a",
+      "label": "Büro",
+      "zone_ids": [
+        "E.59a"
+      ]
+    },
+    "E.59": {
+      "id": "E.59",
+      "label": "Besprechungsraum",
+      "zone_ids": [
+        "E.59"
+      ]
+    },
+    "elt": {
+      "id": "elt",
+      "label": "Elektroverteilung",
+      "zone_ids": [
+        "elt"
+      ]
+    },
+    "E.52": {
+      "id": "E.52",
+      "label": "Eingangsbereich / Rezeption",
+      "zone_ids": [
+        "E.52"
+      ]
+    },
+    "wachdienst": {
+      "id": "wachdienst",
+      "label": "Wachdienst",
+      "zone_ids": [
+        "wachdienst"
+      ]
+    },
+    "E.63": {
+      "id": "E.63",
+      "label": "Unterricht",
+      "zone_ids": [
+        "E.63"
+      ]
+    },
+    "E.62": {
+      "id": "E.62",
+      "label": "Unterricht",
+      "zone_ids": [
+        "E.62"
+      ]
+    },
+    "vr_h": {
+      "id": "vr_h",
+      "label": "Vorraum WC Herren",
+      "zone_ids": [
+        "vr_h"
+      ]
+    },
+    "vr_d": {
+      "id": "vr_d",
+      "label": "Vorraum WC Damen",
+      "zone_ids": [
+        "vr_d"
+      ]
+    },
+    "E.54b": {
+      "id": "E.54b",
+      "label": "WC Herren",
+      "zone_ids": [
+        "E.54b"
+      ]
+    },
+    "E.54a": {
+      "id": "E.54a",
+      "label": "WC Damen",
+      "zone_ids": [
+        "E.54a"
+      ]
+    },
+    "E.58a": {
+      "id": "E.58a",
+      "label": "Technik",
+      "zone_ids": [
+        "E.58a"
+      ]
+    },
+    "TR9": {
+      "id": "TR9",
+      "label": "Treppenhaus",
+      "zone_ids": [
+        "TR9"
+      ]
+    },
+    "R.58": {
+      "id": "R.58",
+      "label": "Konferenzraum",
+      "zone_ids": [
+        "R.58"
+      ]
+    },
+    "E.57": {
+      "id": "E.57",
+      "label": "Unterricht",
+      "zone_ids": [
+        "E.57"
+      ]
+    },
+    "E.56c": {
+      "id": "E.56c",
+      "label": "Unterricht",
+      "zone_ids": [
+        "E.56c"
+      ]
+    },
+    "E.56b": {
+      "id": "E.56b",
+      "label": "Unbekannt",
+      "zone_ids": [
+        "E.56b"
+      ]
+    },
+    "aussen": {
+      "id": "aussen",
+      "label": "Außenbereich",
+      "zone_ids": [
+        "aussen"
+      ]
+    }
+  },
+  "zones": {
+    "aussen": {
+      "id": "aussen",
+      "kind": "exterior",
+      "label": "Außenbereich",
+      "svg_id": "zone-aussen",
+      "movement_center": null
+    },
+    "E.61": {
+      "id": "E.61",
+      "kind": "room",
+      "label": "Werkstatt",
+      "svg_id": "zone-E.61",
+      "movement_center": [
+        370,
+        95
+      ]
+    },
+    "E.59b": {
+      "id": "E.59b",
+      "kind": "room",
+      "label": "Büro",
+      "svg_id": "zone-E.59b",
+      "movement_center": [
+        550,
+        90
+      ]
+    },
+    "E.59a": {
+      "id": "E.59a",
+      "kind": "room",
+      "label": "Büro",
+      "svg_id": "zone-E.59a",
+      "movement_center": [
+        700,
+        90
+      ]
+    },
+    "E.59": {
+      "id": "E.59",
+      "kind": "room",
+      "label": "Besprechungsraum",
+      "svg_id": "zone-E.59",
+      "movement_center": [
+        860,
+        90
+      ]
+    },
+    "elt": {
+      "id": "elt",
+      "kind": "service",
+      "label": "Elektroverteilung",
+      "svg_id": "zone-elt",
+      "movement_center": [
+        947,
+        205
+      ]
+    },
+    "E.52": {
+      "id": "E.52",
+      "kind": "hall",
+      "label": "Eingangsbereich / Rezeption",
+      "svg_id": "zone-E.52",
+      "movement_center": [
+        1160,
+        185
+      ]
+    },
+    "wachdienst": {
+      "id": "wachdienst",
+      "kind": "room",
+      "label": "Wachdienst",
+      "svg_id": "zone-wachdienst",
+      "movement_center": [
+        1360,
+        170
+      ]
+    },
+    "E.63": {
+      "id": "E.63",
+      "kind": "room",
+      "label": "Unterricht",
+      "svg_id": "zone-E.63",
+      "movement_center": [
+        220,
+        285
+      ]
+    },
+    "E.62": {
+      "id": "E.62",
+      "kind": "room",
+      "label": "Unterricht",
+      "svg_id": "zone-E.62",
+      "movement_center": [
+        400,
+        285
+      ]
+    },
+    "flur_west": {
+      "id": "flur_west",
+      "kind": "corridor",
+      "label": "Flur West",
+      "svg_id": "zone-flur_west",
+      "movement_center": [
+        560,
+        205
+      ]
+    },
+    "atrium": {
+      "id": "atrium",
+      "kind": "hall",
+      "label": "Flur Mitte / Atrium",
+      "svg_id": "zone-atrium",
+      "movement_center": [
+        820,
+        285
+      ]
+    },
+    "flur_ost": {
+      "id": "flur_ost",
+      "kind": "corridor",
+      "label": "Flur Ost",
+      "svg_id": "zone-flur_ost",
+      "movement_center": [
+        1160,
+        288
+      ]
+    },
+    "vr_h": {
+      "id": "vr_h",
+      "kind": "service",
+      "label": "Vorraum WC Herren",
+      "svg_id": "zone-vr_h",
+      "movement_center": [
+        500,
+        255
+      ]
+    },
+    "vr_d": {
+      "id": "vr_d",
+      "kind": "service",
+      "label": "Vorraum WC Damen",
+      "svg_id": "zone-vr_d",
+      "movement_center": [
+        600,
+        255
+      ]
+    },
+    "E.54b": {
+      "id": "E.54b",
+      "kind": "service",
+      "label": "WC Herren",
+      "svg_id": "zone-E.54b",
+      "movement_center": [
+        495,
+        305
+      ]
+    },
+    "E.54a": {
+      "id": "E.54a",
+      "kind": "service",
+      "label": "WC Damen",
+      "svg_id": "zone-E.54a",
+      "movement_center": [
+        600,
+        305
+      ]
+    },
+    "E.58a": {
+      "id": "E.58a",
+      "kind": "service",
+      "label": "Technik",
+      "svg_id": "zone-E.58a",
+      "movement_center": [
+        582,
+        430
+      ]
+    },
+    "TR9": {
+      "id": "TR9",
+      "kind": "stairs",
+      "label": "Treppenhaus",
+      "svg_id": "zone-TR9",
+      "movement_center": [
+        650,
+        330
+      ]
+    },
+    "R.58": {
+      "id": "R.58",
+      "kind": "room",
+      "label": "Konferenzraum",
+      "svg_id": "zone-R.58",
+      "movement_center": [
+        700,
+        470
+      ]
+    },
+    "E.57": {
+      "id": "E.57",
+      "kind": "room",
+      "label": "Unterricht",
+      "svg_id": "zone-E.57",
+      "movement_center": [
+        1050,
+        420
+      ]
+    },
+    "E.56c": {
+      "id": "E.56c",
+      "kind": "room",
+      "label": "Unterricht",
+      "svg_id": "zone-E.56c",
+      "movement_center": [
+        1290,
+        410
+      ]
+    },
+    "E.56b": {
+      "id": "E.56b",
+      "kind": "room",
+      "label": "Unbekannt",
+      "svg_id": "zone-E.56b",
+      "movement_center": [
+        1370,
+        390
+      ]
+    },
+    "anschluss": {
+      "id": "anschluss",
+      "kind": "corridor",
+      "label": "Anschluss übriges Erdgeschoss",
+      "svg_id": "zone-anschluss",
+      "movement_center": [
+        1460,
+        288
+      ]
+    }
+  },
+  "portals": {
+    "p01": {
+      "id": "p01",
+      "zones": [
+        "E.63",
+        "flur_west"
+      ],
+      "point": [
+        354,
+        211
+      ],
+      "virtual": false,
+      "svg_id": "portal-p01"
+    },
+    "p02": {
+      "id": "p02",
+      "zones": [
+        "E.61",
+        "flur_west"
+      ],
+      "point": [
+        440,
+        170
+      ],
+      "virtual": false,
+      "svg_id": "portal-p02"
+    },
+    "p03": {
+      "id": "p03",
+      "zones": [
+        "E.59b",
+        "flur_west"
+      ],
+      "point": [
+        533,
+        170
+      ],
+      "virtual": false,
+      "svg_id": "portal-p03"
+    },
+    "p04": {
+      "id": "p04",
+      "zones": [
+        "E.62",
+        "flur_west"
+      ],
+      "point": [
+        453,
+        234
+      ],
+      "virtual": false,
+      "svg_id": "portal-p04"
+    },
+    "p05": {
+      "id": "p05",
+      "zones": [
+        "vr_h",
+        "flur_west"
+      ],
+      "point": [
+        500,
+        234
+      ],
+      "virtual": false,
+      "svg_id": "portal-p05"
+    },
+    "p06": {
+      "id": "p06",
+      "zones": [
+        "vr_d",
+        "flur_west"
+      ],
+      "point": [
+        600,
+        234
+      ],
+      "virtual": false,
+      "svg_id": "portal-p06"
+    },
+    "p07": {
+      "id": "p07",
+      "zones": [
+        "TR9",
+        "flur_west"
+      ],
+      "point": [
+        625,
+        234
+      ],
+      "virtual": false,
+      "svg_id": "portal-p07"
+    },
+    "p08": {
+      "id": "p08",
+      "zones": [
+        "flur_west",
+        "atrium"
+      ],
+      "point": [
+        677,
+        202
+      ],
+      "virtual": true,
+      "svg_id": "portal-p08"
+    },
+    "p09": {
+      "id": "p09",
+      "zones": [
+        "E.59a",
+        "atrium"
+      ],
+      "point": [
+        688,
+        170
+      ],
+      "virtual": false,
+      "svg_id": "portal-p09"
+    },
+    "p11": {
+      "id": "p11",
+      "zones": [
+        "E.59",
+        "atrium"
+      ],
+      "point": [
+        855,
+        170
+      ],
+      "virtual": false,
+      "svg_id": "portal-p11"
+    },
+    "p13": {
+      "id": "p13",
+      "zones": [
+        "R.58",
+        "atrium"
+      ],
+      "point": [
+        828,
+        396
+      ],
+      "virtual": false,
+      "svg_id": "portal-p13"
+    },
+    "p14": {
+      "id": "p14",
+      "zones": [
+        "elt",
+        "atrium"
+      ],
+      "point": [
+        947,
+        240
+      ],
+      "virtual": false,
+      "svg_id": "portal-p14"
+    },
+    "p15": {
+      "id": "p15",
+      "zones": [
+        "atrium",
+        "flur_ost"
+      ],
+      "point": [
+        936,
+        288
+      ],
+      "virtual": true,
+      "svg_id": "portal-p15"
+    },
+    "p16": {
+      "id": "p16",
+      "zones": [
+        "E.52",
+        "flur_ost"
+      ],
+      "point": [
+        1107,
+        240
+      ],
+      "virtual": false,
+      "svg_id": "portal-p16"
+    },
+    "p18": {
+      "id": "p18",
+      "zones": [
+        "E.57",
+        "flur_ost"
+      ],
+      "point": [
+        1096,
+        336
+      ],
+      "virtual": false,
+      "svg_id": "portal-p18"
+    },
+    "p19": {
+      "id": "p19",
+      "zones": [
+        "E.56c",
+        "flur_ost"
+      ],
+      "point": [
+        1277,
+        336
+      ],
+      "virtual": false,
+      "svg_id": "portal-p19"
+    },
+    "p20": {
+      "id": "p20",
+      "zones": [
+        "E.56b",
+        "flur_ost"
+      ],
+      "point": [
+        1373,
+        336
+      ],
+      "virtual": false,
+      "svg_id": "portal-p20"
+    },
+    "p21": {
+      "id": "p21",
+      "zones": [
+        "flur_ost",
+        "anschluss"
+      ],
+      "point": [
+        1424,
+        288
+      ],
+      "virtual": true,
+      "svg_id": "portal-p21"
+    },
+    "p22": {
+      "id": "p22",
+      "zones": [
+        "wachdienst",
+        "E.52"
+      ],
+      "point": [
+        1381,
+        196
+      ],
+      "virtual": false,
+      "svg_id": "portal-p22"
+    },
+    "p24": {
+      "id": "p24",
+      "zones": [
+        "vr_h",
+        "E.54b"
+      ],
+      "point": [
+        495,
+        278
+      ],
+      "virtual": false,
+      "svg_id": "portal-p24"
+    },
+    "p25": {
+      "id": "p25",
+      "zones": [
+        "vr_d",
+        "E.54a"
+      ],
+      "point": [
+        600,
+        278
+      ],
+      "virtual": false,
+      "svg_id": "portal-p25"
+    },
+    "p26": {
+      "id": "p26",
+      "zones": [
+        "E.58a",
+        "R.58"
+      ],
+      "point": [
+        582,
+        396
+      ],
+      "virtual": false,
+      "svg_id": "portal-p26"
+    },
+    "p23": {
+      "id": "p23",
+      "zones": [
+        "aussen",
+        "E.52"
+      ],
+      "point": [
+        1206,
+        0
+      ],
+      "virtual": false,
+      "svg_id": "portal-p23"
+    },
+    "p27": {
+      "id": "p27",
+      "zones": [
+        "aussen",
+        "E.61"
+      ],
+      "point": [
+        435,
+        0
+      ],
+      "virtual": false,
+      "svg_id": "portal-p27"
+    },
+    "p28": {
+      "id": "p28",
+      "zones": [
+        "aussen",
+        "E.63"
+      ],
+      "point": [
+        120,
+        186
+      ],
+      "virtual": false,
+      "svg_id": "portal-p28"
+    }
+  },
+  "segments": {
+    "segment:E.61:p02:p27": {
+      "id": "segment:E.61:p02:p27",
+      "zone_id": "E.61",
+      "portals": [
+        "p02",
+        "p27"
+      ],
+      "distance": 170.074,
+      "geometry": [
+        [
+          440,
+          170
+        ],
+        [
+          435,
+          0
+        ]
+      ]
+    },
+    "segment:E.52:p16:p22": {
+      "id": "segment:E.52:p16:p22",
+      "zone_id": "E.52",
+      "portals": [
+        "p16",
+        "p22"
+      ],
+      "distance": 297.654,
+      "geometry": [
+        [
+          1107,
+          240
+        ],
+        [
+          1160,
+          185
+        ],
+        [
+          1381,
+          196
+        ]
+      ]
+    },
+    "segment:E.52:p16:p23": {
+      "id": "segment:E.52:p16:p23",
+      "zone_id": "E.52",
+      "portals": [
+        "p16",
+        "p23"
+      ],
+      "distance": 267.014,
+      "geometry": [
+        [
+          1107,
+          240
+        ],
+        [
+          1160,
+          185
+        ],
+        [
+          1206,
+          0
+        ]
+      ]
+    },
+    "segment:E.52:p22:p23": {
+      "id": "segment:E.52:p22:p23",
+      "zone_id": "E.52",
+      "portals": [
+        "p22",
+        "p23"
+      ],
+      "distance": 411.907,
+      "geometry": [
+        [
+          1381,
+          196
+        ],
+        [
+          1160,
+          185
+        ],
+        [
+          1206,
+          0
+        ]
+      ]
+    },
+    "segment:E.63:p01:p28": {
+      "id": "segment:E.63:p01:p28",
+      "zone_id": "E.63",
+      "portals": [
+        "p01",
+        "p28"
+      ],
+      "distance": 235.332,
+      "geometry": [
+        [
+          354,
+          211
+        ],
+        [
+          120,
+          186
+        ]
+      ]
+    },
+    "segment:flur_west:p01:p02": {
+      "id": "segment:flur_west:p01:p02",
+      "zone_id": "flur_west",
+      "portals": [
+        "p01",
+        "p02"
+      ],
+      "distance": 331.087,
+      "geometry": [
+        [
+          354,
+          211
+        ],
+        [
+          560,
+          205
+        ],
+        [
+          440,
+          170
+        ]
+      ]
+    },
+    "segment:flur_west:p01:p03": {
+      "id": "segment:flur_west:p01:p03",
+      "zone_id": "flur_west",
+      "portals": [
+        "p01",
+        "p03"
+      ],
+      "distance": 250.291,
+      "geometry": [
+        [
+          354,
+          211
+        ],
+        [
+          560,
+          205
+        ],
+        [
+          533,
+          170
+        ]
+      ]
+    },
+    "segment:flur_west:p01:p04": {
+      "id": "segment:flur_west:p01:p04",
+      "zone_id": "flur_west",
+      "portals": [
+        "p01",
+        "p04"
+      ],
+      "distance": 316.948,
+      "geometry": [
+        [
+          354,
+          211
+        ],
+        [
+          560,
+          205
+        ],
+        [
+          453,
+          234
+        ]
+      ]
+    },
+    "segment:flur_west:p01:p05": {
+      "id": "segment:flur_west:p01:p05",
+      "zone_id": "flur_west",
+      "portals": [
+        "p01",
+        "p05"
+      ],
+      "distance": 272.728,
+      "geometry": [
+        [
+          354,
+          211
+        ],
+        [
+          560,
+          205
+        ],
+        [
+          500,
+          234
+        ]
+      ]
+    },
+    "segment:flur_west:p01:p06": {
+      "id": "segment:flur_west:p01:p06",
+      "zone_id": "flur_west",
+      "portals": [
+        "p01",
+        "p06"
+      ],
+      "distance": 255.494,
+      "geometry": [
+        [
+          354,
+          211
+        ],
+        [
+          560,
+          205
+        ],
+        [
+          600,
+          234
+        ]
+      ]
+    },
+    "segment:flur_west:p01:p07": {
+      "id": "segment:flur_west:p01:p07",
+      "zone_id": "flur_west",
+      "portals": [
+        "p01",
+        "p07"
+      ],
+      "distance": 277.263,
+      "geometry": [
+        [
+          354,
+          211
+        ],
+        [
+          560,
+          205
+        ],
+        [
+          625,
+          234
+        ]
+      ]
+    },
+    "segment:flur_west:p01:p08": {
+      "id": "segment:flur_west:p01:p08",
+      "zone_id": "flur_west",
+      "portals": [
+        "p01",
+        "p08"
+      ],
+      "distance": 323.126,
+      "geometry": [
+        [
+          354,
+          211
+        ],
+        [
+          560,
+          205
+        ],
+        [
+          677,
+          202
+        ]
+      ]
+    },
+    "segment:flur_west:p02:p03": {
+      "id": "segment:flur_west:p02:p03",
+      "zone_id": "flur_west",
+      "portals": [
+        "p02",
+        "p03"
+      ],
+      "distance": 169.204,
+      "geometry": [
+        [
+          440,
+          170
+        ],
+        [
+          560,
+          205
+        ],
+        [
+          533,
+          170
+        ]
+      ]
+    },
+    "segment:flur_west:p02:p04": {
+      "id": "segment:flur_west:p02:p04",
+      "zone_id": "flur_west",
+      "portals": [
+        "p02",
+        "p04"
+      ],
+      "distance": 235.86,
+      "geometry": [
+        [
+          440,
+          170
+        ],
+        [
+          560,
+          205
+        ],
+        [
+          453,
+          234
+        ]
+      ]
+    },
+    "segment:flur_west:p02:p05": {
+      "id": "segment:flur_west:p02:p05",
+      "zone_id": "flur_west",
+      "portals": [
+        "p02",
+        "p05"
+      ],
+      "distance": 191.641,
+      "geometry": [
+        [
+          440,
+          170
+        ],
+        [
+          560,
+          205
+        ],
+        [
+          500,
+          234
+        ]
+      ]
+    },
+    "segment:flur_west:p02:p06": {
+      "id": "segment:flur_west:p02:p06",
+      "zone_id": "flur_west",
+      "portals": [
+        "p02",
+        "p06"
+      ],
+      "distance": 174.406,
+      "geometry": [
+        [
+          440,
+          170
+        ],
+        [
+          560,
+          205
+        ],
+        [
+          600,
+          234
+        ]
+      ]
+    },
+    "segment:flur_west:p02:p07": {
+      "id": "segment:flur_west:p02:p07",
+      "zone_id": "flur_west",
+      "portals": [
+        "p02",
+        "p07"
+      ],
+      "distance": 196.176,
+      "geometry": [
+        [
+          440,
+          170
+        ],
+        [
+          560,
+          205
+        ],
+        [
+          625,
+          234
+        ]
+      ]
+    },
+    "segment:flur_west:p02:p08": {
+      "id": "segment:flur_west:p02:p08",
+      "zone_id": "flur_west",
+      "portals": [
+        "p02",
+        "p08"
+      ],
+      "distance": 242.038,
+      "geometry": [
+        [
+          440,
+          170
+        ],
+        [
+          560,
+          205
+        ],
+        [
+          677,
+          202
+        ]
+      ]
+    },
+    "segment:flur_west:p03:p04": {
+      "id": "segment:flur_west:p03:p04",
+      "zone_id": "flur_west",
+      "portals": [
+        "p03",
+        "p04"
+      ],
+      "distance": 155.064,
+      "geometry": [
+        [
+          533,
+          170
+        ],
+        [
+          560,
+          205
+        ],
+        [
+          453,
+          234
+        ]
+      ]
+    },
+    "segment:flur_west:p03:p05": {
+      "id": "segment:flur_west:p03:p05",
+      "zone_id": "flur_west",
+      "portals": [
+        "p03",
+        "p05"
+      ],
+      "distance": 110.845,
+      "geometry": [
+        [
+          533,
+          170
+        ],
+        [
+          560,
+          205
+        ],
+        [
+          500,
+          234
+        ]
+      ]
+    },
+    "segment:flur_west:p03:p06": {
+      "id": "segment:flur_west:p03:p06",
+      "zone_id": "flur_west",
+      "portals": [
+        "p03",
+        "p06"
+      ],
+      "distance": 93.611,
+      "geometry": [
+        [
+          533,
+          170
+        ],
+        [
+          560,
+          205
+        ],
+        [
+          600,
+          234
+        ]
+      ]
+    },
+    "segment:flur_west:p03:p07": {
+      "id": "segment:flur_west:p03:p07",
+      "zone_id": "flur_west",
+      "portals": [
+        "p03",
+        "p07"
+      ],
+      "distance": 115.38,
+      "geometry": [
+        [
+          533,
+          170
+        ],
+        [
+          560,
+          205
+        ],
+        [
+          625,
+          234
+        ]
+      ]
+    },
+    "segment:flur_west:p03:p08": {
+      "id": "segment:flur_west:p03:p08",
+      "zone_id": "flur_west",
+      "portals": [
+        "p03",
+        "p08"
+      ],
+      "distance": 161.243,
+      "geometry": [
+        [
+          533,
+          170
+        ],
+        [
+          560,
+          205
+        ],
+        [
+          677,
+          202
+        ]
+      ]
+    },
+    "segment:flur_west:p04:p05": {
+      "id": "segment:flur_west:p04:p05",
+      "zone_id": "flur_west",
+      "portals": [
+        "p04",
+        "p05"
+      ],
+      "distance": 177.501,
+      "geometry": [
+        [
+          453,
+          234
+        ],
+        [
+          560,
+          205
+        ],
+        [
+          500,
+          234
+        ]
+      ]
+    },
+    "segment:flur_west:p04:p06": {
+      "id": "segment:flur_west:p04:p06",
+      "zone_id": "flur_west",
+      "portals": [
+        "p04",
+        "p06"
+      ],
+      "distance": 160.267,
+      "geometry": [
+        [
+          453,
+          234
+        ],
+        [
+          560,
+          205
+        ],
+        [
+          600,
+          234
+        ]
+      ]
+    },
+    "segment:flur_west:p04:p07": {
+      "id": "segment:flur_west:p04:p07",
+      "zone_id": "flur_west",
+      "portals": [
+        "p04",
+        "p07"
+      ],
+      "distance": 182.036,
+      "geometry": [
+        [
+          453,
+          234
+        ],
+        [
+          560,
+          205
+        ],
+        [
+          625,
+          234
+        ]
+      ]
+    },
+    "segment:flur_west:p04:p08": {
+      "id": "segment:flur_west:p04:p08",
+      "zone_id": "flur_west",
+      "portals": [
+        "p04",
+        "p08"
+      ],
+      "distance": 227.899,
+      "geometry": [
+        [
+          453,
+          234
+        ],
+        [
+          560,
+          205
+        ],
+        [
+          677,
+          202
+        ]
+      ]
+    },
+    "segment:flur_west:p05:p06": {
+      "id": "segment:flur_west:p05:p06",
+      "zone_id": "flur_west",
+      "portals": [
+        "p05",
+        "p06"
+      ],
+      "distance": 116.047,
+      "geometry": [
+        [
+          500,
+          234
+        ],
+        [
+          560,
+          205
+        ],
+        [
+          600,
+          234
+        ]
+      ]
+    },
+    "segment:flur_west:p05:p07": {
+      "id": "segment:flur_west:p05:p07",
+      "zone_id": "flur_west",
+      "portals": [
+        "p05",
+        "p07"
+      ],
+      "distance": 137.817,
+      "geometry": [
+        [
+          500,
+          234
+        ],
+        [
+          560,
+          205
+        ],
+        [
+          625,
+          234
+        ]
+      ]
+    },
+    "segment:flur_west:p05:p08": {
+      "id": "segment:flur_west:p05:p08",
+      "zone_id": "flur_west",
+      "portals": [
+        "p05",
+        "p08"
+      ],
+      "distance": 183.679,
+      "geometry": [
+        [
+          500,
+          234
+        ],
+        [
+          560,
+          205
+        ],
+        [
+          677,
+          202
+        ]
+      ]
+    },
+    "segment:flur_west:p06:p07": {
+      "id": "segment:flur_west:p06:p07",
+      "zone_id": "flur_west",
+      "portals": [
+        "p06",
+        "p07"
+      ],
+      "distance": 120.582,
+      "geometry": [
+        [
+          600,
+          234
+        ],
+        [
+          560,
+          205
+        ],
+        [
+          625,
+          234
+        ]
+      ]
+    },
+    "segment:flur_west:p06:p08": {
+      "id": "segment:flur_west:p06:p08",
+      "zone_id": "flur_west",
+      "portals": [
+        "p06",
+        "p08"
+      ],
+      "distance": 166.445,
+      "geometry": [
+        [
+          600,
+          234
+        ],
+        [
+          560,
+          205
+        ],
+        [
+          677,
+          202
+        ]
+      ]
+    },
+    "segment:flur_west:p07:p08": {
+      "id": "segment:flur_west:p07:p08",
+      "zone_id": "flur_west",
+      "portals": [
+        "p07",
+        "p08"
+      ],
+      "distance": 188.214,
+      "geometry": [
+        [
+          625,
+          234
+        ],
+        [
+          560,
+          205
+        ],
+        [
+          677,
+          202
+        ]
+      ]
+    },
+    "segment:atrium:p08:p09": {
+      "id": "segment:atrium:p08:p09",
+      "zone_id": "atrium",
+      "portals": [
+        "p08",
+        "p09"
+      ],
+      "distance": 340.411,
+      "geometry": [
+        [
+          677,
+          202
+        ],
+        [
+          820,
+          285
+        ],
+        [
+          688,
+          170
+        ]
+      ]
+    },
+    "segment:atrium:p08:p11": {
+      "id": "segment:atrium:p08:p11",
+      "zone_id": "atrium",
+      "portals": [
+        "p08",
+        "p11"
+      ],
+      "distance": 285.55,
+      "geometry": [
+        [
+          677,
+          202
+        ],
+        [
+          820,
+          285
+        ],
+        [
+          855,
+          170
+        ]
+      ]
+    },
+    "segment:atrium:p08:p13": {
+      "id": "segment:atrium:p08:p13",
+      "zone_id": "atrium",
+      "portals": [
+        "p08",
+        "p13"
+      ],
+      "distance": 276.63,
+      "geometry": [
+        [
+          677,
+          202
+        ],
+        [
+          820,
+          285
+        ],
+        [
+          828,
+          396
+        ]
+      ]
+    },
+    "segment:atrium:p08:p14": {
+      "id": "segment:atrium:p08:p14",
+      "zone_id": "atrium",
+      "portals": [
+        "p08",
+        "p14"
+      ],
+      "distance": 300.079,
+      "geometry": [
+        [
+          677,
+          202
+        ],
+        [
+          820,
+          285
+        ],
+        [
+          947,
+          240
+        ]
+      ]
+    },
+    "segment:atrium:p08:p15": {
+      "id": "segment:atrium:p08:p15",
+      "zone_id": "atrium",
+      "portals": [
+        "p08",
+        "p15"
+      ],
+      "distance": 281.381,
+      "geometry": [
+        [
+          677,
+          202
+        ],
+        [
+          820,
+          285
+        ],
+        [
+          936,
+          288
+        ]
+      ]
+    },
+    "segment:atrium:p09:p11": {
+      "id": "segment:atrium:p09:p11",
+      "zone_id": "atrium",
+      "portals": [
+        "p09",
+        "p11"
+      ],
+      "distance": 295.277,
+      "geometry": [
+        [
+          688,
+          170
+        ],
+        [
+          820,
+          285
+        ],
+        [
+          855,
+          170
+        ]
+      ]
+    },
+    "segment:atrium:p09:p13": {
+      "id": "segment:atrium:p09:p13",
+      "zone_id": "atrium",
+      "portals": [
+        "p09",
+        "p13"
+      ],
+      "distance": 286.356,
+      "geometry": [
+        [
+          688,
+          170
+        ],
+        [
+          820,
+          285
+        ],
+        [
+          828,
+          396
+        ]
+      ]
+    },
+    "segment:atrium:p09:p14": {
+      "id": "segment:atrium:p09:p14",
+      "zone_id": "atrium",
+      "portals": [
+        "p09",
+        "p14"
+      ],
+      "distance": 309.805,
+      "geometry": [
+        [
+          688,
+          170
+        ],
+        [
+          820,
+          285
+        ],
+        [
+          947,
+          240
+        ]
+      ]
+    },
+    "segment:atrium:p09:p15": {
+      "id": "segment:atrium:p09:p15",
+      "zone_id": "atrium",
+      "portals": [
+        "p09",
+        "p15"
+      ],
+      "distance": 291.107,
+      "geometry": [
+        [
+          688,
+          170
+        ],
+        [
+          820,
+          285
+        ],
+        [
+          936,
+          288
+        ]
+      ]
+    },
+    "segment:atrium:p11:p13": {
+      "id": "segment:atrium:p11:p13",
+      "zone_id": "atrium",
+      "portals": [
+        "p11",
+        "p13"
+      ],
+      "distance": 231.496,
+      "geometry": [
+        [
+          855,
+          170
+        ],
+        [
+          820,
+          285
+        ],
+        [
+          828,
+          396
+        ]
+      ]
+    },
+    "segment:atrium:p11:p14": {
+      "id": "segment:atrium:p11:p14",
+      "zone_id": "atrium",
+      "portals": [
+        "p11",
+        "p14"
+      ],
+      "distance": 254.945,
+      "geometry": [
+        [
+          855,
+          170
+        ],
+        [
+          820,
+          285
+        ],
+        [
+          947,
+          240
+        ]
+      ]
+    },
+    "segment:atrium:p11:p15": {
+      "id": "segment:atrium:p11:p15",
+      "zone_id": "atrium",
+      "portals": [
+        "p11",
+        "p15"
+      ],
+      "distance": 236.247,
+      "geometry": [
+        [
+          855,
+          170
+        ],
+        [
+          820,
+          285
+        ],
+        [
+          936,
+          288
+        ]
+      ]
+    },
+    "segment:atrium:p13:p14": {
+      "id": "segment:atrium:p13:p14",
+      "zone_id": "atrium",
+      "portals": [
+        "p13",
+        "p14"
+      ],
+      "distance": 246.025,
+      "geometry": [
+        [
+          828,
+          396
+        ],
+        [
+          820,
+          285
+        ],
+        [
+          947,
+          240
+        ]
+      ]
+    },
+    "segment:atrium:p13:p15": {
+      "id": "segment:atrium:p13:p15",
+      "zone_id": "atrium",
+      "portals": [
+        "p13",
+        "p15"
+      ],
+      "distance": 227.327,
+      "geometry": [
+        [
+          828,
+          396
+        ],
+        [
+          820,
+          285
+        ],
+        [
+          936,
+          288
+        ]
+      ]
+    },
+    "segment:atrium:p14:p15": {
+      "id": "segment:atrium:p14:p15",
+      "zone_id": "atrium",
+      "portals": [
+        "p14",
+        "p15"
+      ],
+      "distance": 250.776,
+      "geometry": [
+        [
+          947,
+          240
+        ],
+        [
+          820,
+          285
+        ],
+        [
+          936,
+          288
+        ]
+      ]
+    },
+    "segment:flur_ost:p15:p16": {
+      "id": "segment:flur_ost:p15:p16",
+      "zone_id": "flur_ost",
+      "portals": [
+        "p15",
+        "p16"
+      ],
+      "distance": 295.505,
+      "geometry": [
+        [
+          936,
+          288
+        ],
+        [
+          1160,
+          288
+        ],
+        [
+          1107,
+          240
+        ]
+      ]
+    },
+    "segment:flur_ost:p15:p18": {
+      "id": "segment:flur_ost:p15:p18",
+      "zone_id": "flur_ost",
+      "portals": [
+        "p15",
+        "p18"
+      ],
+      "distance": 304.0,
+      "geometry": [
+        [
+          936,
+          288
+        ],
+        [
+          1160,
+          288
+        ],
+        [
+          1096,
+          336
+        ]
+      ]
+    },
+    "segment:flur_ost:p15:p19": {
+      "id": "segment:flur_ost:p15:p19",
+      "zone_id": "flur_ost",
+      "portals": [
+        "p15",
+        "p19"
+      ],
+      "distance": 350.463,
+      "geometry": [
+        [
+          936,
+          288
+        ],
+        [
+          1160,
+          288
+        ],
+        [
+          1277,
+          336
+        ]
+      ]
+    },
+    "segment:flur_ost:p15:p20": {
+      "id": "segment:flur_ost:p15:p20",
+      "zone_id": "flur_ost",
+      "portals": [
+        "p15",
+        "p20"
+      ],
+      "distance": 442.341,
+      "geometry": [
+        [
+          936,
+          288
+        ],
+        [
+          1160,
+          288
+        ],
+        [
+          1373,
+          336
+        ]
+      ]
+    },
+    "segment:flur_ost:p15:p21": {
+      "id": "segment:flur_ost:p15:p21",
+      "zone_id": "flur_ost",
+      "portals": [
+        "p15",
+        "p21"
+      ],
+      "distance": 488.0,
+      "geometry": [
+        [
+          936,
+          288
+        ],
+        [
+          1160,
+          288
+        ],
+        [
+          1424,
+          288
+        ]
+      ]
+    },
+    "segment:flur_ost:p16:p18": {
+      "id": "segment:flur_ost:p16:p18",
+      "zone_id": "flur_ost",
+      "portals": [
+        "p16",
+        "p18"
+      ],
+      "distance": 151.505,
+      "geometry": [
+        [
+          1107,
+          240
+        ],
+        [
+          1160,
+          288
+        ],
+        [
+          1096,
+          336
+        ]
+      ]
+    },
+    "segment:flur_ost:p16:p19": {
+      "id": "segment:flur_ost:p16:p19",
+      "zone_id": "flur_ost",
+      "portals": [
+        "p16",
+        "p19"
+      ],
+      "distance": 197.969,
+      "geometry": [
+        [
+          1107,
+          240
+        ],
+        [
+          1160,
+          288
+        ],
+        [
+          1277,
+          336
+        ]
+      ]
+    },
+    "segment:flur_ost:p16:p20": {
+      "id": "segment:flur_ost:p16:p20",
+      "zone_id": "flur_ost",
+      "portals": [
+        "p16",
+        "p20"
+      ],
+      "distance": 289.847,
+      "geometry": [
+        [
+          1107,
+          240
+        ],
+        [
+          1160,
+          288
+        ],
+        [
+          1373,
+          336
+        ]
+      ]
+    },
+    "segment:flur_ost:p16:p21": {
+      "id": "segment:flur_ost:p16:p21",
+      "zone_id": "flur_ost",
+      "portals": [
+        "p16",
+        "p21"
+      ],
+      "distance": 335.505,
+      "geometry": [
+        [
+          1107,
+          240
+        ],
+        [
+          1160,
+          288
+        ],
+        [
+          1424,
+          288
+        ]
+      ]
+    },
+    "segment:flur_ost:p18:p19": {
+      "id": "segment:flur_ost:p18:p19",
+      "zone_id": "flur_ost",
+      "portals": [
+        "p18",
+        "p19"
+      ],
+      "distance": 206.463,
+      "geometry": [
+        [
+          1096,
+          336
+        ],
+        [
+          1160,
+          288
+        ],
+        [
+          1277,
+          336
+        ]
+      ]
+    },
+    "segment:flur_ost:p18:p20": {
+      "id": "segment:flur_ost:p18:p20",
+      "zone_id": "flur_ost",
+      "portals": [
+        "p18",
+        "p20"
+      ],
+      "distance": 298.341,
+      "geometry": [
+        [
+          1096,
+          336
+        ],
+        [
+          1160,
+          288
+        ],
+        [
+          1373,
+          336
+        ]
+      ]
+    },
+    "segment:flur_ost:p18:p21": {
+      "id": "segment:flur_ost:p18:p21",
+      "zone_id": "flur_ost",
+      "portals": [
+        "p18",
+        "p21"
+      ],
+      "distance": 344.0,
+      "geometry": [
+        [
+          1096,
+          336
+        ],
+        [
+          1160,
+          288
+        ],
+        [
+          1424,
+          288
+        ]
+      ]
+    },
+    "segment:flur_ost:p19:p20": {
+      "id": "segment:flur_ost:p19:p20",
+      "zone_id": "flur_ost",
+      "portals": [
+        "p19",
+        "p20"
+      ],
+      "distance": 344.805,
+      "geometry": [
+        [
+          1277,
+          336
+        ],
+        [
+          1160,
+          288
+        ],
+        [
+          1373,
+          336
+        ]
+      ]
+    },
+    "segment:flur_ost:p19:p21": {
+      "id": "segment:flur_ost:p19:p21",
+      "zone_id": "flur_ost",
+      "portals": [
+        "p19",
+        "p21"
+      ],
+      "distance": 390.463,
+      "geometry": [
+        [
+          1277,
+          336
+        ],
+        [
+          1160,
+          288
+        ],
+        [
+          1424,
+          288
+        ]
+      ]
+    },
+    "segment:flur_ost:p20:p21": {
+      "id": "segment:flur_ost:p20:p21",
+      "zone_id": "flur_ost",
+      "portals": [
+        "p20",
+        "p21"
+      ],
+      "distance": 482.341,
+      "geometry": [
+        [
+          1373,
+          336
+        ],
+        [
+          1160,
+          288
+        ],
+        [
+          1424,
+          288
+        ]
+      ]
+    },
+    "segment:vr_h:p05:p24": {
+      "id": "segment:vr_h:p05:p24",
+      "zone_id": "vr_h",
+      "portals": [
+        "p05",
+        "p24"
+      ],
+      "distance": 44.283,
+      "geometry": [
+        [
+          500,
+          234
+        ],
+        [
+          495,
+          278
+        ]
+      ]
+    },
+    "segment:vr_d:p06:p25": {
+      "id": "segment:vr_d:p06:p25",
+      "zone_id": "vr_d",
+      "portals": [
+        "p06",
+        "p25"
+      ],
+      "distance": 44.0,
+      "geometry": [
+        [
+          600,
+          234
+        ],
+        [
+          600,
+          278
+        ]
+      ]
+    },
+    "segment:R.58:p13:p26": {
+      "id": "segment:R.58:p13:p26",
+      "zone_id": "R.58",
+      "portals": [
+        "p13",
+        "p26"
+      ],
+      "distance": 246.0,
+      "geometry": [
+        [
+          828,
+          396
+        ],
+        [
+          582,
+          396
+        ]
+      ]
+    }
+  },
+  "special_state_costs": {
+    "flur_west|p07|TR9": 12.0,
+    "TR9|p07|flur_west": 12.0
+  },
+  "indexes": {
+    "zone_portals": {
+      "aussen": [
+        "p23",
+        "p27",
+        "p28"
+      ],
+      "E.61": [
+        "p02",
+        "p27"
+      ],
+      "E.59b": [
+        "p03"
+      ],
+      "E.59a": [
+        "p09"
+      ],
+      "E.59": [
+        "p11"
+      ],
+      "elt": [
+        "p14"
+      ],
+      "E.52": [
+        "p16",
+        "p22",
+        "p23"
+      ],
+      "wachdienst": [
+        "p22"
+      ],
+      "E.63": [
+        "p01",
+        "p28"
+      ],
+      "E.62": [
+        "p04"
+      ],
+      "flur_west": [
+        "p01",
+        "p02",
+        "p03",
+        "p04",
+        "p05",
+        "p06",
+        "p07",
+        "p08"
+      ],
+      "atrium": [
+        "p08",
+        "p09",
+        "p11",
+        "p13",
+        "p14",
+        "p15"
+      ],
+      "flur_ost": [
+        "p15",
+        "p16",
+        "p18",
+        "p19",
+        "p20",
+        "p21"
+      ],
+      "vr_h": [
+        "p05",
+        "p24"
+      ],
+      "vr_d": [
+        "p06",
+        "p25"
+      ],
+      "E.54b": [
+        "p24"
+      ],
+      "E.54a": [
+        "p25"
+      ],
+      "E.58a": [
+        "p26"
+      ],
+      "TR9": [
+        "p07"
+      ],
+      "R.58": [
+        "p13",
+        "p26"
+      ],
+      "E.57": [
+        "p18"
+      ],
+      "E.56c": [
+        "p19"
+      ],
+      "E.56b": [
+        "p20"
+      ],
+      "anschluss": [
+        "p21"
+      ]
+    }
+  },
+  "graphs": {
+    "adjacency": {
+      "nodes": [
+        "E.52",
+        "E.54a",
+        "E.54b",
+        "E.56b",
+        "E.56c",
+        "E.57",
+        "E.58a",
+        "E.59",
+        "E.59a",
+        "E.59b",
+        "E.61",
+        "E.62",
+        "E.63",
+        "R.58",
+        "TR9",
+        "aussen",
+        "circulation",
+        "elt",
+        "vr_d",
+        "vr_h",
+        "wachdienst"
+      ],
+      "edges": {
+        "w01": {
+          "id": "w01",
+          "rooms": [
+            "E.61",
+            "circulation"
+          ],
+          "portal_id": "p02"
+        },
+        "w02": {
+          "id": "w02",
+          "rooms": [
+            "E.59b",
+            "circulation"
+          ],
+          "portal_id": "p03"
+        },
+        "w03": {
+          "id": "w03",
+          "rooms": [
+            "E.59a",
+            "circulation"
+          ],
+          "portal_id": "p09"
+        },
+        "w04": {
+          "id": "w04",
+          "rooms": [
+            "E.59",
+            "circulation"
+          ],
+          "portal_id": "p11"
+        },
+        "w05": {
+          "id": "w05",
+          "rooms": [
+            "elt",
+            "circulation"
+          ],
+          "portal_id": "p14"
+        },
+        "w06": {
+          "id": "w06",
+          "rooms": [
+            "E.52",
+            "circulation"
+          ],
+          "portal_id": "p16"
+        },
+        "w07": {
+          "id": "w07",
+          "rooms": [
+            "wachdienst",
+            "E.52"
+          ],
+          "portal_id": "p22"
+        },
+        "w08": {
+          "id": "w08",
+          "rooms": [
+            "E.63",
+            "circulation"
+          ],
+          "portal_id": "p01"
+        },
+        "w09": {
+          "id": "w09",
+          "rooms": [
+            "E.62",
+            "circulation"
+          ],
+          "portal_id": "p04"
+        },
+        "w10": {
+          "id": "w10",
+          "rooms": [
+            "vr_h",
+            "circulation"
+          ],
+          "portal_id": "p05"
+        },
+        "w11": {
+          "id": "w11",
+          "rooms": [
+            "vr_d",
+            "circulation"
+          ],
+          "portal_id": "p06"
+        },
+        "w12": {
+          "id": "w12",
+          "rooms": [
+            "TR9",
+            "circulation"
+          ],
+          "portal_id": "p07"
+        },
+        "w13": {
+          "id": "w13",
+          "rooms": [
+            "R.58",
+            "circulation"
+          ],
+          "portal_id": "p13"
+        },
+        "w14": {
+          "id": "w14",
+          "rooms": [
+            "E.57",
+            "circulation"
+          ],
+          "portal_id": "p18"
+        },
+        "w15": {
+          "id": "w15",
+          "rooms": [
+            "E.56c",
+            "circulation"
+          ],
+          "portal_id": "p19"
+        },
+        "w16": {
+          "id": "w16",
+          "rooms": [
+            "E.56b",
+            "circulation"
+          ],
+          "portal_id": "p20"
+        },
+        "w17": {
+          "id": "w17",
+          "rooms": [
+            "vr_h",
+            "E.54b"
+          ],
+          "portal_id": "p24"
+        },
+        "w18": {
+          "id": "w18",
+          "rooms": [
+            "vr_d",
+            "E.54a"
+          ],
+          "portal_id": "p25"
+        },
+        "w19": {
+          "id": "w19",
+          "rooms": [
+            "E.58a",
+            "R.58"
+          ],
+          "portal_id": "p26"
+        },
+        "w20": {
+          "id": "w20",
+          "rooms": [
+            "E.61",
+            "E.59b"
+          ],
+          "portal_id": null
+        },
+        "w21": {
+          "id": "w21",
+          "rooms": [
+            "E.59b",
+            "E.59a"
+          ],
+          "portal_id": null
+        },
+        "w22": {
+          "id": "w22",
+          "rooms": [
+            "E.59a",
+            "E.59"
+          ],
+          "portal_id": null
+        },
+        "w23": {
+          "id": "w23",
+          "rooms": [
+            "E.57",
+            "E.56c"
+          ],
+          "portal_id": null
+        },
+        "w24": {
+          "id": "w24",
+          "rooms": [
+            "E.56c",
+            "E.56b"
+          ],
+          "portal_id": null
+        },
+        "w25": {
+          "id": "w25",
+          "rooms": [
+            "aussen",
+            "E.52"
+          ],
+          "portal_id": "p23"
+        },
+        "w26": {
+          "id": "w26",
+          "rooms": [
+            "aussen",
+            "E.61"
+          ],
+          "portal_id": "p27"
+        },
+        "w27": {
+          "id": "w27",
+          "rooms": [
+            "aussen",
+            "E.63"
+          ],
+          "portal_id": "p28"
+        }
+      }
+    },
+    "connectivity": {
+      "nodes": [
+        "E.52",
+        "E.54a",
+        "E.54b",
+        "E.56b",
+        "E.56c",
+        "E.57",
+        "E.58a",
+        "E.59",
+        "E.59a",
+        "E.59b",
+        "E.61",
+        "E.62",
+        "E.63",
+        "R.58",
+        "TR9",
+        "anschluss",
+        "atrium",
+        "aussen",
+        "elt",
+        "flur_ost",
+        "flur_west",
+        "vr_d",
+        "vr_h",
+        "wachdienst"
+      ],
+      "edges": {
+        "boundary:p01": {
+          "id": "boundary:p01",
+          "zones": [
+            "E.63",
+            "flur_west"
+          ],
+          "portal_id": "p01"
+        },
+        "boundary:p02": {
+          "id": "boundary:p02",
+          "zones": [
+            "E.61",
+            "flur_west"
+          ],
+          "portal_id": "p02"
+        },
+        "boundary:p03": {
+          "id": "boundary:p03",
+          "zones": [
+            "E.59b",
+            "flur_west"
+          ],
+          "portal_id": "p03"
+        },
+        "boundary:p04": {
+          "id": "boundary:p04",
+          "zones": [
+            "E.62",
+            "flur_west"
+          ],
+          "portal_id": "p04"
+        },
+        "boundary:p05": {
+          "id": "boundary:p05",
+          "zones": [
+            "vr_h",
+            "flur_west"
+          ],
+          "portal_id": "p05"
+        },
+        "boundary:p06": {
+          "id": "boundary:p06",
+          "zones": [
+            "vr_d",
+            "flur_west"
+          ],
+          "portal_id": "p06"
+        },
+        "boundary:p07": {
+          "id": "boundary:p07",
+          "zones": [
+            "TR9",
+            "flur_west"
+          ],
+          "portal_id": "p07"
+        },
+        "boundary:p08": {
+          "id": "boundary:p08",
+          "zones": [
+            "flur_west",
+            "atrium"
+          ],
+          "portal_id": "p08"
+        },
+        "boundary:p09": {
+          "id": "boundary:p09",
+          "zones": [
+            "E.59a",
+            "atrium"
+          ],
+          "portal_id": "p09"
+        },
+        "boundary:p11": {
+          "id": "boundary:p11",
+          "zones": [
+            "E.59",
+            "atrium"
+          ],
+          "portal_id": "p11"
+        },
+        "boundary:p13": {
+          "id": "boundary:p13",
+          "zones": [
+            "R.58",
+            "atrium"
+          ],
+          "portal_id": "p13"
+        },
+        "boundary:p14": {
+          "id": "boundary:p14",
+          "zones": [
+            "elt",
+            "atrium"
+          ],
+          "portal_id": "p14"
+        },
+        "boundary:p15": {
+          "id": "boundary:p15",
+          "zones": [
+            "atrium",
+            "flur_ost"
+          ],
+          "portal_id": "p15"
+        },
+        "boundary:p16": {
+          "id": "boundary:p16",
+          "zones": [
+            "E.52",
+            "flur_ost"
+          ],
+          "portal_id": "p16"
+        },
+        "boundary:p18": {
+          "id": "boundary:p18",
+          "zones": [
+            "E.57",
+            "flur_ost"
+          ],
+          "portal_id": "p18"
+        },
+        "boundary:p19": {
+          "id": "boundary:p19",
+          "zones": [
+            "E.56c",
+            "flur_ost"
+          ],
+          "portal_id": "p19"
+        },
+        "boundary:p20": {
+          "id": "boundary:p20",
+          "zones": [
+            "E.56b",
+            "flur_ost"
+          ],
+          "portal_id": "p20"
+        },
+        "boundary:p21": {
+          "id": "boundary:p21",
+          "zones": [
+            "flur_ost",
+            "anschluss"
+          ],
+          "portal_id": "p21"
+        },
+        "boundary:p22": {
+          "id": "boundary:p22",
+          "zones": [
+            "wachdienst",
+            "E.52"
+          ],
+          "portal_id": "p22"
+        },
+        "boundary:p24": {
+          "id": "boundary:p24",
+          "zones": [
+            "vr_h",
+            "E.54b"
+          ],
+          "portal_id": "p24"
+        },
+        "boundary:p25": {
+          "id": "boundary:p25",
+          "zones": [
+            "vr_d",
+            "E.54a"
+          ],
+          "portal_id": "p25"
+        },
+        "boundary:p26": {
+          "id": "boundary:p26",
+          "zones": [
+            "E.58a",
+            "R.58"
+          ],
+          "portal_id": "p26"
+        },
+        "boundary:p23": {
+          "id": "boundary:p23",
+          "zones": [
+            "aussen",
+            "E.52"
+          ],
+          "portal_id": "p23"
+        },
+        "boundary:p27": {
+          "id": "boundary:p27",
+          "zones": [
+            "aussen",
+            "E.61"
+          ],
+          "portal_id": "p27"
+        },
+        "boundary:p28": {
+          "id": "boundary:p28",
+          "zones": [
+            "aussen",
+            "E.63"
+          ],
+          "portal_id": "p28"
+        }
+      }
+    },
+    "routing": {
+      "nodes": [
+        "p01",
+        "p02",
+        "p03",
+        "p04",
+        "p05",
+        "p06",
+        "p07",
+        "p08",
+        "p09",
+        "p11",
+        "p13",
+        "p14",
+        "p15",
+        "p16",
+        "p18",
+        "p19",
+        "p20",
+        "p21",
+        "p22",
+        "p23",
+        "p24",
+        "p25",
+        "p26",
+        "p27",
+        "p28"
+      ],
+      "edges": {
+        "segment:E.61:p02:p27": {
+          "id": "segment:E.61:p02:p27",
+          "portals": [
+            "p02",
+            "p27"
+          ],
+          "zone_id": "E.61",
+          "distance": 170.074
+        },
+        "segment:E.52:p16:p22": {
+          "id": "segment:E.52:p16:p22",
+          "portals": [
+            "p16",
+            "p22"
+          ],
+          "zone_id": "E.52",
+          "distance": 297.654
+        },
+        "segment:E.52:p16:p23": {
+          "id": "segment:E.52:p16:p23",
+          "portals": [
+            "p16",
+            "p23"
+          ],
+          "zone_id": "E.52",
+          "distance": 267.014
+        },
+        "segment:E.52:p22:p23": {
+          "id": "segment:E.52:p22:p23",
+          "portals": [
+            "p22",
+            "p23"
+          ],
+          "zone_id": "E.52",
+          "distance": 411.907
+        },
+        "segment:E.63:p01:p28": {
+          "id": "segment:E.63:p01:p28",
+          "portals": [
+            "p01",
+            "p28"
+          ],
+          "zone_id": "E.63",
+          "distance": 235.332
+        },
+        "segment:flur_west:p01:p02": {
+          "id": "segment:flur_west:p01:p02",
+          "portals": [
+            "p01",
+            "p02"
+          ],
+          "zone_id": "flur_west",
+          "distance": 331.087
+        },
+        "segment:flur_west:p01:p03": {
+          "id": "segment:flur_west:p01:p03",
+          "portals": [
+            "p01",
+            "p03"
+          ],
+          "zone_id": "flur_west",
+          "distance": 250.291
+        },
+        "segment:flur_west:p01:p04": {
+          "id": "segment:flur_west:p01:p04",
+          "portals": [
+            "p01",
+            "p04"
+          ],
+          "zone_id": "flur_west",
+          "distance": 316.948
+        },
+        "segment:flur_west:p01:p05": {
+          "id": "segment:flur_west:p01:p05",
+          "portals": [
+            "p01",
+            "p05"
+          ],
+          "zone_id": "flur_west",
+          "distance": 272.728
+        },
+        "segment:flur_west:p01:p06": {
+          "id": "segment:flur_west:p01:p06",
+          "portals": [
+            "p01",
+            "p06"
+          ],
+          "zone_id": "flur_west",
+          "distance": 255.494
+        },
+        "segment:flur_west:p01:p07": {
+          "id": "segment:flur_west:p01:p07",
+          "portals": [
+            "p01",
+            "p07"
+          ],
+          "zone_id": "flur_west",
+          "distance": 277.263
+        },
+        "segment:flur_west:p01:p08": {
+          "id": "segment:flur_west:p01:p08",
+          "portals": [
+            "p01",
+            "p08"
+          ],
+          "zone_id": "flur_west",
+          "distance": 323.126
+        },
+        "segment:flur_west:p02:p03": {
+          "id": "segment:flur_west:p02:p03",
+          "portals": [
+            "p02",
+            "p03"
+          ],
+          "zone_id": "flur_west",
+          "distance": 169.204
+        },
+        "segment:flur_west:p02:p04": {
+          "id": "segment:flur_west:p02:p04",
+          "portals": [
+            "p02",
+            "p04"
+          ],
+          "zone_id": "flur_west",
+          "distance": 235.86
+        },
+        "segment:flur_west:p02:p05": {
+          "id": "segment:flur_west:p02:p05",
+          "portals": [
+            "p02",
+            "p05"
+          ],
+          "zone_id": "flur_west",
+          "distance": 191.641
+        },
+        "segment:flur_west:p02:p06": {
+          "id": "segment:flur_west:p02:p06",
+          "portals": [
+            "p02",
+            "p06"
+          ],
+          "zone_id": "flur_west",
+          "distance": 174.406
+        },
+        "segment:flur_west:p02:p07": {
+          "id": "segment:flur_west:p02:p07",
+          "portals": [
+            "p02",
+            "p07"
+          ],
+          "zone_id": "flur_west",
+          "distance": 196.176
+        },
+        "segment:flur_west:p02:p08": {
+          "id": "segment:flur_west:p02:p08",
+          "portals": [
+            "p02",
+            "p08"
+          ],
+          "zone_id": "flur_west",
+          "distance": 242.038
+        },
+        "segment:flur_west:p03:p04": {
+          "id": "segment:flur_west:p03:p04",
+          "portals": [
+            "p03",
+            "p04"
+          ],
+          "zone_id": "flur_west",
+          "distance": 155.064
+        },
+        "segment:flur_west:p03:p05": {
+          "id": "segment:flur_west:p03:p05",
+          "portals": [
+            "p03",
+            "p05"
+          ],
+          "zone_id": "flur_west",
+          "distance": 110.845
+        },
+        "segment:flur_west:p03:p06": {
+          "id": "segment:flur_west:p03:p06",
+          "portals": [
+            "p03",
+            "p06"
+          ],
+          "zone_id": "flur_west",
+          "distance": 93.611
+        },
+        "segment:flur_west:p03:p07": {
+          "id": "segment:flur_west:p03:p07",
+          "portals": [
+            "p03",
+            "p07"
+          ],
+          "zone_id": "flur_west",
+          "distance": 115.38
+        },
+        "segment:flur_west:p03:p08": {
+          "id": "segment:flur_west:p03:p08",
+          "portals": [
+            "p03",
+            "p08"
+          ],
+          "zone_id": "flur_west",
+          "distance": 161.243
+        },
+        "segment:flur_west:p04:p05": {
+          "id": "segment:flur_west:p04:p05",
+          "portals": [
+            "p04",
+            "p05"
+          ],
+          "zone_id": "flur_west",
+          "distance": 177.501
+        },
+        "segment:flur_west:p04:p06": {
+          "id": "segment:flur_west:p04:p06",
+          "portals": [
+            "p04",
+            "p06"
+          ],
+          "zone_id": "flur_west",
+          "distance": 160.267
+        },
+        "segment:flur_west:p04:p07": {
+          "id": "segment:flur_west:p04:p07",
+          "portals": [
+            "p04",
+            "p07"
+          ],
+          "zone_id": "flur_west",
+          "distance": 182.036
+        },
+        "segment:flur_west:p04:p08": {
+          "id": "segment:flur_west:p04:p08",
+          "portals": [
+            "p04",
+            "p08"
+          ],
+          "zone_id": "flur_west",
+          "distance": 227.899
+        },
+        "segment:flur_west:p05:p06": {
+          "id": "segment:flur_west:p05:p06",
+          "portals": [
+            "p05",
+            "p06"
+          ],
+          "zone_id": "flur_west",
+          "distance": 116.047
+        },
+        "segment:flur_west:p05:p07": {
+          "id": "segment:flur_west:p05:p07",
+          "portals": [
+            "p05",
+            "p07"
+          ],
+          "zone_id": "flur_west",
+          "distance": 137.817
+        },
+        "segment:flur_west:p05:p08": {
+          "id": "segment:flur_west:p05:p08",
+          "portals": [
+            "p05",
+            "p08"
+          ],
+          "zone_id": "flur_west",
+          "distance": 183.679
+        },
+        "segment:flur_west:p06:p07": {
+          "id": "segment:flur_west:p06:p07",
+          "portals": [
+            "p06",
+            "p07"
+          ],
+          "zone_id": "flur_west",
+          "distance": 120.582
+        },
+        "segment:flur_west:p06:p08": {
+          "id": "segment:flur_west:p06:p08",
+          "portals": [
+            "p06",
+            "p08"
+          ],
+          "zone_id": "flur_west",
+          "distance": 166.445
+        },
+        "segment:flur_west:p07:p08": {
+          "id": "segment:flur_west:p07:p08",
+          "portals": [
+            "p07",
+            "p08"
+          ],
+          "zone_id": "flur_west",
+          "distance": 188.214
+        },
+        "segment:atrium:p08:p09": {
+          "id": "segment:atrium:p08:p09",
+          "portals": [
+            "p08",
+            "p09"
+          ],
+          "zone_id": "atrium",
+          "distance": 340.411
+        },
+        "segment:atrium:p08:p11": {
+          "id": "segment:atrium:p08:p11",
+          "portals": [
+            "p08",
+            "p11"
+          ],
+          "zone_id": "atrium",
+          "distance": 285.55
+        },
+        "segment:atrium:p08:p13": {
+          "id": "segment:atrium:p08:p13",
+          "portals": [
+            "p08",
+            "p13"
+          ],
+          "zone_id": "atrium",
+          "distance": 276.63
+        },
+        "segment:atrium:p08:p14": {
+          "id": "segment:atrium:p08:p14",
+          "portals": [
+            "p08",
+            "p14"
+          ],
+          "zone_id": "atrium",
+          "distance": 300.079
+        },
+        "segment:atrium:p08:p15": {
+          "id": "segment:atrium:p08:p15",
+          "portals": [
+            "p08",
+            "p15"
+          ],
+          "zone_id": "atrium",
+          "distance": 281.381
+        },
+        "segment:atrium:p09:p11": {
+          "id": "segment:atrium:p09:p11",
+          "portals": [
+            "p09",
+            "p11"
+          ],
+          "zone_id": "atrium",
+          "distance": 295.277
+        },
+        "segment:atrium:p09:p13": {
+          "id": "segment:atrium:p09:p13",
+          "portals": [
+            "p09",
+            "p13"
+          ],
+          "zone_id": "atrium",
+          "distance": 286.356
+        },
+        "segment:atrium:p09:p14": {
+          "id": "segment:atrium:p09:p14",
+          "portals": [
+            "p09",
+            "p14"
+          ],
+          "zone_id": "atrium",
+          "distance": 309.805
+        },
+        "segment:atrium:p09:p15": {
+          "id": "segment:atrium:p09:p15",
+          "portals": [
+            "p09",
+            "p15"
+          ],
+          "zone_id": "atrium",
+          "distance": 291.107
+        },
+        "segment:atrium:p11:p13": {
+          "id": "segment:atrium:p11:p13",
+          "portals": [
+            "p11",
+            "p13"
+          ],
+          "zone_id": "atrium",
+          "distance": 231.496
+        },
+        "segment:atrium:p11:p14": {
+          "id": "segment:atrium:p11:p14",
+          "portals": [
+            "p11",
+            "p14"
+          ],
+          "zone_id": "atrium",
+          "distance": 254.945
+        },
+        "segment:atrium:p11:p15": {
+          "id": "segment:atrium:p11:p15",
+          "portals": [
+            "p11",
+            "p15"
+          ],
+          "zone_id": "atrium",
+          "distance": 236.247
+        },
+        "segment:atrium:p13:p14": {
+          "id": "segment:atrium:p13:p14",
+          "portals": [
+            "p13",
+            "p14"
+          ],
+          "zone_id": "atrium",
+          "distance": 246.025
+        },
+        "segment:atrium:p13:p15": {
+          "id": "segment:atrium:p13:p15",
+          "portals": [
+            "p13",
+            "p15"
+          ],
+          "zone_id": "atrium",
+          "distance": 227.327
+        },
+        "segment:atrium:p14:p15": {
+          "id": "segment:atrium:p14:p15",
+          "portals": [
+            "p14",
+            "p15"
+          ],
+          "zone_id": "atrium",
+          "distance": 250.776
+        },
+        "segment:flur_ost:p15:p16": {
+          "id": "segment:flur_ost:p15:p16",
+          "portals": [
+            "p15",
+            "p16"
+          ],
+          "zone_id": "flur_ost",
+          "distance": 295.505
+        },
+        "segment:flur_ost:p15:p18": {
+          "id": "segment:flur_ost:p15:p18",
+          "portals": [
+            "p15",
+            "p18"
+          ],
+          "zone_id": "flur_ost",
+          "distance": 304.0
+        },
+        "segment:flur_ost:p15:p19": {
+          "id": "segment:flur_ost:p15:p19",
+          "portals": [
+            "p15",
+            "p19"
+          ],
+          "zone_id": "flur_ost",
+          "distance": 350.463
+        },
+        "segment:flur_ost:p15:p20": {
+          "id": "segment:flur_ost:p15:p20",
+          "portals": [
+            "p15",
+            "p20"
+          ],
+          "zone_id": "flur_ost",
+          "distance": 442.341
+        },
+        "segment:flur_ost:p15:p21": {
+          "id": "segment:flur_ost:p15:p21",
+          "portals": [
+            "p15",
+            "p21"
+          ],
+          "zone_id": "flur_ost",
+          "distance": 488.0
+        },
+        "segment:flur_ost:p16:p18": {
+          "id": "segment:flur_ost:p16:p18",
+          "portals": [
+            "p16",
+            "p18"
+          ],
+          "zone_id": "flur_ost",
+          "distance": 151.505
+        },
+        "segment:flur_ost:p16:p19": {
+          "id": "segment:flur_ost:p16:p19",
+          "portals": [
+            "p16",
+            "p19"
+          ],
+          "zone_id": "flur_ost",
+          "distance": 197.969
+        },
+        "segment:flur_ost:p16:p20": {
+          "id": "segment:flur_ost:p16:p20",
+          "portals": [
+            "p16",
+            "p20"
+          ],
+          "zone_id": "flur_ost",
+          "distance": 289.847
+        },
+        "segment:flur_ost:p16:p21": {
+          "id": "segment:flur_ost:p16:p21",
+          "portals": [
+            "p16",
+            "p21"
+          ],
+          "zone_id": "flur_ost",
+          "distance": 335.505
+        },
+        "segment:flur_ost:p18:p19": {
+          "id": "segment:flur_ost:p18:p19",
+          "portals": [
+            "p18",
+            "p19"
+          ],
+          "zone_id": "flur_ost",
+          "distance": 206.463
+        },
+        "segment:flur_ost:p18:p20": {
+          "id": "segment:flur_ost:p18:p20",
+          "portals": [
+            "p18",
+            "p20"
+          ],
+          "zone_id": "flur_ost",
+          "distance": 298.341
+        },
+        "segment:flur_ost:p18:p21": {
+          "id": "segment:flur_ost:p18:p21",
+          "portals": [
+            "p18",
+            "p21"
+          ],
+          "zone_id": "flur_ost",
+          "distance": 344.0
+        },
+        "segment:flur_ost:p19:p20": {
+          "id": "segment:flur_ost:p19:p20",
+          "portals": [
+            "p19",
+            "p20"
+          ],
+          "zone_id": "flur_ost",
+          "distance": 344.805
+        },
+        "segment:flur_ost:p19:p21": {
+          "id": "segment:flur_ost:p19:p21",
+          "portals": [
+            "p19",
+            "p21"
+          ],
+          "zone_id": "flur_ost",
+          "distance": 390.463
+        },
+        "segment:flur_ost:p20:p21": {
+          "id": "segment:flur_ost:p20:p21",
+          "portals": [
+            "p20",
+            "p21"
+          ],
+          "zone_id": "flur_ost",
+          "distance": 482.341
+        },
+        "segment:vr_h:p05:p24": {
+          "id": "segment:vr_h:p05:p24",
+          "portals": [
+            "p05",
+            "p24"
+          ],
+          "zone_id": "vr_h",
+          "distance": 44.283
+        },
+        "segment:vr_d:p06:p25": {
+          "id": "segment:vr_d:p06:p25",
+          "portals": [
+            "p06",
+            "p25"
+          ],
+          "zone_id": "vr_d",
+          "distance": 44.0
+        },
+        "segment:R.58:p13:p26": {
+          "id": "segment:R.58:p13:p26",
+          "portals": [
+            "p13",
+            "p26"
+          ],
+          "zone_id": "R.58",
+          "distance": 246.0
+        }
+      }
+    }
+  }
+}

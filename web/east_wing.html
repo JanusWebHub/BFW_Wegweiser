@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wegweiser · Ostflügel-Prototyp</title>
+    <link rel="stylesheet" href="east_wing.css">
+</head>
+<body>
+    <main class="app-shell">
+        <header class="page-header">
+            <div>
+                <p class="eyebrow">BFW CHARLOTTENBURG · EG OST</p>
+                <h1>Wegweiser-Prototyp</h1>
+                <p class="intro">Zonenbasierte Navigation über Portale und Segmente</p>
+            </div>
+            <div class="model-status" id="model-status" role="status">Daten werden geladen</div>
+        </header>
+
+        <section class="workspace" aria-label="Routenplanung">
+            <div class="map-panel">
+                <div class="map-heading">
+                    <div>
+                        <p class="section-kicker">VEREINFACHTER GRUNDRISS</p>
+                        <h2>Ostflügel</h2>
+                    </div>
+                    <div class="legend" aria-label="Legende">
+                        <span><i class="swatch swatch-access"></i>Zugangssegment</span>
+                        <span><i class="swatch swatch-transit"></i>Transitsegment</span>
+                        <span><i class="swatch swatch-portal"></i>Portal</span>
+                    </div>
+                </div>
+
+                <div class="map-frame" id="map-frame">
+                    <div id="floor-plan" aria-label="Semantischer Grundriss"></div>
+                    <svg id="route-overlay" viewBox="0 0 1580 900" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                        <g id="route-segments"></g>
+                        <g id="route-markers"></g>
+                    </svg>
+                </div>
+            </div>
+
+            <aside class="route-panel">
+                <form id="route-form">
+                    <div class="field-group">
+                        <label for="start-zone">Startzone</label>
+                        <select id="start-zone" name="start-zone"></select>
+                    </div>
+                    <button class="swap-button" id="swap-zones" type="button" aria-label="Start und Ziel tauschen" title="Start und Ziel tauschen">⇅</button>
+                    <div class="field-group">
+                        <label for="target-zone">Zielzone</label>
+                        <select id="target-zone" name="target-zone"></select>
+                    </div>
+                    <button class="route-button" type="submit">Route anzeigen</button>
+                </form>
+
+                <div class="route-summary" id="route-summary" hidden>
+                    <div class="summary-row">
+                        <span>Distanz</span>
+                        <strong id="route-distance">–</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>Portale</span>
+                        <strong id="route-portal-count">–</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>Gesamtkosten</span>
+                        <strong id="route-cost">–</strong>
+                    </div>
+                </div>
+
+                <section class="instructions" aria-labelledby="instructions-title">
+                    <p class="section-kicker">NAVIGATIONSANWEISUNGEN</p>
+                    <h2 id="instructions-title">Wegbeschreibung</h2>
+                    <ol id="instruction-list"></ol>
+                    <p class="empty-state" id="empty-state">Start und Ziel wählen, um eine Route anzuzeigen.</p>
+                </section>
+
+                <details class="route-data">
+                    <summary>Modellroute anzeigen</summary>
+                    <code id="canonical-route"></code>
+                    <div id="state-chain" class="state-chain"></div>
+                </details>
+            </aside>
+        </section>
+    </main>
+    <script src="east_wing.js"></script>
+</body>
+</html>
