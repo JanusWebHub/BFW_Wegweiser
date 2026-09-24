@@ -30,25 +30,46 @@ Critical distinction: the working code/program files still implement the *old* m
 
 - Convert edited files to CRLF.
 - Add root `.gitattributes` with `* text=auto` in its own commit.
+- README content issues found during the PR3 preview (not caused by branch operations; fix after branch work is finished):
+  - The workspace layout lists `docs/references/` with four files, but the folder does not exist. Present in `f3dd43f` and therefore on real `main`.
+  - The `web/` tree lines for `bfw-eg-ost.svg`, `east_wing.css`, `east_wing.html`, and `east_wing.js` are misindented. Introduced by the east-wing commit `a39e341`.
+- README layout gap caused by the replay resolution: `docs/rulebook_sorted.md` (an east-wing file) is not listed in the `docs/` tree, because the conflict hunk was resolved with PR #2's side unchanged.
+
+### Operational notes
+
+- The repository lives in OneDrive. OneDrive can seize git's temporary `.git/rebase-merge` folder mid-rebase (it became a read-only, pinned OneDrive folder), so git cannot delete it and keeps reporting a rebase in progress. Keep OneDrive paused or closed during rebases. If it happens: confirm the folder is empty and nothing else is in progress, then delete the empty folder manually. Do not use `git rebase --abort` in that state: the rebase has already finished, and abort exists to return a branch to its pre-rebase position.
+- In a rebase, `--theirs` is the commit being replayed. `git checkout --theirs <file>` restores that version from the index (stage 3), even if the file is missing on disk, and overwrites any local edits.
+- Never `git checkout --theirs README.md` during the PR #2 replay: it takes the whole PR #2 README and drops the east-wing content that merged automatically. Resolve only the conflicting hunk.
+- Use terminal commands, not VS Code Source Control buttons: "Continue" commits with the default message, and "Publish Branch" would push local-only `preview/*` and `backup/*` branches.
 
 ### Branch/merge sequence (as of 2026-09-24)
 
-1. Archive full unsquashed history to `denizmertmercan/BFW_Wegweiser`. — done
-2. Squash-merge `docs/restructure` into JanusWebHub `main`. — done
-3. Remove the tracker from `main`; rebase `feature/sql` onto the cleaned `main` and retain it separately. — done
-4. Preview and evaluate PR3-style east-wing integration before replaying PR #2. — ongoing
-5. Delete `backup-before-reset`. — done
+1. Archive full unsquashed history to `denizmertmercan/BFW_Wegweiser`: done.
+2. Squash-merge `docs/restructure` into JanusWebHub `main`: done.
+3. Remove the tracker from `main`; rebase `feature/sql` onto the cleaned `main` and retain it separately: done.
+4. Preview and evaluate PR3-style east-wing integration before replaying PR #2: preview done on the home machine (see "Completed PR3-style preview"); evaluation ongoing.
+5. Delete `backup-before-reset`: done (work machine and home machine).
 
-### Home-machine branch picture (as of 2026-09-23)
+### Home-machine branch picture (as of 2026-09-24, after sync and PR3 preview)
 
-- `main` (tip `f3dd43f` — squash commit, see Branch/merge log): original implementation, now carrying the squashed docs restructuring on top.
-- `feature/east-wing-prototype` (2 commits ahead of old `4763d6c`): `a39e341` east-wing routing prototype + `5fc294c` rulebook update. Small, self-contained. Still needs rebasing onto new `main` — not yet done.
-- `feature/sql` (Janus, 2 commits, `55ec7ef`/`07ae881`, branched off old `docs/restructure` at `6e413e7`): appends rulebook clusters 5 (usage analytics and feedback) and 6 (UI and UX). Still needs rebasing onto new `main` — not yet done. See rebase-preview finding below; not low-risk as originally assumed.
-- `backup-before-reset`: orphaned safety branch off old main tip, holds one extra commit `0de4f03` ("Document semantic floor plans and portal graph architecture") never merged anywhere. False start, not salvageable, must never enter `main`'s ancestry. Not yet deleted (W5).
-- `docs/restructure`, `local/documentation-restructuring`: deleted, both locally and on `januswebhub`, after the squash-merge (see Branch/merge log). Full history preserved in PR #2 and on `denizmertmercan` fork.
-- `copilot/common-design-patterns`: deleted agent-created branch; identical to `main`, never real work.
+Remote configuration: `januswebhub` only (`denizmertmercan` is not configured on the home machine). Tag `archive/pr-2-squash` present locally and on the remote. `feature/east-wing-prototype` is also checked out in the linked worktree `wegweiser-east-wing-prototype`.
 
-Remotes: `januswebhub` (`JanusWebHub/BFW_Wegweiser`, the active repo) and `denizmertmercan` (`denizmertmercan/BFW_Wegweiser`, personal fork/archive). Both configured with these names, not `origin`/`fork`.
+| Local branch | Remote branch | Short hash |
+| --- | --- | --- |
+| `main` | `januswebhub/main` | `a9862c2` |
+| `feature/sql` | `januswebhub/feature/sql` | `be9b962` |
+| `feature/east-wing-prototype` | `januswebhub/feature/east-wing-prototype` | `5fc294c` |
+| `tracker-updates` | `januswebhub/tracker-updates` | `2b46f84` (before this checkpoint) |
+| `preview/replay-pr2` | `januswebhub/preview/replay-pr2` | `b1e657c` |
+| `preview/sql-after-replay` | `januswebhub/preview/sql-after-replay` | `77a7048` |
+| `backup/main-before-pr3-preview` | none | `a9862c2` |
+| `backup/east-before-pr3-preview` | none | `5fc294c` |
+| `backup/sql-before-pr3-preview` | none | `be9b962` |
+| `backup/tracker-before-pr3-preview` | none | `2b46f84` |
+| `preview/pr3-east` | none | `79bd467` |
+| `preview/candidate-main` | none | `8494dad` |
+| `preview/sql-after-pr3` | none | `b281326` |
+| `preview/tracker-after-pr3` | none | `929b2cc` |
 
 ### Work-machine branch picture (as of 2026-09-24)
 
@@ -63,11 +84,13 @@ Remote configuration: `januswebhub` only; `floorfox` removed.
 | `preview/replay-pr2` | none | `b1e657c` |
 | `preview/sql-after-replay` | none | `77a7048` |
 
+Later on the work machine, before switching machines: `tracker-updates` advanced to `2b46f84`, and `preview/replay-pr2` and `preview/sql-after-replay` were pushed to JanusWebHub intentionally.
+
 ### Branch/merge log (as of 2026-09-24)
 
 - Fork remote added (`denizmertmercan/BFW_Wegweiser`), `origin` renamed to `januswebhub` for clarity. Full history pushed to the fork: `main`, `docs/restructure`, `local/documentation-restructuring`. `feature/east-wing-prototype` and `backup-before-reset` were deliberately excluded; the latter is disavowed content, not archive-worthy.
-- On the fork, demonstrated the fast-forward path (`docs/restructure` → fork's `main`) to confirm full-history preservation works as intended — fork's `main` now at `db3b052`, all 85 commits intact. Both `docs/restructure` and `local/documentation-restructuring` kept as named branches on the fork (not deleted) — the branch labels themselves are part of what "keep full history" means, not just the commit content.
-- PR #2 opened and squash-merged on `januswebhub`: `docs/restructure` → `main`. One Copilot review suggestion applied (stale `docs/references/` listing in README.md, caught correctly — that folder was deleted in an earlier commit). Squash commit: `f3dd43f`, "Restructure project documentation (#2)". `main` confirmed single-parent (true squash, not a merge commit).
+- On the fork, demonstrated the fast-forward path (`docs/restructure` → fork's `main`) to confirm full-history preservation works as intended: fork's `main` now at `db3b052`, all 85 commits intact. Both `docs/restructure` and `local/documentation-restructuring` kept as named branches on the fork (not deleted), because the branch labels themselves are part of what "keep full history" means, not just the commit content.
+- PR #2 opened and squash-merged on `januswebhub`: `docs/restructure` → `main`. One Copilot review suggestion applied (stale `docs/references/` listing in README.md, caught correctly; that folder was deleted in an earlier commit). Squash commit: `f3dd43f`, "Restructure project documentation (#2)". `main` confirmed single-parent (true squash, not a merge commit).
 - `docs/restructure` and `local/documentation-restructuring` deleted on `januswebhub` and locally, post-merge. Both fully recoverable via PR #2 and the `denizmertmercan` fork.
 - `copilot/common-design-patterns` deleted on `januswebhub` (agent-created branch, identical to old `main`, no real content).
 - Rebase analysis for `feature/sql`: its two own commits touch only `docs/rulebook.md`, which is byte-identical at its fork point (`6e413e7`) and `f3dd43f`. A plain rebase would replay inherited documentation history; `git rebase --onto f3dd43f 6e413e7` correctly reapplies only the two SQL commits.
@@ -86,6 +109,12 @@ Remote configuration: `januswebhub` only; `floorfox` removed.
 - Replay preview on 2026-09-24: local `preview/replay-pr2` replayed `f3dd43f` onto `feature/east-wing-prototype`. The only conflict was `README.md`; resolving it in favor of the PR #2 documentation produced `3688fa8`. Cherry-picking `a9862c2` then produced cleanup commit `b1e657c`.
 - SQL preview on 2026-09-24: local `preview/sql-after-replay` rebased the SQL commits from `a9862c2` onto `b1e657c`, yielding `9061f21` and `77a7048` without conflicts. Verification showed only `docs/rulebook.md` differs from the preview main and the tracker is absent.
 - Preview finding: replaying PR #2 preserves east-wing files that PR #2 never touched, including the separate compiler, routing, generated databases, UI, assets, and `docs/rulebook_sorted.md`. The resolved README retains the restructured documentation model and lists the surviving east-wing program files.
+- Home-machine sync on 2026-09-24: `git fetch --all --prune`. Local `main` had diverged: `e3d1be7` (superseded tracker commit, 1 ahead) versus remote `a9862c2` (1 behind). `e3d1be7` content was archived as `docs/ignore/archive/documentation-restructuring-tracker-260924.md` and also remains in `tracker-updates` ancestry. `git reset --hard HEAD~1` moved `main` to `f3dd43f`, then `git merge --ff-only januswebhub/main` fast-forwarded it to `a9862c2`. The fast-forward removed the tracker file from disk (expected; it lives on `tracker-updates`). A temporary `archive/main-tracker-e3d1be7` branch was created and later deleted.
+- Home-machine sync on 2026-09-24: created local tracking branches `feature/sql`, `tracker-updates`, `preview/replay-pr2`, `preview/sql-after-replay`. Verified `0de4f03` is outside `main` ancestry, then deleted local `backup-before-reset`.
+- Correction on 2026-09-24: the `docs/references/` listing is still in the README at `f3dd43f` (and on real `main`), although the folder does not exist there. The Copilot fix recorded above did not remove this listing.
+- Correction on 2026-09-24: the first preview's README (`3688fa8`, on `preview/replay-pr2`) lacks the "East-Wing Prototype" section, so it is not a correct reference resolution. Both previews omit `docs/rulebook_sorted.md` from the layout tree.
+- PR3-style preview executed on the home machine on 2026-09-24, following the plan below. No real branch moved; nothing pushed. Details in "Completed PR3-style preview".
+- Incident on 2026-09-24: after the PR #2 replay, OneDrive locked the empty `.git/rebase-merge` folder; `git rebase --quit` could not remove it even with OneDrive quit and VS Code restarted. Deleted manually in Explorer; `git status` then clean. A harmless stale `REBASE_HEAD` remains. See "Operational notes".
 
 ### Completed direct-replay preview
 
@@ -131,6 +160,25 @@ git ls-tree -r --name-only HEAD -- docs/ignore/documentation-restructuring-track
 ```
 
 The replay completed with one expected `README.md` conflict. The final SQL preview changed only `docs/rulebook.md`, and the tracker file was absent. This established that the file states are compatible, but the linear history does not preserve a PR-style east-wing merge loop.
+
+### Completed PR3-style preview
+
+Executed on the home machine on 2026-09-24. All steps of the plan below succeeded; the abort path was not needed.
+
+```text
+4763d6c + 5fc294c -> merge (79bd467) -> M2' (aa5e962) -> cleanup' (8494dad) -> SQL1' (b9c22c4) -> SQL2' (b281326)
+                                                         cleanup' (8494dad) -> T1'..T5' (c865a04, 6385ca3, 21dd3da, b282018, 929b2cc)
+```
+
+1. Backups: four local `backup/*` branches at `a9862c2`, `5fc294c`, `be9b962`, `2b46f84`.
+2. Merge: `79bd467`, parents `4763d6c` and `5fc294c`, no conflicts, 10 files and 38,944 insertions staged. Its tree is identical to `5fc294c` (`4f564b5`).
+3. PR #2 replay: one conflict hunk in `README.md` (the `docs/` part of the workspace layout). Resolved with "Accept Incoming" for that hunk only; everything else, including the "East-Wing Prototype" section, merged automatically. Rebase commit `7322431`, then message amended to `aa5e962` (original author and date kept). `git diff f3dd43f aa5e962`: additions only, all east-wing files (10 files, 38,943 insertions, 0 deletions), so PR #2 content is unchanged.
+4. Cleanup: `git cherry-pick -x a9862c2` produced `8494dad`. `git diff a9862c2 8494dad` shows the same east-wing additions only, so the candidate equals real `main` plus east-wing.
+5. SQL: `b9c22c4`, `b281326`, no conflicts; only `docs/rulebook.md` differs from the candidate. Real `feature/sql` unchanged.
+6. Tracker: expected modify/delete conflict at `e3d1be7`, resolved with `git checkout --theirs` plus `git add -f`, giving `c865a04`; the other four commits applied cleanly. The tracker blob at `929b2cc` is identical to the one on `tracker-updates` (`65d1e2c`). Real `tracker-updates` unchanged.
+7. Verification: graph shows the merge loop; SQL preview differs only in `docs/rulebook.md`; tracker absent on the SQL preview, present on the tracker preview.
+
+Commit-message note: separate `-m` flags create separate paragraphs, and git only parses the last paragraph as trailers. So `Original-PR: #2` counts as a trailer, but `Replayed-from:` does not, and in the merge message only `Followed-by:` does.
 
 ### Safe PR3-style reconstruction preview plan
 
