@@ -27,16 +27,17 @@ Remote configuration: `januswebhub` only; `floorfox` removed.
 
 | Local branch | Remote branch | Short hash |
 | --- | --- | --- |
-| `main` | `januswebhub/main` | `e3d1be7` |
-| `feature/sql` | `januswebhub/feature/sql` | `07ae881` |
+| `main` | `januswebhub/main` | `f3dd43f` |
+| `feature/sql` | `januswebhub/feature/sql` | `205833c` |
 | `feature/east-wing-prototype` | `januswebhub/feature/east-wing-prototype` | `5fc294c` |
+| `tracker-updates` | `januswebhub/tracker-updates` | `862ffbd` |
 
 ### Branch/merge sequence — decided
 
 1. Archive full unsquashed history to `denizmertmercan/BFW_Wegweiser`. — done
 2. Squash-merge `docs/restructure` into JanusWebHub `main`. — done
-3. Rebase and merge `feature/sql` into `main`. — outstanding
-4. Rebase and merge `feature/east-wing-prototype` into `main`. — outstanding
+3. Rebase and merge `feature/sql` into `main`. — ongoing; rebased onto `f3dd43f` as `c208b0d` and `205833c`
+4. Port selected code from `feature/east-wing-prototype` into a new branch from the post-SQL `main`. — outstanding
 5. Delete `backup-before-reset`. — done
 6. Replace the JanusWebHub remote with `FLOORFOX/BFW_Wegweiser` and push. — outstanding
 
@@ -55,6 +56,8 @@ Remote configuration: `januswebhub` only; `floorfox` removed.
 - Work-machine operation on 2026-09-24: `git fetch --all --prune` removed stale Janus tracking refs for `copilot/common-design-patterns`, `docs/restructure`, and `local/documentation-restructuring`.
 - Work-machine operation on 2026-09-24: `git branch -D` deleted local `docs/restructure`, `local/documentation-restructuring`, and `backup-before-reset`.
 - Work-machine verification on 2026-09-24: `git ls-remote --heads januswebhub` showed only `main`, `feature/sql`, and `feature/east-wing-prototype`; `git merge-base --is-ancestor 0de4f03 main` confirmed `0de4f03` is outside `main` ancestry.
+- Tracker split on 2026-09-24: created and pushed `tracker-updates` at `862ffbd`, preserving tracker commits `e3d1be7` and `862ffbd`; reset and force-pushed `main` back to `f3dd43f`.
+- SQL rebase on 2026-09-24: verified `docs/rulebook.md` was identical at `6e413e7` and `f3dd43f`; rebased `feature/sql` with `git rebase --onto f3dd43f 6e413e7`, yielding `c208b0d` and `205833c`; force-pushed the rewritten branch to JanusWebHub. The branch now changes only `docs/rulebook.md` relative to `main`.
 
 ## Control
 
