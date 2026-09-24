@@ -41,6 +41,8 @@ Critical distinction: the working code/program files still implement the *old* m
 - In a rebase, `--theirs` is the commit being replayed. `git checkout --theirs <file>` restores that version from the index (stage 3), even if the file is missing on disk, and overwrites any local edits.
 - Never `git checkout --theirs README.md` during the PR #2 replay: it takes the whole PR #2 README and drops the east-wing content that merged automatically. Resolve only the conflicting hunk.
 - Use terminal commands, not VS Code Source Control buttons: "Continue" commits with the default message, and "Publish Branch" would push local-only `preview/*` and `backup/*` branches.
+- `git add` marks a conflict resolved even if the file still contains conflict markers. Check for markers before staging. If a commit editor opens for a wrong state, an empty message aborts the commit safely.
+- Branch deletions in the OneDrive folder leave empty folders under `.git/refs` and `.git/logs` (answer `n` to the retry prompts). They are harmless.
 
 ### Branch/merge sequence (as of 2026-09-24)
 
@@ -49,28 +51,18 @@ Critical distinction: the working code/program files still implement the *old* m
 3. Remove the tracker from `main`; rebase `feature/sql` onto the cleaned `main` and retain it separately: done.
 4. Preview and evaluate PR3-style east-wing integration before replaying PR #2: done; PR3-style chosen (see "Preview evaluation").
 5. Delete `backup-before-reset`: done (work machine and home machine).
-6. Redo the PR3-style reconstruction on the real branches and force-push them to JanusWebHub: next.
+6. Redo the PR3-style reconstruction on the real branches and force-push them to JanusWebHub: done (see "Real-branch reconstruction").
 
-### Home-machine branch picture (as of 2026-09-24, after sync and PR3 preview)
+### Home-machine branch picture (as of 2026-09-24, after the force-push)
 
-Remote configuration: `januswebhub` only (`denizmertmercan` is not configured on the home machine). Tag `archive/pr-2-squash` present locally and on the remote. `feature/east-wing-prototype` is also checked out in the linked worktree `wegweiser-east-wing-prototype`.
+Remote configuration: `januswebhub` only. Remote heads: `main`, `feature/sql`, `tracker-updates`, `feature/east-wing-prototype`. Tag `archive/pr-2-squash` present locally and on the remote. `feature/east-wing-prototype` is also checked out in the linked worktree `wegweiser-east-wing-prototype`.
 
 | Local branch | Remote branch | Short hash |
 | --- | --- | --- |
-| `main` | `januswebhub/main` | `a9862c2` |
-| `feature/sql` | `januswebhub/feature/sql` | `be9b962` |
+| `main` | `januswebhub/main` | `2623bd7` |
+| `feature/sql` | `januswebhub/feature/sql` | `5472812` |
 | `feature/east-wing-prototype` | `januswebhub/feature/east-wing-prototype` | `5fc294c` |
-| `tracker-updates` | `januswebhub/tracker-updates` | `2b46f84` (before this checkpoint) |
-| `preview/replay-pr2` | `januswebhub/preview/replay-pr2` | `b1e657c` |
-| `preview/sql-after-replay` | `januswebhub/preview/sql-after-replay` | `77a7048` |
-| `backup/main-before-pr3-preview` | none | `a9862c2` |
-| `backup/east-before-pr3-preview` | none | `5fc294c` |
-| `backup/sql-before-pr3-preview` | none | `be9b962` |
-| `backup/tracker-before-pr3-preview` | none | `2b46f84` |
-| `preview/pr3-east` | none | `79bd467` |
-| `preview/candidate-main` | none | `8494dad` |
-| `preview/sql-after-pr3` | none | `b281326` |
-| `preview/tracker-after-pr3` | none | `929b2cc` |
+| `tracker-updates` | `januswebhub/tracker-updates` | `f2ded33` (before this checkpoint) |
 
 ### Work-machine branch picture (as of 2026-09-24)
 
@@ -86,6 +78,8 @@ Remote configuration: `januswebhub` only; `floorfox` removed.
 | `preview/sql-after-replay` | none | `77a7048` |
 
 Later on the work machine, before switching machines: `tracker-updates` advanced to `2b46f84`, and `preview/replay-pr2` and `preview/sql-after-replay` were pushed to JanusWebHub intentionally.
+
+Since the force-push, the work machine's `main`, `feature/sql` and `tracker-updates` still point at the old history and must be realigned before any work there. Do not `git pull` or use "Sync Changes" there: that would merge the old history back in. The branches must be reset to the JanusWebHub versions instead.
 
 ### Branch/merge log (as of 2026-09-24)
 
@@ -116,6 +110,7 @@ Later on the work machine, before switching machines: `tracker-updates` advanced
 - Correction on 2026-09-24: the first preview's README (`3688fa8`, on `preview/replay-pr2`) lacks the "East-Wing Prototype" section, so it is not a correct reference resolution. Both previews omit `docs/rulebook_sorted.md` from the layout tree.
 - PR3-style preview executed on the home machine on 2026-09-24, following the plan below. No real branch moved; nothing pushed. Details in "Completed PR3-style preview".
 - Incident on 2026-09-24: after the PR #2 replay, OneDrive locked the empty `.git/rebase-merge` folder; `git rebase --quit` could not remove it even with OneDrive quit and VS Code restarted. Deleted manually in Explorer; `git status` then clean. A harmless stale `REBASE_HEAD` remains. See "Operational notes".
+- Tracker checkpoints on the home machine on 2026-09-24: `947d92e` (preview results) and `a5b0b20` (decision and evaluation), both pushed; rebuilt as `dd3d789` and `f2ded33`.
 
 ### Preview evaluation (2026-09-24)
 
@@ -187,6 +182,38 @@ Executed on the home machine on 2026-09-24. All steps of the plan below succeede
 7. Verification: graph shows the merge loop; SQL preview differs only in `docs/rulebook.md`; tracker absent on the SQL preview, present on the tracker preview.
 
 Commit-message note: separate `-m` flags create separate paragraphs, and git only parses the last paragraph as trailers. So `Original-PR: #2` counts as a trailer, but `Replayed-from:` does not, and in the merge message only `Followed-by:` does.
+
+### Real-branch reconstruction
+
+Executed on the home machine on 2026-09-24 and force-pushed to JanusWebHub.
+
+```text
+4763d6c + 5fc294c -> merge (73141a3) -> PR #2 (0ddf03b) -> cleanup (2623bd7)   main
+                                                           cleanup (2623bd7) -> 0b9da17 -> 5472812   feature/sql
+                                                           cleanup (2623bd7) -> 000e2a7 ... f2ded33   tracker-updates
+```
+
+| Old | New | Commit |
+| --- | --- | --- |
+| (none) | `73141a3` | Merge east-wing routing prototype at its branch point |
+| `f3dd43f` | `0ddf03b` | Restructure project documentation (#2) |
+| `a9862c2` | `2623bd7` | Stop tracking restructuring tracker |
+| `c7e454f` | `0b9da17` | feat: add SQL database support |
+| `be9b962` | `5472812` | feat: improve UX/UI for the guidance workflow |
+| `e3d1be7` | `000e2a7` | update tracker |
+| `862ffbd` | `fda2025` | update tracker |
+| `5d24b83` | `3f52bec` | Update tracker after SQL rebase |
+| `970b19d` | `6c86723` | Overhaul tracker structure |
+| `2b46f84` | `a9f40e3` | Record reconstruction previews |
+| `947d92e` | `dd3d789` | Record PR3-style preview results |
+| `a5b0b20` | `f2ded33` | Record PR3-style decision and preview evaluation |
+
+- Commit messages: the merge carries `Source-branch: feature/east-wing-prototype`; the two replays carry `Replayed-from: <old hash>`. The PR #2 replay keeps its original author and date.
+- Verification before the push: each rebuilt branch has the same files as its preview; each differs from its old tip only by the ten east-wing files (additions only); `git range-diff` showed the SQL and tracker commits unchanged (the first tracker commit now creates the file); `5fc294c` is in `main`, `0de4f03` and the original `f3dd43f` are not; `git fsck` clean.
+- Push: `git ls-remote` confirmed JanusWebHub unchanged since the last fetch, then `git push --force-with-lease januswebhub main feature/sql tracker-updates`.
+- Backups: reused the three preview backups and added `backup/tracker-before-pr3` at `a5b0b20`. After verification and before the push, deleted all local `preview/*` and `backup/*` branches. After the push, deleted the remote `preview/replay-pr2` and `preview/sql-after-replay`.
+- The old commits are no longer on any branch; `f3dd43f` stays reachable through tag `archive/pr-2-squash`.
+- Incident during the PR #2 replay: the resolve step was skipped and `README.md` was staged with conflict markers. The commit was cancelled with an empty message (git also refused an amend mid-cherry-pick), the conflict was then resolved with "Accept Incoming", and the result matched the preview. The in-between commits `6f6f5ec` and `1fc30fa` were replaced by the message amends and are on no branch.
 
 ### Safe PR3-style reconstruction preview plan
 
