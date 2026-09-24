@@ -1,16 +1,43 @@
 # Documentation Restructuring Tracker
 
-## Orientation (as of 2026-09-23)
+## Orientation (as of 2026-09-24)
 
-Read this section first in any new conversation — it stands in for re-explaining the project from scratch.
+Read this section first in any new conversation to avoid re-explaining the project and ongoing actions from scratch.
 
-### Authority order (current)
+### Core documents
 
-`rulebook.md` (canon) → `system-design.md` (technical specification) → `implementation-plan.md` (future-facing plan) → `devlog.md` (past-facing, immutable historical record — hands off).
+| Document | Role | Status | Note |
+| --- | --- | --- | --- |
+| `README.md` | project entry point | done | Rewritten to match the current model in `97a7a1f`. |
+| `rulebook.md` | canon | done | Model and graph definitions complete. |
+| `system-design.md` | technical specification | done | Technical specification complete. |
+| `implementation-plan.md` | future-facing plan | done | Plan complete. |
+| `devlog.md` | past-facing historical record | immutable | Hands off. |
 
-Critical distinction: the working code/program files still implement the *old* model and are out of compliance with the new rulebook/system-design. Expected, untouched for now — code changes come only after branch merging is fully complete.
+Critical distinction: the working code/program files still implement the *old* model and are out of compliance with the new rulebook/system-design. Implementation work is deferred.
 
-### Branch picture (as of 2026-09-23)
+### Branch Cleanup Decisions (as of 2026-09-24)
+
+- `tracker-updates` temporarily tracks the ignored tracker; the file is force-added there.
+- Checkpoint pattern: documentation commit, tracker update naming it, tracker commit.
+- The tracker is intended to be tracked only on `tracker-updates`; remove it from `main` and `feature/sql` before continuing implementation work.
+- `feature/east-wing-prototype` remains a reference branch; selected code will be ported into a new branch from current `main`.
+- See "Branch/merge sequence" below for the full plan.
+
+### Later housekeeping
+
+- Convert edited files to CRLF.
+- Add root `.gitattributes` with `* text=auto` in its own commit.
+
+### Branch/merge sequence (as of 2026-09-24)
+
+1. Archive full unsquashed history to `denizmertmercan/BFW_Wegweiser`. — done
+2. Squash-merge `docs/restructure` into JanusWebHub `main`. — done
+3. Rebase `feature/sql` onto `main` and retain it as a separate branch. — ongoing
+4. Create a new branch from the updated `main` and selectively port the useful implementation from `feature/east-wing-prototype`. — outstanding
+5. Delete `backup-before-reset`. — done
+
+### Home-machine branch picture (as of 2026-09-23)
 
 - `main` (tip `f3dd43f` — squash commit, see Branch/merge log): original implementation, now carrying the squashed docs restructuring on top.
 - `feature/east-wing-prototype` (2 commits ahead of old `4763d6c`): `a39e341` east-wing routing prototype + `5fc294c` rulebook update. Small, self-contained. Still needs rebasing onto new `main` — not yet done.
@@ -21,7 +48,7 @@ Critical distinction: the working code/program files still implement the *old* m
 
 Remotes: `januswebhub` (`JanusWebHub/BFW_Wegweiser`, the active repo) and `denizmertmercan` (`denizmertmercan/BFW_Wegweiser`, personal fork/archive). Both configured with these names, not `origin`/`fork`.
 
-### Current work-machine branch picture (as of 2026-09-24)
+### Work-machine branch picture (as of 2026-09-24)
 
 Remote configuration: `januswebhub` only; `floorfox` removed.
 
@@ -30,27 +57,16 @@ Remote configuration: `januswebhub` only; `floorfox` removed.
 | `main` | `januswebhub/main` | `f3dd43f` |
 | `feature/sql` | `januswebhub/feature/sql` | `205833c` |
 | `feature/east-wing-prototype` | `januswebhub/feature/east-wing-prototype` | `5fc294c` |
-| `tracker-updates` | `januswebhub/tracker-updates` | `862ffbd` |
+| `tracker-updates` | `januswebhub/tracker-updates` | `5d24b83` |
 
-### Branch/merge sequence — decided
-
-1. Archive full unsquashed history to `denizmertmercan/BFW_Wegweiser`. — done
-2. Squash-merge `docs/restructure` into JanusWebHub `main`. — done
-3. Rebase and merge `feature/sql` into `main`. — ongoing; rebased onto `f3dd43f` as `c208b0d` and `205833c`
-4. Port selected code from `feature/east-wing-prototype` into a new branch from the post-SQL `main`. — outstanding
-5. Delete `backup-before-reset`. — done
-6. Replace the JanusWebHub remote with `FLOORFOX/BFW_Wegweiser` and push. — outstanding
-
-`0de4f03` must never enter `main`'s final ancestry via any path.
-
-### Branch/merge log
+### Branch/merge log (as of 2026-09-24)
 
 - Fork remote added (`denizmertmercan/BFW_Wegweiser`), `origin` renamed to `januswebhub` for clarity. Full history pushed to the fork: `main`, `docs/restructure`, `local/documentation-restructuring`. `feature/east-wing-prototype` and `backup-before-reset` deliberately excluded — east-wing lands on `main` via normal rebase anyway (nothing at risk of being flattened), `backup-before-reset` is disavowed content, not archive-worthy.
 - On the fork, demonstrated the fast-forward path (`docs/restructure` → fork's `main`) to confirm full-history preservation works as intended — fork's `main` now at `db3b052`, all 85 commits intact. Both `docs/restructure` and `local/documentation-restructuring` kept as named branches on the fork (not deleted) — the branch labels themselves are part of what "keep full history" means, not just the commit content.
 - PR #2 opened and squash-merged on `januswebhub`: `docs/restructure` → `main`. One Copilot review suggestion applied (stale `docs/references/` listing in README.md, caught correctly — that folder was deleted in an earlier commit). Squash commit: `f3dd43f`, "Restructure project documentation (#2)". `main` confirmed single-parent (true squash, not a merge commit).
 - `docs/restructure` and `local/documentation-restructuring` deleted on `januswebhub` and locally, post-merge. Both fully recoverable via PR #2 and the `denizmertmercan` fork.
 - `copilot/common-design-patterns` deleted on `januswebhub` (agent-created branch, identical to old `main`, no real content).
-- Rebase preview for `feature/sql` (read-only diff inspection, not an actual rebase attempt): `docs/rulebook.md` at `feature/sql`'s fork point (`6e413e7`) is byte-identical to `docs/rulebook.md` on current `main` — that file's diff will apply cleanly. However `README.md`, `docs/adr.md`, and `docs/roadmap.md` will conflict on a real rebase (modify/delete conflicts — `feature/sql`'s inherited commits still touch files the squash-merge deleted). Corrects the earlier "low risk, append-only" assumption in step 3 above — real conflict resolution is needed on those three files, though `rulebook.md` itself (Janus's actual content) is unaffected.
+- Rebase analysis for `feature/sql`: its two own commits touch only `docs/rulebook.md`, which is byte-identical at its fork point (`6e413e7`) and `f3dd43f`. A plain rebase would replay inherited documentation history; `git rebase --onto f3dd43f 6e413e7` correctly reapplies only the two SQL commits.
 - Work-machine baseline on 2026-09-24: `main` → `januswebhub/main` (`e3d1be7`); `feature/sql` → `januswebhub/feature/sql` (`07ae881`); `feature/east-wing-prototype` → `januswebhub/feature/east-wing-prototype` (`5fc294c`); `docs/restructure` → `januswebhub/docs/restructure` (`55c8cf3`); `local/documentation-restructuring` → `januswebhub/local/documentation-restructuring` (`67f1c2d`); `backup-before-reset` had no remote (`0de4f03`). Remotes: `januswebhub` and `floorfox`; Janus also had `copilot/common-design-patterns` (`4763d6c`).
 - Work-machine operation on 2026-09-24: `git remote remove floorfox` removed the Floorfox remote and its tracking refs.
 - Work-machine operation on 2026-09-24: `git fetch --all --prune` removed stale Janus tracking refs for `copilot/common-design-patterns`, `docs/restructure`, and `local/documentation-restructuring`.
@@ -58,33 +74,4 @@ Remote configuration: `januswebhub` only; `floorfox` removed.
 - Work-machine verification on 2026-09-24: `git ls-remote --heads januswebhub` showed only `main`, `feature/sql`, and `feature/east-wing-prototype`; `git merge-base --is-ancestor 0de4f03 main` confirmed `0de4f03` is outside `main` ancestry.
 - Tracker split on 2026-09-24: created and pushed `tracker-updates` at `862ffbd`, preserving tracker commits `e3d1be7` and `862ffbd`; reset and force-pushed `main` back to `f3dd43f`.
 - SQL rebase on 2026-09-24: verified `docs/rulebook.md` was identical at `6e413e7` and `f3dd43f`; rebased `feature/sql` with `git rebase --onto f3dd43f 6e413e7`, yielding `c208b0d` and `205833c`; force-pushed the rewritten branch to JanusWebHub. The branch now changes only `docs/rulebook.md` relative to `main`.
-
-## Control
-
-### Made Decisions
-
-#### Restructuring Decisions
-
-- A temporary local branch tracks the tracker and restructuring; the ignored tracker is force-added.
-- Checkpoint pattern: documentation commit, tracker update naming it, tracker commit.
-- See "Branch/merge sequence — decided" above for the full merge plan.
-
-## Status
-
-| Document | Status | Note |
-| --- | --- | --- |
-| `README.md` | done | Rewritten to match the current model — `97a7a1f`. |
-| `rulebook.md` | done | Renamed and checkpointed in `a2d9648`; definitions revised in `f27143c`; model refined (Cluster 1/2 wording, Cluster 4 query/state/segment/route/cost/search) in `fcedb6a`; Cluster 3 graph model and derivation sequence overhauled in `6aacf4d`. |
-| `system-design.md` | done | Settled in `fee1077`; F11/F13/F14 fixed in `c26df5c`; pipeline steps 3-4 split in `97a7a1f`. Harvest complete — nothing in `working_notes.md` was needed. |
-| `implementation-plan.md` | done | Restructured in `c282fb9`; F12/F15 fixed in `c26df5c`; Phase 2/3 and heading nesting fixed in `97a7a1f`; E13 folded into Authoring procedure in `962da60`. Harvest complete — nothing in `working_notes.md` was needed. |
-
-## Final wrap-up
-
-| # | Item | Status |
-| --- | --- | --- |
-| W1 | Devlog entry for the documentation restructuring. The old commit `0de4f03` was reset out of history, so no entry is owed for it. | open |
-| W2 | Review final state of all files | open |
-| W3 | Line endings: convert files edited in chat to CRLF | open |
-| W4 | Remote swap to FLOORFOX — see "Branch/merge sequence — decided", step 6 | open — `floorfox` removed locally for now; re-add only after `main` is complete |
-| W5 | Delete branch `backup-before-reset` once satisfied | done — deleted locally on 2026-09-24; confirmed outside `main` ancestry |
-| W6 | `.gitattributes` with `* text=auto` at project root | open — own commit; renormalises the whole repo once |
+- Decision on 2026-09-24: retain `feature/sql` as a separate rebased branch; do not merge it into `main` for now. Remove the tracker file from `main` with a cleanup commit, then rebase `feature/sql` onto the updated `main`.
