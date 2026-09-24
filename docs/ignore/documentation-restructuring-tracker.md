@@ -22,7 +22,7 @@ Critical distinction: the working code/program files still implement the *old* m
 - Checkpoint pattern: documentation commit, tracker update naming it, tracker commit.
 - The tracker is tracked only on `tracker-updates`; it has been removed from `main` and `feature/sql`.
 - Retain `feature/sql` as a separate rebased branch; do not merge it into `main` for now.
-- Evaluate a reconstructed history in which `feature/east-wing-prototype` is merged after `4763d6c`, followed by a replay of PR #2 and the tracker cleanup. Use local preview branches before changing real branches.
+- Decision on 2026-09-24: adopt the PR3-style reconstruction (east-wing merged after `4763d6c`, then the PR #2 replay, then the tracker cleanup). Redo the operations on the real branches, not on `preview/*`, and force-push to JanusWebHub. Permissions are arranged; `main` has no branch protection.
 - Preserve the original PR #2 squash commit with the annotated tag `archive/pr-2-squash`.
 - See "Branch/merge sequence" below for the full plan.
 
@@ -47,8 +47,9 @@ Critical distinction: the working code/program files still implement the *old* m
 1. Archive full unsquashed history to `denizmertmercan/BFW_Wegweiser`: done.
 2. Squash-merge `docs/restructure` into JanusWebHub `main`: done.
 3. Remove the tracker from `main`; rebase `feature/sql` onto the cleaned `main` and retain it separately: done.
-4. Preview and evaluate PR3-style east-wing integration before replaying PR #2: preview done on the home machine (see "Completed PR3-style preview"); evaluation ongoing.
+4. Preview and evaluate PR3-style east-wing integration before replaying PR #2: done; PR3-style chosen (see "Preview evaluation").
 5. Delete `backup-before-reset`: done (work machine and home machine).
+6. Redo the PR3-style reconstruction on the real branches and force-push them to JanusWebHub: next.
 
 ### Home-machine branch picture (as of 2026-09-24, after sync and PR3 preview)
 
@@ -115,6 +116,13 @@ Later on the work machine, before switching machines: `tracker-updates` advanced
 - Correction on 2026-09-24: the first preview's README (`3688fa8`, on `preview/replay-pr2`) lacks the "East-Wing Prototype" section, so it is not a correct reference resolution. Both previews omit `docs/rulebook_sorted.md` from the layout tree.
 - PR3-style preview executed on the home machine on 2026-09-24, following the plan below. No real branch moved; nothing pushed. Details in "Completed PR3-style preview".
 - Incident on 2026-09-24: after the PR #2 replay, OneDrive locked the empty `.git/rebase-merge` folder; `git rebase --quit` could not remove it even with OneDrive quit and VS Code restarted. Deleted manually in Explorer; `git status` then clean. A harmless stale `REBASE_HEAD` remains. See "Operational notes".
+
+### Preview evaluation (2026-09-24)
+
+- Direct replay (`preview/replay-pr2`): linear history, east-wing commits inline; its README lost the "East-Wing Prototype" section; the tracker line was not tested. It established only that the file states are compatible.
+- PR3-style (`preview/candidate-main`): east-wing shows as its own merge loop; README correct; PR #2 content verified unchanged; the result equals real `main` plus east-wing; `feature/sql` and `tracker-updates` rebase cleanly on top. Chosen.
+- The "PR3" merge is a local `git merge --no-ff` commit, the same shape GitHub creates with "Create a merge commit". A GitHub pull request could not produce this history, because it merges on top of the current `main` (after PR #2). No PR #3 page will exist; accepted.
+- Consequences of the force-push: `f3dd43f` and `a9862c2` leave `main`'s ancestry (`f3dd43f` stays reachable through the tag `archive/pr-2-squash` and the PR #2 page); other clones (work machine, Janus) must realign; `tracker-updates` must carry `947d92e` and later tracker commits onto the rebuilt base.
 
 ### Completed direct-replay preview
 
