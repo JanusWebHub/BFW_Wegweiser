@@ -1,0 +1,320 @@
+{
+  "format": "wegweiser-connectivity-graph",
+  "version": 1,
+  "provenance": "unverified",
+  "floors": {
+    "E": {
+      "level": 0,
+      "svg": "web/assets/bfw-eg.svg",
+      "view_box": [
+        0,
+        0,
+        1790,
+        1000
+      ],
+      "units_per_meter": 11.1
+    }
+  },
+  "zones": {
+    "exterior": {
+      "crossable": false
+    },
+    "E.TR1": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.TR2": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.TR3": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.TR4": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.TR5": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.TR6": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.TR7": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.TR8": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.TR9": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.durchgang": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.flur-tr1-1": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.flur-tr1-2": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.flur-tr2-1": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.flur-tr2-2": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.flur-tr2-3": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.flur-tr2-4": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.flur-tr3-1": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.flur-tr4-1": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.flur-tr4-2": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.flur-tr4-3": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.flur-tr4-4": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.flur-tr5-1": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.flur-tr5-2": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.flur-tr5-3": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.flur-tr5-4": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.flur-tr6-1": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.flur-tr7-1": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.flur-tr7-2": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.flur-tr7-3": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.flur-tr7-4": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.flur-tr8-1": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.flur-tr8-2": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.flur-tr8-3": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.flur-tr9-1": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.flur-tr9-2": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.flur-tr9-3": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.foyer": {
+      "floor": "E",
+      "crossable": true
+    }
+  },
+  "portals": {
+    "E.durchgang_E.flur-tr5-1": {
+      "virtual": true,
+      "point": [
+        1112,
+        269.5
+      ]
+    },
+    "E.durchgang_E.flur-tr6-1": {
+      "virtual": true,
+      "point": [
+        1158.5,
+        260
+      ]
+    },
+    "E.flur-tr1-1_E.flur-tr1-2": {
+      "virtual": true,
+      "point": [
+        274.5,
+        95
+      ]
+    },
+    "E.flur-tr1-1_E.flur-tr2-1": {
+      "virtual": true,
+      "point": [
+        538.5,
+        533
+      ]
+    },
+    "E.flur-tr2-1_E.flur-tr2-2": {
+      "virtual": true,
+      "point": [
+        520.5,
+        528.5
+      ]
+    },
+    "E.flur-tr2-1_E.flur-tr3-1": {
+      "virtual": true,
+      "point": [
+        564,
+        590
+      ]
+    },
+    "E.flur-tr2-2_E.flur-tr2-3": {
+      "virtual": true,
+      "point": [
+        487.5,
+        564.5
+      ]
+    },
+    "E.flur-tr2-4_E.flur-tr4-2": {
+      "virtual": true,
+      "point": [
+        362,
+        574
+      ]
+    },
+    "E.flur-tr4-1_E.flur-tr4-2": {
+      "virtual": true,
+      "point": [
+        272,
+        573.5
+      ]
+    },
+    "E.flur-tr4-1_E.flur-tr4-3": {
+      "virtual": true,
+      "point": [
+        184,
+        577.5
+      ]
+    },
+    "E.flur-tr4-1_E.flur-tr4-4": {
+      "virtual": true,
+      "point": [
+        248.5,
+        532
+      ]
+    },
+    "E.flur-tr5-1_E.flur-tr5-2": {
+      "virtual": true,
+      "point": [
+        1087,
+        266
+      ]
+    },
+    "E.flur-tr5-1_E.flur-tr5-4": {
+      "virtual": true,
+      "point": [
+        1099.5,
+        253
+      ]
+    },
+    "E.flur-tr5-2_E.flur-tr5-3": {
+      "virtual": true,
+      "point": [
+        668.5,
+        253
+      ]
+    },
+    "E.flur-tr7-1_E.flur-tr7-2": {
+      "virtual": true,
+      "point": [
+        905,
+        551
+      ]
+    },
+    "E.flur-tr7-1_E.foyer": {
+      "virtual": true,
+      "point": [
+        905,
+        511.5
+      ]
+    },
+    "E.flur-tr7-2_E.flur-tr7-3": {
+      "virtual": true,
+      "point": [
+        809,
+        569.5
+      ]
+    },
+    "E.flur-tr7-2_E.foyer": {
+      "virtual": true,
+      "point": [
+        857,
+        545
+      ]
+    },
+    "E.flur-tr8-1_E.flur-tr8-2": {
+      "virtual": true,
+      "point": [
+        946.5,
+        845
+      ]
+    },
+    "E.flur-tr8-2_E.flur-tr8-3": {
+      "virtual": true,
+      "point": [
+        946.5,
+        948
+      ]
+    },
+    "E.flur-tr9-1_E.flur-tr9-2": {
+      "virtual": true,
+      "point": [
+        1430,
+        548.5
+      ]
+    }
+  }
+}
