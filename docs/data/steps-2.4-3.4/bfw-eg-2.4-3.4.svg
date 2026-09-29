@@ -1,0 +1,268 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1790 1000" width="1790" height="1000">
+<defs></defs>
+<g id="shell">
+<polygon class="outline" id="shell-outline" points="182,30 316,31 563,470 839,470 938,279 617,279 702,118 1410,131 1438,195 1427,215 1438,228 1410,268 1392,268 1392,260 1177,260 1162,279 1112,279 1031,408 1387,410 1450,305 1548,468 1747,468 1642,634 1250,632 1210,628 1187,628 1137,628 1114,628 1114,659 1171,757 1148,794 1222,921 1243,963 932,963 873,843 837,829 812,839 794,800 830,789 676,787 627,706 651,660 634,625 617,621 601,623 545,713 463,866 452,890 355,890 320,883 461,630 337,628 237,793 97,795 40,683 107,574 42,463 98,366 230,368 337,554 490,556"></polygon>
+<path class="wing" id="wing-1" data-label="Ostblock" d="M 1050,480 L 1060,480 L 1060,409 L 1387,410 L 1450,305 L 1548,468 L 1747,468 L 1642,634 L 1250,632 L 1210,628 L 1187,628 L 1137,628 L 1114,628 L 1114,601 L 1093,601 L 1093,528 L 1050,528 Z"></path>
+<path class="wing" id="wing-2" data-label="Eingang und Foyer" d="M 563,470 L 839,470 L 835,478 L 987,478 L 1050,480 L 1050,528 L 1093,528 L 1093,601 L 905,601 L 851,594 L 778,715 L 707,594 L 622,594 L 610,545 L 605,545 Z"></path>
+<path class="wing" id="wing-3" data-label="Küche" d="M 830,789 L 1148,794 L 1222,921 L 1243,963 L 932,963 L 873,843 L 837,829 L 812,839 L 794,800 Z"></path>
+<path class="wing" id="wing-4" data-label="Nordwestflügel" d="M 617,279 L 702,118 L 1410,131 L 1438,195 L 1427,215 L 1438,228 L 1410,268 L 1392,268 L 1392,260 L 1177,260 L 1162,279 L 1112,279 L 1087,279 Z"></path>
+<path class="wing" id="wing-5" data-label="Langer Flügel" d="M 182,30 L 316,31 L 605,545 L 561,545 L 516,521 L 490,556 Z"></path>
+<path class="wing" id="wing-6" data-label="IQ + UKM" d="M 362,555 L 490,556 L 516,521 L 561,545 L 610,545 L 622,594 L 617,621 L 601,623 L 545,713 L 463,866 L 452,890 L 355,890 L 320,883 L 461,630 L 337,628 L 362,593 Z"></path>
+<path class="wing" id="wing-7" data-label="Hexagon" d="M 98,366 L 230,368 L 337,554 L 362,555 L 362,593 L 337,628 L 237,793 L 97,795 L 40,683 L 107,574 L 42,463 Z"></path>
+<path class="wing" id="wing-8" data-label="Mittelbereich" d="M 938,279 L 1087,279 L 1112,279 L 1031,408 L 1060,409 L 1060,480 L 1050,480 L 987,478 L 835,478 L 839,470 Z M 622,594 L 707,594 L 778,715 L 851,594 L 905,601 L 1114,601 L 1114,659 L 1171,757 L 1148,794 L 830,789 L 676,787 L 627,706 L 651,660 L 634,625 L 617,621 Z"></path>
+</g>
+<g id="zones">
+<polygon class="zone stair" id="zone-E.TR1" data-label="TR1" points="247,31 313,31 313,62 251,62"></polygon>
+<polygon class="zone corridor" id="zone-E.flur-tr1-2" data-label="Flur" points="251,62 313,62 291,95 258,95"></polygon>
+<polygon class="zone corridor" id="zone-E.flur-tr1-1" data-label="Flur" points="258,95 291,95 561,545 516,521"></polygon>
+<polygon class="zone corridor" id="zone-E.flur-tr2-1" data-label="Flur" points="516,521 561,545 610,545 622,594 571,594 557,586 525,536"></polygon>
+<polygon class="zone corridor" id="zone-E.flur-tr2-2" data-label="Flur" points="490,556 516,521 525,536 485,573"></polygon>
+<polygon class="zone stair" id="zone-E.TR2" data-label="TR2" points="450,573 485,573 525,536 557,586 532,625 502,580 495,593 450,593"></polygon>
+<polygon class="zone corridor" id="zone-E.flur-tr2-3" data-label="Flur" points="450,556 490,556 485,573 450,573"></polygon>
+<polygon class="zone corridor" id="zone-E.flur-tr3-1" data-label="Flur" points="557,586 571,594 433,870 406,870 532,625"></polygon>
+<polygon class="zone stair" id="zone-E.TR3" data-label="TR3" points="372,870 406,870 433,870 457,870 452,890 363,890"></polygon>
+<polygon class="zone corridor" id="zone-E.flur-tr4-1" data-label="Flur" points="184,564 237,536 260,528 282,556 262,591 184,591"></polygon>
+<polygon class="zone corridor" id="zone-E.flur-tr4-2" data-label="Flur" points="282,556 337,555 362,555 362,593 337,628 262,591"></polygon>
+<polygon class="zone corridor" id="zone-E.flur-tr4-3" data-label="Flur" points="146,484 170,534 184,564 184,591 152,591 107,574 101,563"></polygon>
+<polygon class="zone corridor" id="zone-E.flur-tr4-4" data-label="Flur" points="184,443 209,433 260,528 237,536 222,509"></polygon>
+<polygon class="zone stair" id="zone-E.TR4" data-label="TR4" points="170,534 222,509 237,536 184,564"></polygon>
+<polygon class="zone stair" id="zone-E.TR5" data-label="TR5" points="669,180 735,180 735,217 680,217 657,217 650,217"></polygon>
+<polygon class="zone corridor" id="zone-E.flur-tr5-3" data-label="Flur" points="657,217 680,217 680,253 657,253"></polygon>
+<polygon class="zone corridor" id="zone-E.flur-tr5-2" data-label="Flur" points="650,253 657,253 680,253 1087,253 1087,279 650,279"></polygon>
+<polygon class="zone corridor" id="zone-E.flur-tr5-1" data-label="Flur" points="1087,253 1112,253 1112,260 1112,279 1087,279"></polygon>
+<polygon class="zone corridor" id="zone-E.flur-tr5-4" data-label="Flur" points="1087,163 1112,163 1112,253 1087,253"></polygon>
+<polygon class="zone corridor" id="zone-E.durchgang" data-label="Durchgang" points="1112,260 1140,260 1177,260 1162,279 1112,279"></polygon>
+<polygon class="zone corridor" id="zone-E.flur-tr6-1" data-label="Flur" points="1162,226 1392,226 1392,260 1177,260 1140,260"></polygon>
+<polygon class="zone stair" id="zone-E.TR6" data-label="TR6" points="1392,166 1425,166 1438,195 1427,215 1438,228 1410,268 1392,268 1392,260 1392,226"></polygon>
+<polygon class="zone corridor" id="zone-E.flur-tr7-4" data-label="Flur" points="1087,279 1112,279 987,478 965,478"></polygon>
+<polygon class="zone corridor" id="zone-E.flur-tr7-3" data-label="Flur" points="610,545 809,545 809,594 707,594 622,594"></polygon>
+<polygon class="zone stair" id="zone-E.TR7" data-label="TR7" points="707,594 809,594 851,594 778,715 759,683 772,683 784,639 733,639"></polygon>
+<polygon class="zone corridor" id="zone-E.flur-tr7-2" data-label="Flur" points="809,545 905,545 905,557 905,594 851,594 809,594"></polygon>
+<polygon class="zone hall" id="zone-E.foyer" data-label="Foyer" points="835,478 905,478 905,545 809,545"></polygon>
+<polygon class="zone corridor" id="zone-E.flur-tr7-1" data-label="Flur" points="905,478 965,478 987,478 1050,480 1050,528 1050,557 905,557 905,545"></polygon>
+<polygon class="zone corridor" id="zone-E.flur-tr9-3" data-label="Flur" points="1050,480 1344,480 1313,529 1050,528"></polygon>
+<polygon class="zone corridor" id="zone-E.flur-tr9-1" data-label="Flur" points="1313,529 1344,480 1354,465 1388,465 1430,534 1430,563 1335,563 1335,529"></polygon>
+<polygon class="zone stair" id="zone-E.TR9" data-label="TR9" points="1388,465 1462,465 1462,534 1430,534"></polygon>
+<polygon class="zone corridor" id="zone-E.flur-tr9-2" data-label="Flur" points="1430,534 1462,534 1583,534 1583,563 1430,563"></polygon>
+<polygon class="zone stair" id="zone-E.TR8" data-label="TR8" points="830,789 950,789 950,829 837,829"></polygon>
+<polygon class="zone corridor" id="zone-E.flur-tr8-1" data-label="Flur" points="837,829 950,829 982,829 982,845 955,845 938,845 873,843"></polygon>
+<polygon class="zone corridor" id="zone-E.flur-tr8-2" data-label="Flur" points="938,845 955,845 955,948 938,948"></polygon>
+<polygon class="zone corridor" id="zone-E.flur-tr8-3" data-label="Flur" points="925,948 938,948 955,948 1163,948 1163,963 932,963"></polygon>
+<polygon class="zone corridor" id="zone-E.flur-tr2-4" data-label="Flur" points="362,555 450,556 450,573 450,593 362,593"></polygon>
+<polygon class="zone room" id="zone-E.56b" data-label="" points="1060,408 1124,408 1124,442 1151,442 1151,480 1060,480"></polygon>
+<polygon class="zone room" id="zone-E.56c" data-label="Unterricht" points="1124,408 1185,409 1185,480 1151,480 1151,442 1124,442"></polygon>
+<polygon class="zone room" id="zone-E.57" data-label="Unterricht" points="1185,409 1387,410 1354,465 1344,480 1185,480"></polygon>
+<polygon class="zone room" id="zone-R.58" data-label="Konferenzraum" points="1450,305 1548,468 1524,465 1493,465 1462,465 1388,465 1354,465 1387,410"></polygon>
+<polygon class="zone service" id="zone-E.58a" data-label="Techn." points="1462,465 1493,465 1493,493 1462,493"></polygon>
+<polygon class="zone service" id="zone-E.54a" data-label="WC D" points="1462,493 1493,493 1493,516 1462,516"></polygon>
+<polygon class="zone service" id="zone-E.vr-e54a" data-label="VR" points="1462,516 1493,516 1493,534 1462,534"></polygon>
+<polygon class="zone service" id="zone-E.54b" data-label="WC H" points="1493,465 1524,465 1524,516 1493,516"></polygon>
+<polygon class="zone service" id="zone-E.vr-e54b" data-label="VR" points="1493,516 1524,516 1524,534 1493,534"></polygon>
+<polygon class="zone room" id="zone-E.62" data-label="Unterricht" points="1524,465 1548,468 1583,468 1583,534 1524,534"></polygon>
+<polygon class="zone room" id="zone-E.63" data-label="Unterricht" points="1583,468 1747,468 1687,563 1583,563 1583,534"></polygon>
+<polygon class="zone room" id="zone-E.61" data-label="Werkstatt" points="1508,563 1583,563 1687,563 1642,634 1508,633.3"></polygon>
+<polygon class="zone room" id="zone-E.60b" data-label="Büro" points="1451,563 1508,563 1508,633.3 1451,633"></polygon>
+<polygon class="zone room" id="zone-E.60a" data-label="Büro" points="1395,563 1451,563 1451,633 1395,632.7"></polygon>
+<polygon class="zone service" id="zone-E.59b" data-label="Elt" points="1313,529 1335,529 1335,563 1291,563"></polygon>
+<polygon class="zone room" id="zone-E.59" data-label="Besprechungsraum" points="1291,563 1335,563 1395,563 1395,632.7 1250,632"></polygon>
+<polygon class="zone room" id="zone-E.wachdienst" data-label="Wachdienst" points="1107,528 1183,528 1183,555 1093,555"></polygon>
+<polygon class="zone hall" id="zone-E.52" data-label="Eingangsbereich/Rezeption" points="1183,528 1313,529 1291,563 1250,632 1210,628 1187,628 1137,628 1114,628 1114,601 1067,600 1093,555 1183,555"></polygon>
+<polygon class="zone hall" id="zone-E.terrasse" data-label="Terrasse" points="563,470 839,470 835,478 809,545 610,545"></polygon>
+<polygon class="zone room" id="zone-E.51" data-label="Pförtner" points="1050,528 1107,528 1093,555 1091.84,557 1050,557"></polygon>
+<polygon class="zone service" id="zone-E.50b" data-label="WC D" points="1043,557 1091.84,557 1079.13,579 1043,579"></polygon>
+<polygon class="zone service" id="zone-E.wc-beh-e50b" data-label="Beh. WC" points="1043,579 1079.13,579 1067,600 1043,600"></polygon>
+<polygon class="zone service" id="zone-E.vr-e50b" data-label="VR" points="1020,557 1043,557 1043,600 1020,600"></polygon>
+<polygon class="zone service" id="zone-E.50a" data-label="WC H/Beh.-WC" points="975,557 1020,557 1020,600 975,600"></polygon>
+<polygon class="zone service" id="zone-E.vorraum-e50" data-label="Vorraum" points="905,557 975,557 975,600 905,600"></polygon>
+<polygon class="zone service" id="zone-E.aufzug-tr7" data-label="Aufzug" points="733,639 784,639 772,683 759,683"></polygon>
+<polygon class="zone service" id="zone-E.70a" data-label="Bohrr." points="630.7,253 650,253 650,279 617,279"></polygon>
+<polygon class="zone service" id="zone-E.70b" data-label="El.-technik" points="650,217 657,217 657,253 650,253 630.7,253"></polygon>
+<polygon class="zone service" id="zone-E.technik-tr5" data-label="Technik" points="680,217 695,217 695,253 680,253"></polygon>
+<polygon class="zone service" id="zone-E.aufzug-tr5" data-label="Aufzug" points="695,217 735,217 735,244 695,244"></polygon>
+<polygon class="zone service" id="zone-E.elt-vert-tr5" data-label="Elt-Vert." points="695,244 735,244 735,253 695,253"></polygon>
+<polygon class="zone room" id="zone-E.68a" data-label="Vorbereitung" points="689.4,142 735,142 735,180 669,180"></polygon>
+<polygon class="zone service" id="zone-E.68b" data-label="Lager" points="702,118 763,119.12 763,142 689.4,142"></polygon>
+<polygon class="zone room" id="zone-E.68" data-label="Unterricht" points="763,119.12 875,121.18 875,253 735,253 735,244 735,217 735,180 735,142 763,142"></polygon>
+<polygon class="zone room" id="zone-E.67" data-label="Unterricht" points="875,121.18 945,122.46 945,149 976,149 976,253 875,253"></polygon>
+<polygon class="zone room" id="zone-E.67a" data-label="Büro" points="945,122.46 1005,123.56 1005,149 945,149"></polygon>
+<polygon class="zone room" id="zone-E.66" data-label="Unterricht" points="1005,123.56 1087,125.07 1087,253 976,253 976,149 1005,149"></polygon>
+<polygon class="zone service" id="zone-E.66a" data-label="Lehrmittel" points="1087,125.07 1119,125.66 1119,163 1087,163"></polygon>
+<polygon class="zone room" id="zone-E.65" data-label="Werkstatt" points="1119,125.66 1203,127.2 1203,189 1112,189 1112,163 1119,163"></polygon>
+<polygon class="zone service" id="zone-E.vr-e64a" data-label="VR" points="1112,189 1139,189 1139,226 1112,226"></polygon>
+<polygon class="zone service" id="zone-E.64a" data-label="WC H" points="1139,189 1183,189 1162,226 1139,226"></polygon>
+<polygon class="zone service" id="zone-E.aufzug-e65" data-label="Aufzug" points="1183,189 1203,189 1203,226 1162,226"></polygon>
+<polygon class="zone service" id="zone-E.64" data-label="Lager" points="1112,226 1162,226 1140,260 1112,260"></polygon>
+<polygon class="zone room" id="zone-E.90" data-label="Unterricht" points="1203,127.2 1289,128.78 1289,226 1203,226"></polygon>
+<polygon class="zone room" id="zone-E.91" data-label="Unterricht" points="1289,128.78 1392,130.67 1392,226 1289,226"></polygon>
+<polygon class="zone service" id="zone-E.92" data-label="Lager" points="1392,130.67 1410,131 1425,166 1392,166"></polygon>
+</g>
+<g id="portals">
+<g class="portal" id="portal-E.50a_E.vorraum-e50"><line x1="975" y1="584.5" x2="975" y2="595.5"></line><circle cx="975" cy="590" r="2.6"></circle></g>
+<g class="portal" id="portal-E.50b_E.vr-e50b"><line x1="1043" y1="562.5" x2="1043" y2="573.5"></line><circle cx="1043" cy="568" r="2.6"></circle></g>
+<g class="portal" id="portal-E.51_E.flur-tr7-1"><line x1="1050" y1="536" x2="1050" y2="547"></line><circle cx="1050" cy="541.5" r="2.6"></circle></g>
+<g class="portal" id="portal-E.51_E.wachdienst"><line x1="1102.59" y1="536.5" x2="1096.89" y2="547.5"></line><circle cx="1099.7" cy="542" r="2.6"></circle></g>
+<g class="portal" id="portal-E.52_E.flur-tr9-3"><line x1="1192.1" y1="528.1" x2="1209.9" y2="528.2"></line><circle cx="1201" cy="528.2" r="2.6"></circle></g>
+<g class="portal" id="portal-E.52_E.wachdienst"><line x1="1183" y1="546.6" x2="1183" y2="535.5"></line><circle cx="1183" cy="541.1" r="2.6"></circle></g>
+<g class="portal" id="portal-E.52_E.wachdienst_2"><line x1="1100.5" y1="555" x2="1111.6" y2="555"></line><circle cx="1106.1" cy="555" r="2.6"></circle></g>
+<g class="portal exit" id="portal-E.52_exterior"><line x1="1210" y1="628" x2="1187" y2="628"></line><circle cx="1198.5" cy="628" r="2.6"></circle></g>
+<g class="portal exit" id="portal-E.52_exterior_2"><line x1="1137" y1="628" x2="1114" y2="628"></line><circle cx="1125.5" cy="628" r="2.6"></circle></g>
+<g class="portal" id="portal-E.54a_E.vr-e54a"><line x1="1482" y1="516" x2="1472" y2="516"></line><circle cx="1477" cy="516" r="2.6"></circle></g>
+<g class="portal" id="portal-E.54b_E.vr-e54b"><line x1="1513" y1="516" x2="1503" y2="516"></line><circle cx="1508" cy="516" r="2.6"></circle></g>
+<g class="portal" id="portal-E.56b_E.flur-tr9-3"><line x1="1111.6" y1="480" x2="1100.5" y2="480"></line><circle cx="1106.1" cy="480" r="2.6"></circle></g>
+<g class="portal" id="portal-E.56c_E.flur-tr9-3"><line x1="1173.6" y1="480" x2="1162.5" y2="480"></line><circle cx="1168.1" cy="480" r="2.6"></circle></g>
+<g class="portal" id="portal-E.57_E.flur-tr9-3"><line x1="1310.6" y1="480" x2="1299.5" y2="480"></line><circle cx="1305.1" cy="480" r="2.6"></circle></g>
+<g class="portal" id="portal-E.58a_R.58"><line x1="1471.5" y1="465" x2="1482.6" y2="465"></line><circle cx="1477.1" cy="465" r="2.6"></circle></g>
+<g class="portal" id="portal-E.59_E.flur-tr9-1"><line x1="1358.5" y1="563" x2="1369.6" y2="563"></line><circle cx="1364.1" cy="563" r="2.6"></circle></g>
+<g class="portal" id="portal-E.59b_E.flur-tr9-1"><line x1="1335" y1="540.5" x2="1335" y2="551.6"></line><circle cx="1335" cy="546.1" r="2.6"></circle></g>
+<g class="portal" id="portal-E.60a_E.flur-tr9-1"><line x1="1416.5" y1="563" x2="1427.6" y2="563"></line><circle cx="1422.1" cy="563" r="2.6"></circle></g>
+<g class="portal" id="portal-E.60b_E.flur-tr9-2"><line x1="1477.5" y1="563" x2="1488.6" y2="563"></line><circle cx="1483.1" cy="563" r="2.6"></circle></g>
+<g class="portal" id="portal-E.61_E.flur-tr9-2"><line x1="1526.5" y1="563" x2="1537.6" y2="563"></line><circle cx="1532.1" cy="563" r="2.6"></circle></g>
+<g class="portal exit" id="portal-E.61_exterior"><line x1="1558.7" y1="633.6" x2="1545.3" y2="633.5"></line><circle cx="1552" cy="633.6" r="2.6"></circle></g>
+<g class="portal" id="portal-E.62_E.flur-tr9-2"><line x1="1546.6" y1="534" x2="1535.5" y2="534"></line><circle cx="1541.1" cy="534" r="2.6"></circle></g>
+<g class="portal" id="portal-E.62_R.58"><line x1="1528.5" y1="465.6" x2="1539.5" y2="466.9"></line><circle cx="1534" cy="466.3" r="2.6"></circle></g>
+<g class="portal" id="portal-E.63_E.flur-tr9-2"><line x1="1583" y1="553.6" x2="1583" y2="542.5"></line><circle cx="1583" cy="548.1" r="2.6"></circle></g>
+<g class="portal" id="portal-E.TR7_E.aufzug-tr7"><line x1="779.4" y1="656.2" x2="776.6" y2="666.8"></line><circle cx="778" cy="661.5" r="2.6"></circle></g>
+<g class="portal" id="portal-E.TR7_E.flur-tr7-2"><line x1="817.4" y1="594" x2="838.8" y2="594"></line><circle cx="828.1" cy="594" r="2.6"></circle></g>
+<g class="portal" id="portal-E.TR9_E.flur-tr9-1"><line x1="1395.1" y1="476.6" x2="1389.3" y2="467.1"></line><circle cx="1392.2" cy="471.9" r="2.6"></circle></g>
+<g class="portal virtual" id="portal-E.durchgang_E.flur-tr5-1"><line x1="1112" y1="260" x2="1112" y2="279"></line><circle cx="1112" cy="269.5" r="2.6"></circle></g>
+<g class="portal virtual" id="portal-E.durchgang_E.flur-tr6-1"><line x1="1140" y1="260" x2="1177" y2="260"></line><circle cx="1158.5" cy="260" r="2.6"></circle></g>
+<g class="portal virtual" id="portal-E.flur-tr1-1_E.flur-tr1-2"><line x1="258" y1="95" x2="291" y2="95"></line><circle cx="274.5" cy="95" r="2.6"></circle></g>
+<g class="portal virtual" id="portal-E.flur-tr1-1_E.flur-tr2-1"><line x1="516" y1="521" x2="561" y2="545"></line><circle cx="538.5" cy="533" r="2.6"></circle></g>
+<g class="portal virtual" id="portal-E.flur-tr2-1_E.flur-tr2-2"><line x1="516" y1="521" x2="525" y2="536"></line><circle cx="520.5" cy="528.5" r="2.6"></circle></g>
+<g class="portal virtual" id="portal-E.flur-tr2-1_E.flur-tr3-1"><line x1="557" y1="586" x2="571" y2="594"></line><circle cx="564" cy="590" r="2.6"></circle></g>
+<g class="portal virtual" id="portal-E.flur-tr2-2_E.flur-tr2-3"><line x1="490" y1="556" x2="485" y2="573"></line><circle cx="487.5" cy="564.5" r="2.6"></circle></g>
+<g class="portal virtual" id="portal-E.flur-tr2-4_E.flur-tr4-2"><line x1="362" y1="555" x2="362" y2="593"></line><circle cx="362" cy="574" r="2.6"></circle></g>
+<g class="portal virtual" id="portal-E.flur-tr4-1_E.flur-tr4-2"><line x1="282" y1="556" x2="262" y2="591"></line><circle cx="272" cy="573.5" r="2.6"></circle></g>
+<g class="portal virtual" id="portal-E.flur-tr4-1_E.flur-tr4-3"><line x1="184" y1="564" x2="184" y2="591"></line><circle cx="184" cy="577.5" r="2.6"></circle></g>
+<g class="portal virtual" id="portal-E.flur-tr4-1_E.flur-tr4-4"><line x1="237" y1="536" x2="260" y2="528"></line><circle cx="248.5" cy="532" r="2.6"></circle></g>
+<g class="portal virtual" id="portal-E.flur-tr5-1_E.flur-tr5-2"><line x1="1087" y1="253" x2="1087" y2="279"></line><circle cx="1087" cy="266" r="2.6"></circle></g>
+<g class="portal virtual" id="portal-E.flur-tr5-1_E.flur-tr5-4"><line x1="1087" y1="253" x2="1112" y2="253"></line><circle cx="1099.5" cy="253" r="2.6"></circle></g>
+<g class="portal virtual" id="portal-E.flur-tr5-2_E.flur-tr5-3"><line x1="657" y1="253" x2="680" y2="253"></line><circle cx="668.5" cy="253" r="2.6"></circle></g>
+<g class="portal virtual" id="portal-E.flur-tr7-1_E.flur-tr7-2"><line x1="905" y1="545" x2="905" y2="557"></line><circle cx="905" cy="551" r="2.6"></circle></g>
+<g class="portal virtual" id="portal-E.flur-tr7-1_E.foyer"><line x1="905" y1="478" x2="905" y2="545"></line><circle cx="905" cy="511.5" r="2.6"></circle></g>
+<g class="portal" id="portal-E.flur-tr7-1_E.vr-e50b"><line x1="1032" y1="557" x2="1042" y2="557"></line><circle cx="1037" cy="557" r="2.6"></circle></g>
+<g class="portal virtual" id="portal-E.flur-tr7-2_E.flur-tr7-3"><line x1="809" y1="545" x2="809" y2="594"></line><circle cx="809" cy="569.5" r="2.6"></circle></g>
+<g class="portal virtual" id="portal-E.flur-tr7-2_E.foyer"><line x1="809" y1="545" x2="905" y2="545"></line><circle cx="857" cy="545" r="2.6"></circle></g>
+<g class="portal" id="portal-E.flur-tr7-2_E.vorraum-e50"><line x1="905" y1="584" x2="905" y2="594"></line><circle cx="905" cy="589" r="2.6"></circle></g>
+<g class="portal" id="portal-E.flur-tr7-3_E.terrasse"><line x1="751" y1="545" x2="774.5" y2="545"></line><circle cx="762.8" cy="545" r="2.6"></circle></g>
+<g class="portal virtual" id="portal-E.flur-tr8-1_E.flur-tr8-2"><line x1="938" y1="845" x2="955" y2="845"></line><circle cx="946.5" cy="845" r="2.6"></circle></g>
+<g class="portal virtual" id="portal-E.flur-tr8-2_E.flur-tr8-3"><line x1="938" y1="948" x2="955" y2="948"></line><circle cx="946.5" cy="948" r="2.6"></circle></g>
+<g class="portal virtual" id="portal-E.flur-tr9-1_E.flur-tr9-2"><line x1="1430" y1="534" x2="1430" y2="563"></line><circle cx="1430" cy="548.5" r="2.6"></circle></g>
+<g class="portal" id="portal-E.flur-tr9-1_E.flur-tr9-3"><line x1="1322.2" y1="514.5" x2="1334.1" y2="495.7"></line><circle cx="1328.2" cy="505.1" r="2.6"></circle></g>
+<g class="portal" id="portal-E.flur-tr9-1_R.58"><line x1="1359.9" y1="465" x2="1382.1" y2="465"></line><circle cx="1371" cy="465" r="2.6"></circle></g>
+<g class="portal" id="portal-E.flur-tr9-2_E.vr-e54a"><line x1="1472" y1="534" x2="1482" y2="534"></line><circle cx="1477" cy="534" r="2.6"></circle></g>
+<g class="portal" id="portal-E.flur-tr9-2_E.vr-e54b"><line x1="1503" y1="534" x2="1513" y2="534"></line><circle cx="1508" cy="534" r="2.6"></circle></g>
+<g class="portal" id="portal-E.vr-e50b_E.wc-beh-e50b"><line x1="1043" y1="583.5" x2="1043" y2="594.5"></line><circle cx="1043" cy="589" r="2.6"></circle></g>
+<g class="portal" id="portal-E.65_E.flur-tr5-4"><line x1="1112" y1="175.5" x2="1112" y2="186.5"></line><circle cx="1112" cy="181" r="2.6"></circle></g>
+<g class="portal" id="portal-E.flur-tr5-4_E.vr-e64a"><line x1="1112" y1="190" x2="1112" y2="201"></line><circle cx="1112" cy="195.5" r="2.6"></circle></g>
+<g class="portal" id="portal-E.64_E.flur-tr5-4"><line x1="1112" y1="234.5" x2="1112" y2="245.5"></line><circle cx="1112" cy="240" r="2.6"></circle></g>
+<g class="portal" id="portal-E.64a_E.vr-e64a"><line x1="1139" y1="203" x2="1139" y2="212"></line><circle cx="1139" cy="207.5" r="2.6"></circle></g>
+<g class="portal" id="portal-E.66_E.66a"><line x1="1087" y1="139.5" x2="1087" y2="150.5"></line><circle cx="1087" cy="145" r="2.6"></circle></g>
+<g class="portal" id="portal-E.66a_E.flur-tr5-4"><line x1="1094.5" y1="163" x2="1105.5" y2="163"></line><circle cx="1100" cy="163" r="2.6"></circle></g>
+<g class="portal" id="portal-E.66_E.flur-tr5-2"><line x1="1048.5" y1="253" x2="1059.5" y2="253"></line><circle cx="1054" cy="253" r="2.6"></circle></g>
+<g class="portal" id="portal-E.67_E.flur-tr5-2"><line x1="947.5" y1="253" x2="958.5" y2="253"></line><circle cx="953" cy="253" r="2.6"></circle></g>
+<g class="portal" id="portal-E.66_E.67a"><line x1="985" y1="149" x2="996" y2="149"></line><circle cx="990.5" cy="149" r="2.6"></circle></g>
+<g class="portal" id="portal-E.68_E.flur-tr5-2"><line x1="859.5" y1="253" x2="870.5" y2="253"></line><circle cx="865" cy="253" r="2.6"></circle></g>
+<g class="portal" id="portal-E.68_E.68a"><line x1="735" y1="152" x2="735" y2="172"></line><circle cx="735" cy="162" r="2.6"></circle></g>
+<g class="portal" id="portal-E.68_E.68b"><line x1="763" y1="125.5" x2="763" y2="136.5"></line><circle cx="763" cy="131" r="2.6"></circle></g>
+<g class="portal" id="portal-E.68_E.aufzug-tr5"><line x1="735" y1="222" x2="735" y2="242"></line><circle cx="735" cy="232" r="2.6"></circle></g>
+<g class="portal" id="portal-E.elt-vert-tr5_E.flur-tr5-2"><line x1="712" y1="253" x2="723" y2="253"></line><circle cx="717.5" cy="253" r="2.6"></circle></g>
+<g class="portal" id="portal-E.flur-tr5-3_E.technik-tr5"><line x1="680" y1="229.5" x2="680" y2="240.5"></line><circle cx="680" cy="235" r="2.6"></circle></g>
+<g class="portal" id="portal-E.70a_E.flur-tr5-2"><line x1="650" y1="260.5" x2="650" y2="271.5"></line><circle cx="650" cy="266" r="2.6"></circle></g>
+<g class="portal" id="portal-E.70b_E.flur-tr5-3"><line x1="657" y1="229.5" x2="657" y2="240.5"></line><circle cx="657" cy="235" r="2.6"></circle></g>
+<g class="portal" id="portal-E.TR5_E.flur-tr5-3"><line x1="657" y1="217" x2="680" y2="217"></line><circle cx="668.5" cy="217" r="2.6"></circle></g>
+<g class="portal exit" id="portal-E.TR5_exterior"><line x1="658.1" y1="201.1" x2="653.1" y2="210.9"></line><circle cx="655.6" cy="206" r="2.6"></circle></g>
+<g class="portal" id="portal-E.TR6_E.flur-tr6-1"><line x1="1392" y1="236" x2="1392" y2="258"></line><circle cx="1392" cy="247" r="2.6"></circle></g>
+<g class="portal" id="portal-E.92_E.TR6"><line x1="1395.5" y1="166" x2="1406.5" y2="166"></line><circle cx="1401" cy="166" r="2.6"></circle></g>
+<g class="portal exit" id="portal-E.TR6_exterior"><line x1="1428.95" y1="217.3" x2="1436.05" y2="225.7"></line><circle cx="1432.5" cy="221.5" r="2.6"></circle></g>
+<g class="portal" id="portal-E.aufzug-e65_E.flur-tr6-1"><line x1="1179.5" y1="226" x2="1190.5" y2="226"></line><circle cx="1185" cy="226" r="2.6"></circle></g>
+<g class="portal" id="portal-E.90_E.flur-tr6-1"><line x1="1271.5" y1="226" x2="1282.5" y2="226"></line><circle cx="1277" cy="226" r="2.6"></circle></g>
+<g class="portal" id="portal-E.91_E.flur-tr6-1"><line x1="1365.5" y1="226" x2="1376.5" y2="226"></line><circle cx="1371" cy="226" r="2.6"></circle></g>
+<g class="portal exit" id="portal-E.durchgang_exterior"><line x1="1136.5" y1="279" x2="1147.5" y2="279"></line><circle cx="1142" cy="279" r="2.6"></circle></g>
+</g>
+<g id="labels">
+<text class="label-num" x="281" y="49.3">TR1</text>
+<text class="label-name" x="278.6" y="76.8">Flur</text><text class="label-id" x="278.6" y="83.8">flur-tr1-2</text>
+<text class="label-name" x="405" y="311.2">Flur</text><text class="label-id" x="405" y="318.2">flur-tr1-1</text>
+<text class="label-name" x="576.5" y="565.1">Flur</text><text class="label-id" x="576.5" y="572.1">flur-tr2-1</text>
+<text class="label-name" x="506.1" y="544.8">Flur</text><text class="label-id" x="506.1" y="551.8">flur-tr2-2</text>
+<text class="label-num" x="512.5" y="582.6">TR2</text>
+<text class="label-name" x="468.8" y="564.3">Flur</text><text class="label-id" x="468.8" y="571.3">flur-tr2-3</text>
+<text class="label-name" x="488" y="735.2">Flur</text><text class="label-id" x="488" y="742.2">flur-tr3-1</text>
+<text class="label-num" x="411" y="883.1">TR3</text>
+<text class="label-name" x="234" y="565.3">Flur</text><text class="label-id" x="234" y="572.3">flur-tr4-1</text>
+<text class="label-name" x="318.4" y="584.7">Flur</text><text class="label-id" x="318.4" y="591.7">flur-tr4-2</text>
+<text class="label-name" x="145.8" y="550.3">Flur</text><text class="label-id" x="145.8" y="557.3">flur-tr4-3</text>
+<text class="label-name" x="222.1" y="484.1">Flur</text><text class="label-id" x="222.1" y="491.1">flur-tr4-4</text>
+<text class="label-num" x="203" y="539">TR4</text>
+<text class="label-num" x="697.1" y="202.3">TR5</text>
+<text class="label-name" x="668.5" y="235">Flur</text><text class="label-id" x="668.5" y="242">flur-tr5-3</text>
+<text class="label-name" x="868.5" y="266">Flur</text><text class="label-id" x="868.5" y="273">flur-tr5-2</text>
+<text class="label-name" x="1099.5" y="266">Flur</text><text class="label-id" x="1099.5" y="273">flur-tr5-1</text>
+<text class="label-name" x="1099.5" y="208">Flur</text><text class="label-id" x="1099.5" y="215">flur-tr5-4</text>
+<text class="label-name" x="1140.9" y="269.1">Durchgang</text><text class="label-id" x="1140.9" y="276.1">durchgang</text>
+<text class="label-name" x="1271.4" y="243.3">Flur</text><text class="label-id" x="1271.4" y="250.3">flur-tr6-1</text>
+<text class="label-num" x="1411.1" y="216.7">TR6</text>
+<text class="label-name" x="1039.1" y="376.4">Flur</text><text class="label-id" x="1039.1" y="383.4">flur-tr7-4</text>
+<text class="label-name" x="712.5" y="569.2">Flur</text><text class="label-id" x="712.5" y="576.2">flur-tr7-3</text>
+<text class="label-num" x="781.9" y="633.1">TR7</text>
+<text class="label-name" x="857" y="569.5">Flur</text><text class="label-id" x="857" y="576.5">flur-tr7-2</text>
+<text class="label-name" x="863.2" y="513.2">Foyer</text><text class="label-id" x="863.2" y="520.2">foyer</text>
+<text class="label-name" x="977.2" y="517.7">Flur</text><text class="label-id" x="977.2" y="524.7">flur-tr7-1</text>
+<text class="label-name" x="1189.9" y="503.8">Flur</text><text class="label-id" x="1189.9" y="510.8">flur-tr9-3</text>
+<text class="label-name" x="1375.2" y="520.2">Flur</text><text class="label-id" x="1375.2" y="527.2">flur-tr9-1</text>
+<text class="label-num" x="1434.1" y="497.9">TR9</text>
+<text class="label-name" x="1506.5" y="548.5">Flur</text><text class="label-id" x="1506.5" y="555.5">flur-tr9-2</text>
+<text class="label-num" x="891.7" y="811.8">TR8</text>
+<text class="label-name" x="919.9" y="836.3">Flur</text><text class="label-id" x="919.9" y="843.3">flur-tr8-1</text>
+<text class="label-name" x="946.5" y="896.5">Flur</text><text class="label-id" x="946.5" y="903.5">flur-tr8-2</text>
+<text class="label-name" x="1045.7" y="955.5">Flur</text><text class="label-id" x="1045.7" y="962.5">flur-tr8-3</text>
+<text class="label-name" x="405.8" y="574.2">Flur</text><text class="label-id" x="405.8" y="581.2">flur-tr2-4</text>
+<text class="label-num" x="1100.3" y="447.1">E.56b</text>
+<text class="label-num" x="1159.6" y="439.1">E.56c</text><text class="label-name" x="1159.6" y="447.1">Unterricht</text>
+<text class="label-num" x="1275.7" y="443.4">E.57</text><text class="label-name" x="1275.7" y="451.4">Unterricht</text>
+<text class="label-num" x="1450.3" y="411.8">R.58</text><text class="label-name" x="1450.3" y="419.8">Konferenzraum</text>
+<text class="label-num" x="1477.5" y="479">E.58a</text><text class="label-name" x="1477.5" y="487">Techn.</text>
+<text class="label-num" x="1477.5" y="504.5">E.54a</text><text class="label-name" x="1477.5" y="512.5">WC D</text>
+<text class="label-name" x="1477.5" y="525">VR</text><text class="label-id" x="1477.5" y="532">vr-e54a</text>
+<text class="label-num" x="1508.5" y="490.5">E.54b</text><text class="label-name" x="1508.5" y="498.5">WC H</text>
+<text class="label-name" x="1508.5" y="525">VR</text><text class="label-id" x="1508.5" y="532">vr-e54b</text>
+<text class="label-num" x="1553.3" y="500.7">E.62</text><text class="label-name" x="1553.3" y="508.7">Unterricht</text>
+<text class="label-num" x="1651.1" y="512">E.63</text><text class="label-name" x="1651.1" y="520">Unterricht</text>
+<text class="label-num" x="1586.9" y="596.6">E.61</text><text class="label-name" x="1586.9" y="604.6">Werkstatt</text>
+<text class="label-num" x="1479.5" y="598.1">E.60b</text><text class="label-name" x="1479.5" y="606.1">Büro</text>
+<text class="label-num" x="1423" y="597.9">E.60a</text><text class="label-name" x="1423" y="605.9">Büro</text>
+<text class="label-num" x="1317.9" y="547.9">E.59b</text><text class="label-name" x="1317.9" y="555.9">Elt</text>
+<text class="label-num" x="1332.3" y="599.6">E.59</text><text class="label-name" x="1332.3" y="607.6">Besprechungsraum</text>
+<text class="label-name" x="1141.4" y="541.9">Wachdienst</text><text class="label-id" x="1141.4" y="548.9">wachdienst</text>
+<text class="label-num" x="1195.1" y="579.8">E.52</text><text class="label-name" x="1195.1" y="587.8">Eingangsbereich/Rezeption</text>
+<text class="label-name" x="704.8" y="505.5">Terrasse</text><text class="label-id" x="704.8" y="512.5">terrasse</text>
+<text class="label-num" x="1074.9" y="540.8">E.51</text><text class="label-name" x="1074.9" y="548.8">Pförtner</text>
+<text class="label-num" x="1064.4" y="566.5">E.50b</text><text class="label-name" x="1064.4" y="574.5">WC D</text>
+<text class="label-name" x="1058.2" y="587.8">Beh. WC</text><text class="label-id" x="1058.2" y="594.8">wc-beh-e50b</text>
+<text class="label-name" x="1031.5" y="577.5">VR</text><text class="label-id" x="1031.5" y="584.5">vr-e50b</text>
+<text class="label-num" x="997.5" y="577.5">E.50a</text><text class="label-name" x="997.5" y="585.5">WC H/Beh.-WC</text>
+<text class="label-name" x="940" y="577.5">Vorraum</text><text class="label-id" x="940" y="584.5">vorraum-e50</text>
+<text class="label-name" x="761.3" y="655.6">Aufzug</text><text class="label-id" x="761.3" y="662.6">aufzug-tr7</text>
+<text class="label-num" x="636.63" y="266.14">E.70a</text><text class="label-name" x="636.63" y="274.14">Bohrr.</text>
+<text class="label-num" x="647.74" y="237.48">E.70b</text><text class="label-name" x="647.74" y="245.48">El.-technik</text>
+<text class="label-name" x="687.5" y="235">Technik</text><text class="label-id" x="687.5" y="241">technik-tr5</text>
+<text class="label-name" x="715" y="230.5">Aufzug</text><text class="label-id" x="715" y="236.5">aufzug-tr5</text>
+<text class="label-name" x="715" y="248.5">Elt-Vert.</text>
+<text class="label-num" x="708" y="162">E.68a</text><text class="label-name" x="708" y="170">Vorbereitung</text>
+<text class="label-num" x="725" y="132">E.68b</text><text class="label-name" x="725" y="140">Lager</text>
+<text class="label-num" x="805" y="189">E.68</text><text class="label-name" x="805" y="197">Unterricht</text>
+<text class="label-num" x="925" y="204">E.67</text><text class="label-name" x="925" y="212">Unterricht</text>
+<text class="label-num" x="974.79" y="135">E.67a</text><text class="label-name" x="974.79" y="143">Büro</text>
+<text class="label-num" x="1030" y="204">E.66</text><text class="label-name" x="1030" y="212">Unterricht</text>
+<text class="label-num" x="1102.96" y="143.18">E.66a</text><text class="label-name" x="1102.96" y="151.18">Lehrmittel</text>
+<text class="label-num" x="1160" y="159">E.65</text><text class="label-name" x="1160" y="167">Werkstatt</text>
+<text class="label-name" x="1125.5" y="207.5">VR</text><text class="label-id" x="1125.5" y="213.5">vr-e64a</text>
+<text class="label-num" x="1157" y="208">E.64a</text><text class="label-name" x="1157" y="216">WC H</text>
+<text class="label-name" x="1188" y="209">Aufzug</text><text class="label-id" x="1188" y="215">aufzug-e65</text>
+<text class="label-num" x="1132.02" y="240.4">E.64</text><text class="label-name" x="1132.02" y="248.4">Lager</text>
+<text class="label-num" x="1246" y="179">E.90</text><text class="label-name" x="1246" y="187">Unterricht</text>
+<text class="label-num" x="1340" y="179">E.91</text><text class="label-name" x="1340" y="187">Unterricht</text>
+<text class="label-num" x="1405.09" y="149.15">E.92</text><text class="label-name" x="1405.09" y="157.15">Lager</text>
+</g>
+</svg>
