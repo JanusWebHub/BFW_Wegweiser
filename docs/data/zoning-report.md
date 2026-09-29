@@ -77,6 +77,11 @@ Some circulation zones meet at a door, not an open split. These portals are left
     - Lageplan E.59a/E.59/E.60 vs. 058 E.59 / E.59a / E.59b (i.e. E.60a / E.60b by the known correction).
     - The renumbered long wing and IQ + UKM wing (e.g. Lageplan E.28 "Kopierer" vs. 053 E.23 "Kopierer").
 
+### Changes after approval
+
+- The SVG metadata block has been removed. The file now starts with `<defs><style>`, and all colours and fonts live in that one style element. It had been written without either by mistake; the geometry is unchanged.
+- The readings above are unchanged; TR2, the Durchgang and the Foyer edge will be checked on site.
+
 ### Checks after step 1
 
 - Every zone and portal in the graph has exactly one SVG element, and every SVG zone or portal element has an entry in the graph: 37 zones plus `exterior`, and 21 portals.
@@ -91,3 +96,186 @@ Some circulation zones meet at a door, not an open split. These portals are left
   - all nine stairwells
   - `E.flur-tr7-4` and `E.flur-tr9-3` (reached only through doors)
   - `exterior`
+
+## Step 2.1 — Rooms, east block (B 7967_058, B 7967_059)
+
+The skeleton is unchanged. 18 zones were added. Room division and labels follow 058/059 (2026); outlines follow the Lageplan walls.
+
+| Zone | Label | Crossable | Note |
+| --- | --- | --- | --- |
+| `E.56b` | – | no | No label printed on 058/059 |
+| `E.56c` | Unterricht | no | L-shaped; wraps around E.56b |
+| `E.57` | Unterricht | no | |
+| `R.58` | Konferenzraum | **yes** | Only access to E.58a |
+| `E.58a` | Techn. | no | |
+| `E.54a` | WC D | no | |
+| `E.vr-e54a` | VR | yes | Anteroom |
+| `E.54b` | WC H | no | |
+| `E.vr-e54b` | VR | yes | Anteroom |
+| `E.62` | Unterricht | no | |
+| `E.63` | Unterricht | no | East edge extrapolated (step 1, item 1) |
+| `E.61` | Werkstatt | no | |
+| `E.60a` | Büro | no | Printed `E.59a` (known correction) |
+| `E.60b` | Büro | no | Printed `E.59b` (known correction) |
+| `E.59` | Besprechungsraum | no | |
+| `E.59b` | Elt | no | See item 6 |
+| `E.wachdienst` | Wachdienst | no | |
+| `E.52` | Eingangsbereich/Rezeption | yes | Crossable by the guidelines |
+
+Rooms made crossable in this step: `R.58`, because the only door of `E.58a` opens into R.58 (058, 059). `E.52` and the two VRs are crossable by category.
+
+### Discrepancies, assumptions and readings (for decision)
+
+1. **E.56b / E.56c vs. Lageplan E.56.** The Lageplan has one room, E.56 (71.96 m², "Center RVL"), between E.56a and E.57. 058 shows E.56c and E.56b in that place. The left edge of 058 is a cut line, so the west extent of E.56b is not shown. Drawn: both rooms inside the Lageplan outline of E.56. E.56b runs to the Lageplan wall between E.56 and E.56a (x 1060), and its outline around E.56c is read from 058. If this is right, the Lageplan room E.56 no longer exists, and step 2.8 has only E.56a in that row.
+2. **E.57, E.62, E.63, E.61** keep their Lageplan outlines and numbers.
+3. **R.58 vs. Lageplan E.58.** The Lageplan prints E.58 "Tagungsraum" (120.70 m²); 058 and 059 print R.58 "Konferenzraum". The id follows the emergency plans.
+4. **E.58a, E.54a, E.54b and the VRs.**
+   - 058/059: E.58a Techn. above E.54a WC D, with a VR below. E.54b WC H has its own VR below.
+   - Lageplan: E.54a and E.54b in the same two columns. The Techn. space at the top of the first column is unlabelled there, and the two anterooms are drawn as one strip with two doors.
+   - Drawn: the 2026 order, in the Lageplan columns.
+5. **E.59 / E.60a / E.60b.**
+   - The Lageplan shows three rooms: E.59a ID, E.59 ID and E.60 (Umbau für RVLi, 65.32 m²).
+   - 058/059 show three different rooms: E.59 Besprechungsraum, then two Büros printed E.59a and E.59b, i.e. E.60a and E.60b by the known correction.
+   - Drawn:
+     - E.59 as the Lageplan E.59a and E.59 combined, bounded by the E.52 diagonal.
+     - E.60a and E.60b as the Lageplan E.60 split in half (x 1395 / 1451 / 1508). 058 draws them about equal in width.
+6. **E.59b Elt.** On 058 and 059 the Elt room is at corridor level. It lies between the E.52 diagonal and the east hall, between the line of the E.56/E.57 corridor wall and the hall's south wall. That spot is inside the approved zone `E.flur-tr9-1`. The Lageplan shows open hall there. To keep the skeleton unchanged, Elt is drawn in the north-west corner of E.59, directly below that spot (SVG x 1275–1322, y 563–587). **Proposal:** cut Elt out of `E.flur-tr9-1` (SVG triangle about (1313,529)–(1335,529)–(1335,563)–(1291,563)) and give that area back to E.59. This needs your approval because it changes the skeleton.
+7. **Wachdienst vs. Lageplan "Infodienst".** The Lageplan Infodienst box between the corridor and the ramp matches the Wachdienst on 058/059 (and 055). Drawn: Wachdienst = the Infodienst outline east of its diagonal west wall. The part west of that wall is E.51 Pförtner (055, step 2.2). Infodienst is not drawn as a zone of its own. Please confirm that Infodienst and Wachdienst are the same room, so the middle-area step does not draw Infodienst again.
+8. **E.52 vs. Lageplan "Wartebereich Empfang".** E.52 is the Wartebereich plus the ramp area south of Wachdienst, down to the south wall with the Haupteingang. Its west edge is the diagonal wall continuing from Wachdienst down to the Speisesaal (Lageplan). The ramp, the Erste-Hilfe point, the counter arc and the black wall blocks are fixtures or wall thickness and are dropped.
+9. **E.63 / E.61 east end.** Same extrapolation as step 1, item 1.
+
+### Changes after approval
+
+- **E.59b Elt** is now cut out of `E.flur-tr9-1` where 058/059 show it: SVG (1313,529)–(1335,529)–(1335,563)–(1291,563). That corner goes back to `E.59`. This skeleton change was approved. The portal `E.flur-tr9-1_E.flur-tr9-2` is unaffected.
+- Confirmed by the supervisor:
+  - E.56b and E.56c lie inside the old Lageplan E.56.
+  - Wachdienst and the Lageplan "Infodienst" are the same room, so Infodienst is not drawn in the middle-area step.
+
+### Checks after step 2.1
+
+- Every zone and portal has exactly one SVG element and one graph entry: 55 zones plus `exterior`, and 21 portals.
+- The existing portals are unchanged and still lie on their shared boundaries.
+- No overlaps (sampling every 2 units).
+- The east block is covered without gaps. The only uncovered samples inside wing-1 are the strip west of the Wachdienst diagonal (E.51, wing 2), because the display wing shape uses a straight line there.
+- Rooms of the east block have no portals yet; that is step 3.1.
+
+## Step 3.1 — Portals, east block
+
+25 portals were added: 22 doors or openings and 3 exits. No new virtual portals are needed inside the east block; the corridor split `E.flur-tr9-1_E.flur-tr9-2` is from step 1. Door positions were read from 058, cross-checked against 059, and mapped to the plan with an affine fit to ten wall corners (residual ≤ 12 units, typically 5). Each portal line is the door opening (single door 1 m, double door 2 m, WC doors 0.9 m), placed on the shared boundary.
+
+| Portal | Reading |
+| --- | --- |
+| `E.56b_E.flur-tr9-3` | **Assumed.** 058/059 show no door for E.56b; its west part is cut off on both plans. Placed at the corridor, SVG x ≈ 1106. |
+| `E.56c_E.flur-tr9-3` | 058, door in the narrow lower part of E.56c |
+| `E.57_E.flur-tr9-3` | 058/059, near the east end of E.57 |
+| `E.flur-tr9-1_E.flur-tr9-3` | Fire double door on the diagonal (red dots on 058/059) |
+| `E.flur-tr9-1_R.58` | Double door from the hall into R.58 (058/059) |
+| `E.58a_R.58` | 058: E.58a's only door opens into R.58 (hence R.58 crossable, step 2.1) |
+| `E.62_R.58` | 058: second door of E.62, in its top wall. Not clearly visible on 059; please check. |
+| `E.TR9_E.flur-tr9-1` | Stair opening at the upper end of TR9's slanted wall (Lageplan door arc; 058 shows the gap) |
+| `E.54a_E.vr-e54a`, `E.flur-tr9-2_E.vr-e54a`, `E.54b_E.vr-e54b`, `E.flur-tr9-2_E.vr-e54b` | WC doors and anteroom doors. The arcs are too small to place exactly, so each is centred on its wall (**assumed positions**). |
+| `E.62_E.flur-tr9-2` | 058/059 |
+| `E.63_E.flur-tr9-2` | Door at the end of the corridor (058/059) |
+| `E.61_E.flur-tr9-2` | 058/059 |
+| `E.60b_E.flur-tr9-2`, `E.60a_E.flur-tr9-1` | 058/059. The E.60a door lies on the hall section of the corridor. |
+| `E.59_E.flur-tr9-1` | 058 shows two door arcs about 2 m apart. They do not change any route, so they are one portal. |
+| `E.59b_E.flur-tr9-1` | **Assumed.** No arc is readable on 058/059; the door is placed on Elt's hall side. |
+| `E.52_E.flur-tr9-3` | Opening between Wachdienst and the wall (058/059, green route; Lageplan door) |
+| `E.52_E.wachdienst`, `E.52_E.wachdienst_2` | 058: doors at both ends of Wachdienst, about 7 m apart. Two portals. |
+| `E.52_exterior` | Haupteingang: `main_entrance` and `emergency_exit` (Notausgang on 058/059; Lageplan "Haupteingang") |
+| `E.52_exterior_2` | Notausgang at the south-west corner of E.52 (058 right arrow, 059 left arrow; Lageplan door) |
+| `E.61_exterior` | Notausgang in the south wall of E.61 (058/059) |
+
+Not portals:
+- The Notausstieg of E.63 (escape window).
+- The small stair symbol at the outer corner of R.58. It has no exit sign and is cut off on both plans; please check whether it is an exit.
+
+Doors between wings: the double door `E.flur-tr7-1` / `E.flur-tr9-3` and the west side of E.52 are left for step 4.
+
+### Checks after step 3.1
+
+- 55 zones plus `exterior`, and 46 portals. Each has exactly one SVG element and one graph entry.
+- Every portal point is the circle centre and the midpoint of its line.
+- Every portal line lies on the boundary shared by its two zones, or on the shell for exits (tolerance 0.6 units).
+- No overlaps.
+- Every zone of the east block has at least one portal. The zones without portals belong to later wings: TR1–TR8 and `E.flur-tr7-4`.
+- `emergency_exit` and `main_entrance` appear only on portals to `exterior`.
+
+## Step 2.2 — Rooms, entrance and foyer (B 7967_055, B 7967_057)
+
+The skeleton and step 2.1 are unchanged. 8 zones were added (63 zones plus `exterior`). `E.foyer`, `E.TR7`, `E.52` and `E.wachdienst` already exist.
+
+| Zone | Label | Crossable | Note |
+| --- | --- | --- | --- |
+| `E.terrasse` | Terrasse | yes | Crossable by the guidelines |
+| `E.51` | Pförtner | no | |
+| `E.50b` | WC D | no | |
+| `E.wc-beh-e50b` | Beh. WC | no | Unnumbered, see item 3 |
+| `E.vr-e50b` | VR | yes | Anteroom |
+| `E.50a` | WC H/Beh.-WC | no | |
+| `E.vorraum-e50` | Vorraum | yes | Anteroom |
+| `E.aufzug-tr7` | Aufzug | yes | Lift |
+
+Rooms made crossable by category, none by exception: Terrasse, both anterooms, lift.
+
+### Method
+
+055 and 057 are rotated: SVG +x is up in the picture and SVG +y is to the right. Outlines follow the Lageplan (measured on a grid at SVG scale); room division and labels follow 055/057.
+
+### Discrepancies, assumptions and readings (for decision)
+
+1. **Terrasse.** Polygon (563,470)–(839,470)–(835,478)–(809,545)–(610,545). South edge = the pier wall shared with `E.flur-tr7-3`; east edge = the Foyer diagonal; west edge = the wall of the long-wing rooms E.26/E.24 (wing 5), ending at (610,545) like the corridor zones. North edge y 470 as in step 1, item 15. Area 144 m² (printed 142 m²).
+2. **E.51 Pförtner.** It is the box between `E.flur-tr7-1`, Wachdienst and the WC block (x 1050–1107, y 528–557). It is not drawn on the Lageplan (part of "Infodienst" area, see step 2.1, item 7). Its east edge follows the Wachdienst diagonal and the E.52 diagonal.
+3. **E.50b / Beh. WC.** 055/057 print "E.50b WC D" and "Beh. WC" side by side, the Beh. WC without a number. Drawn as two zones: `E.50b` (WC D) north and the unnumbered `E.wc-beh-e50b` south, split at y 579 as on the Lageplan. If "E.50b" also covers the Beh. WC, the two zones must be merged.
+4. **E.50a** is one zone: the Lageplan draws a WC H and a wheelchair WC inside it; 055/057 print one label "WC H/ Beh.-WC".
+5. **VR `E.vr-e50b`** is the compartment between E.50a and E.50b/Beh. WC (055/057 "VR"). It is named after E.50b, whose two rooms open into it; the Lageplan shows no label.
+6. **Vorraum.** On the Lageplan the Vorraum is a narrow room (about 17 units deep, y 579–598) with a stepped, thick north wall (y 566–579). The north edge of the zone is set on the skeleton edge of `E.flur-tr7-1` (y 557), so the zone includes that wall and is deeper than the room. Same for the top edge of the WC block. South edges are at y 600 (wall line of the Speisesaal).
+7. **Wall lines south of the block.** The wall between the block and the Speisesaal is at y ≈ 598–600 on the Lageplan; the skeleton corridor `E.flur-tr7-2` ends at y 594. The strip y 594–600 west of x 905 is left for the Speisesaal (step 2.8).
+8. **Aufzug.** The notch left out of `E.TR7` in step 1 (item 12) is `E.aufzug-tr7`. 055/057 print "Aufzug".
+9. **Speisesaal** is not on 055/057 and stays in step 2.8. The dotted columns on the right of both plans are its columns.
+
+### Changes to files
+
+- `bfw-eg.svg`: the uploaded copy had an empty `defs` and a C2PA metadata block. The metadata block is removed again and the single `style` element is restored in `defs` (colours and fonts I chose; no geometry affected). Please check the style is what you want.
+
+### Checks after step 2.2
+
+- 63 zones plus `exterior`, and 46 portals; every zone and portal has one SVG element and one graph entry.
+- No overlaps (sampling every 2 units). Existing portals unchanged.
+- Gaps inside wing 2: only a sliver at the west end of the Terrasse (the display wing shape uses (605,545), the zones (610,545)) and the strip in item 7.
+- The new rooms have no portals yet; that is step 3.2. The zones without portals are the wing 2 rooms above and those of later wings.
+
+## Step 3.2 — Portals, entrance and foyer
+
+10 portals were added, all doors or openings. No new virtual portals: the four splits of this wing (`E.flur-tr7-1`/`E.flur-tr7-2`, `E.flur-tr7-1`/`E.foyer`, `E.flur-tr7-2`/`E.flur-tr7-3`, `E.flur-tr7-2`/`E.foyer`) come from step 1. No new exits: 055/057 show only the two Notausgänge of E.52, already in step 3.1. Door positions were read from the Lageplan on a 10-unit grid (single door 1 m, double door about 2 m, WC doors 0.9 m) and checked against 055/057.
+
+| Portal | Reading |
+| --- | --- |
+| `E.51_E.flur-tr7-1` | Door arc in the west wall of E.51 (Lageplan; 055/057) |
+| `E.51_E.wachdienst` | Door in the diagonal wall between Pförtner and Wachdienst (Lageplan; 055/057) |
+| `E.flur-tr7-1_E.vr-e50b` | Door arc in the north wall of the VR (Lageplan) |
+| `E.vr-e50b_E.wc-beh-e50b` | Door arc in the wall between VR and Beh. WC (Lageplan) |
+| `E.50b_E.vr-e50b` | **Assumed.** No arc readable; centred on the shared wall |
+| `E.50a_E.vorraum-e50` | Door arc in the west wall of E.50a (Lageplan; 055/057) |
+| `E.flur-tr7-2_E.vorraum-e50` | Door arc at the south end of the Vorraum's west wall (Lageplan; 055/057) |
+| `E.flur-tr7-3_E.terrasse` | Double door in the pier wall (Lageplan; 055/057) |
+| `E.TR7_E.flur-tr7-2` | Double door in the north wall of TR7 (Lageplan; 055/057) |
+| `E.TR7_E.aufzug-tr7` | **Assumed.** No lift door is readable; placed in the middle of the lift's east side, facing the stairs |
+
+### Readings and open points (for decision)
+
+1. **Terrasse ↔ Foyer.** The wall between them has no door on the Lageplan and none on 055/057; drawn as closed. The Terrasse is reached only through the double door from `E.flur-tr7-3`.
+2. **E.vr-e50b.** Only the north door (to the Flur) is clear. The WC D door is assumed (above).
+3. **Vorraum.** One door only (to `E.flur-tr7-2`); the south wall to the Speisesaal has none on the Lageplan.
+4. **Left for step 3.8 / step 4** (they touch zones of other wings):
+   - Double door in the north wall of `E.flur-tr7-1` (x 909–930, y 478) and a door near its north-east corner (x 974–980), both to the middle-area rooms `E.53.1`/`E.53.2`.
+   - Double door (x 860–883, y ≈ 596) between `E.flur-tr7-2` and the Speisesaal.
+   - The double door `E.flur-tr7-1` / `E.flur-tr9-3`, the fire door `E.flur-tr2-1` / `E.flur-tr7-3`, and both ends of `E.flur-tr7-4`.
+5. **TR7** has no exit on 055/057, so it has no portal to `exterior`.
+
+### Checks after step 3.2
+
+- 56 portals, 63 zones plus `exterior`; every zone and portal has one SVG element and one graph entry.
+- Each new point is the circle centre and the midpoint of its line; each line lies on the boundary of its two zones (tolerance 0.6 units).
+- Existing portals and zones are unchanged.
+- Every zone of wing 2 has at least one portal. Zones still without a portal belong to later wings: `E.TR1`–`E.TR6`, `E.TR8`, `E.flur-tr7-4`. `E.TR7` has portals now.

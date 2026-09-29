@@ -19,6 +19,74 @@
     "exterior": {
       "crossable": false
     },
+    "E.50a": {
+      "floor": "E",
+      "crossable": false
+    },
+    "E.50b": {
+      "floor": "E",
+      "crossable": false
+    },
+    "E.51": {
+      "floor": "E",
+      "crossable": false
+    },
+    "E.52": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.54a": {
+      "floor": "E",
+      "crossable": false
+    },
+    "E.54b": {
+      "floor": "E",
+      "crossable": false
+    },
+    "E.56b": {
+      "floor": "E",
+      "crossable": false
+    },
+    "E.56c": {
+      "floor": "E",
+      "crossable": false
+    },
+    "E.57": {
+      "floor": "E",
+      "crossable": false
+    },
+    "E.58a": {
+      "floor": "E",
+      "crossable": false
+    },
+    "E.59": {
+      "floor": "E",
+      "crossable": false
+    },
+    "E.59b": {
+      "floor": "E",
+      "crossable": false
+    },
+    "E.60a": {
+      "floor": "E",
+      "crossable": false
+    },
+    "E.60b": {
+      "floor": "E",
+      "crossable": false
+    },
+    "E.61": {
+      "floor": "E",
+      "crossable": false
+    },
+    "E.62": {
+      "floor": "E",
+      "crossable": false
+    },
+    "E.63": {
+      "floor": "E",
+      "crossable": false
+    },
     "E.TR1": {
       "floor": "E",
       "crossable": true
@@ -52,6 +120,10 @@
       "crossable": true
     },
     "E.TR9": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.aufzug-tr7": {
       "floor": "E",
       "crossable": true
     },
@@ -166,9 +238,234 @@
     "E.foyer": {
       "floor": "E",
       "crossable": true
+    },
+    "E.terrasse": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.vorraum-e50": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.vr-e50b": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.vr-e54a": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.vr-e54b": {
+      "floor": "E",
+      "crossable": true
+    },
+    "E.wachdienst": {
+      "floor": "E",
+      "crossable": false
+    },
+    "E.wc-beh-e50b": {
+      "floor": "E",
+      "crossable": false
+    },
+    "R.58": {
+      "floor": "E",
+      "crossable": true
     }
   },
   "portals": {
+    "E.50a_E.vorraum-e50": {
+      "virtual": false,
+      "point": [
+        975,
+        590
+      ]
+    },
+    "E.50b_E.vr-e50b": {
+      "virtual": false,
+      "point": [
+        1043,
+        568
+      ]
+    },
+    "E.51_E.flur-tr7-1": {
+      "virtual": false,
+      "point": [
+        1050,
+        541.5
+      ]
+    },
+    "E.51_E.wachdienst": {
+      "virtual": false,
+      "point": [
+        1099.7,
+        542
+      ]
+    },
+    "E.52_E.flur-tr9-3": {
+      "virtual": false,
+      "point": [
+        1201,
+        528.2
+      ]
+    },
+    "E.52_E.wachdienst": {
+      "virtual": false,
+      "point": [
+        1183,
+        541.1
+      ]
+    },
+    "E.52_E.wachdienst_2": {
+      "virtual": false,
+      "point": [
+        1106.1,
+        555
+      ]
+    },
+    "E.52_exterior": {
+      "virtual": false,
+      "point": [
+        1198.5,
+        628
+      ],
+      "emergency_exit": true,
+      "main_entrance": true
+    },
+    "E.52_exterior_2": {
+      "virtual": false,
+      "point": [
+        1125.5,
+        628
+      ],
+      "emergency_exit": true
+    },
+    "E.54a_E.vr-e54a": {
+      "virtual": false,
+      "point": [
+        1477,
+        516
+      ]
+    },
+    "E.54b_E.vr-e54b": {
+      "virtual": false,
+      "point": [
+        1508,
+        516
+      ]
+    },
+    "E.56b_E.flur-tr9-3": {
+      "virtual": false,
+      "point": [
+        1106.1,
+        480
+      ]
+    },
+    "E.56c_E.flur-tr9-3": {
+      "virtual": false,
+      "point": [
+        1168.1,
+        480
+      ]
+    },
+    "E.57_E.flur-tr9-3": {
+      "virtual": false,
+      "point": [
+        1305.1,
+        480
+      ]
+    },
+    "E.58a_R.58": {
+      "virtual": false,
+      "point": [
+        1477.1,
+        465
+      ]
+    },
+    "E.59_E.flur-tr9-1": {
+      "virtual": false,
+      "point": [
+        1364.1,
+        563
+      ]
+    },
+    "E.59b_E.flur-tr9-1": {
+      "virtual": false,
+      "point": [
+        1335,
+        546.1
+      ]
+    },
+    "E.60a_E.flur-tr9-1": {
+      "virtual": false,
+      "point": [
+        1422.1,
+        563
+      ]
+    },
+    "E.60b_E.flur-tr9-2": {
+      "virtual": false,
+      "point": [
+        1483.1,
+        563
+      ]
+    },
+    "E.61_E.flur-tr9-2": {
+      "virtual": false,
+      "point": [
+        1532.1,
+        563
+      ]
+    },
+    "E.61_exterior": {
+      "virtual": false,
+      "point": [
+        1552,
+        633.6
+      ],
+      "emergency_exit": true
+    },
+    "E.62_E.flur-tr9-2": {
+      "virtual": false,
+      "point": [
+        1541.1,
+        534
+      ]
+    },
+    "E.62_R.58": {
+      "virtual": false,
+      "point": [
+        1534,
+        466.3
+      ]
+    },
+    "E.63_E.flur-tr9-2": {
+      "virtual": false,
+      "point": [
+        1583,
+        548.1
+      ]
+    },
+    "E.TR7_E.aufzug-tr7": {
+      "virtual": false,
+      "point": [
+        778,
+        661.5
+      ]
+    },
+    "E.TR7_E.flur-tr7-2": {
+      "virtual": false,
+      "point": [
+        828.1,
+        594
+      ]
+    },
+    "E.TR9_E.flur-tr9-1": {
+      "virtual": false,
+      "point": [
+        1392.2,
+        471.9
+      ]
+    },
     "E.durchgang_E.flur-tr5-1": {
       "virtual": true,
       "point": [
@@ -281,6 +578,13 @@
         511.5
       ]
     },
+    "E.flur-tr7-1_E.vr-e50b": {
+      "virtual": false,
+      "point": [
+        1037,
+        557
+      ]
+    },
     "E.flur-tr7-2_E.flur-tr7-3": {
       "virtual": true,
       "point": [
@@ -292,6 +596,20 @@
       "virtual": true,
       "point": [
         857,
+        545
+      ]
+    },
+    "E.flur-tr7-2_E.vorraum-e50": {
+      "virtual": false,
+      "point": [
+        905,
+        589
+      ]
+    },
+    "E.flur-tr7-3_E.terrasse": {
+      "virtual": false,
+      "point": [
+        762.8,
         545
       ]
     },
@@ -314,6 +632,41 @@
       "point": [
         1430,
         548.5
+      ]
+    },
+    "E.flur-tr9-1_E.flur-tr9-3": {
+      "virtual": false,
+      "point": [
+        1328.2,
+        505.1
+      ]
+    },
+    "E.flur-tr9-1_R.58": {
+      "virtual": false,
+      "point": [
+        1371,
+        465
+      ]
+    },
+    "E.flur-tr9-2_E.vr-e54a": {
+      "virtual": false,
+      "point": [
+        1477,
+        534
+      ]
+    },
+    "E.flur-tr9-2_E.vr-e54b": {
+      "virtual": false,
+      "point": [
+        1508,
+        534
+      ]
+    },
+    "E.vr-e50b_E.wc-beh-e50b": {
+      "virtual": false,
+      "point": [
+        1043,
+        589
       ]
     }
   }
