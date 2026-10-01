@@ -102,6 +102,81 @@ for i in list(PT):
         LN[i]=(x1+dx,y1+dy,x2+dx,y2+dy); PT[i]['point']=[round(q.x,1),round(q.y,1)]; nsnap+=1
 print('snapped',nsnap)
 
+# ---- H kitchen entrance re-zoned by the user (redline marks)
+# shell: lift E.aufzug-tr8-a is outside the building; the envelope follows the TR8 stair outline
+_c=[tuple(p) for p in sh.exterior.coords][:-1]; _i=_c.index((873.0,843.0))
+assert _c[_i+1:_i+5]==[(837.0,829.0),(812.0,839.0),(794.0,800.0),(830.0,789.0)], _c[_i:_i+6]
+_c=_c[:_i+1]+[(875.5,843.0),(875.5,818.6),(848.8,818.4),(830.0,789.0)]+_c[_i+5:]
+sh=Polygon(_c)
+KOLD={'E.flur-tr8-1','E.flur-tr8-2','E.flur-tr8-3','E.aufzug-tr8-a'}
+for i in list(PT):
+    a,b=ends2(i)
+    if (a in KOLD or b in KOLD) or i in ('E.TR8_E.speisesaal',):
+        if i.startswith(('E.41_','E.41b_','E.41c_','E.41e_','E.41f_','E.41g_','E.42_','E.43_','E.TR8_E.flur','E.aufzug-tr8-b_','E.flur-tr8-3_','E.flur-tr8-1_','E.flur-tr8-2_','E.TR8_E.aufzug','E.TR8_E.speisesaal')): pass
+KEEP={}   # old portals to carry over: id -> (new zone pair partner, new corridor id, new point/line)
+SAVED={i:(PT[i],LN[i]) for i in PT if any(z in KOLD|{'E.TR8','E.aufzug-tr8-b'} for z in ends2(i))}
+for i in SAVED: rmportal(i)
+for z in KOLD: G.pop(z,None); C.pop(z,None)
+NEWZ={
+ 'E.TR8':[(830,789),(848.8,818.4),(875.5,818.6),(875.5,845),(907.6,845),(907.6,789)],
+ 'E.flur-tr8-1':[(907.6,789),(955,789),(955,819.8),(907.6,819.8)],
+ 'E.flur-tr8-2':[(907.6,819.8),(996,819.8),(996,845),(907.6,845)],
+ 'E.aufzug-tr8-b':[(955,789),(982,789),(982,819.8),(955,819.8)],
+ 'E.schacht-tr8':[(982,789),(996,789),(996,819.8),(982,819.8)],
+ 'E.flur-tr8-3':[(938,845),(1035,845),(1035,860),(938,860)],
+ 'E.flur-tr8-4':[(938,860),(955,860),(955,916),(938,916)],
+ 'E.flur-tr8-5':[(918.8,940.7),(932,963),(959.7,963),(959.7,916),(938,916),(938,940.7)],
+ 'E.flur-tr8-6':[(959.7,948),(1163,948),(1163,963),(959.7,963)],
+}
+for n,pts in NEWZ.items(): G[n]=Polygon(pts); C[n]=n not in ('E.schacht-tr8',); CH.add(n)
+zel['zone-E.schacht-tr8']=ET.Element('x',{'class':'zone service'})
+RW=UU([G[n] for n in G if n.startswith('E.41') and n not in ('E.41',)]+[G['E.lueftung-e41']])
+for n in NEWZ:
+    if n!='E.TR8': G[n]=one(G[n].difference(RW))
+for n in NEWZ: G[n]=one(G[n].intersection(sh))
+newU=UU([G[n] for n in NEWZ])
+for n in ['E.41','E.41a','E.42','E.43','E.speisesaal','E.lueftung-e41','E.41b','E.41c']:
+    if n in G and G[n].intersects(newU): G[n]=one(G[n].difference(newU)); CH.add(n)
+# carried-over doors
+def mv(old,new,line):
+    p=SAVED[old][0]; PT[new]=dict(p); PT[new]['point']=[round((line[0]+line[2])/2,1),round((line[1]+line[3])/2,1)]; LN[new]=tuple(line)
+mv('E.42_E.flur-tr8-1','E.42_E.flur-tr8-2',(927,845,938,845))
+mv('E.42_E.flur-tr8-2','E.42_E.flur-tr8-4',(938,861,938,874.5))
+mv('E.43_E.flur-tr8-2','E.43_E.flur-tr8-4',(938,903,938,913))
+mv('E.aufzug-tr8-b_E.flur-tr8-1','E.aufzug-tr8-b_E.flur-tr8-2',(963,819.8,974,819.8))
+mv('E.flur-tr8-3_E.lueftung-e41','E.flur-tr8-6_E.lueftung-e41',(1044,948,1053,948))
+mv('E.flur-tr8-3_exterior','E.flur-tr8-5_exterior',LN['E.flur-tr8-3_exterior'] if 'E.flur-tr8-3_exterior' in LN else SAVED['E.flur-tr8-3_exterior'][1])
+for r in ('b','c','e','f','g'):
+    o=f'E.41{r}_E.flur-tr8-3'; mv(o,f'E.41{r}_E.flur-tr8-6',SAVED[o][1])
+# new internal portals
+addportal('E.TR8_E.flur-tr8-2',False,(907.6,823.5),(907.6,834.5),(907.6,829))
+addportal('E.flur-tr8-1_E.flur-tr8-2',True,(907.6,819.8),(955,819.8))
+addportal('E.flur-tr8-1_E.speisesaal',True,(907.6,789),(955,789))
+addportal('E.flur-tr8-2_E.flur-tr8-3',True,(938,845),(996,845))
+addportal('E.flur-tr8-3_E.flur-tr8-4',True,(938,860),(955,860))
+addportal('E.flur-tr8-4_E.flur-tr8-5',True,(938,916),(955,916))
+addportal('E.flur-tr8-5_E.flur-tr8-6',True,(959.7,948),(959.7,963))
+# re-parent doors of E.41 whose door now lies on a new corridor piece
+for i in [i for i in list(PT) if i.startswith('E.41_') and 'exterior' not in i]:
+    a,b=ends2(i); room=b if a=='E.41' else a
+    if room.startswith('E.flur'): continue
+    pt=Point(PT[i]['point'])
+    if pt.distance(G['E.41'].boundary)>1.0 or pt.distance(G[room].boundary)>1.5:
+        cands=[(pt.distance(G[z].boundary),z) for z in NEWZ if z.startswith('E.flur') and G[z].intersects(G[room].buffer(1.5))]
+        if cands:
+            d,z=min(cands); suf=i[len(a)+1+len(b):]
+            renameportal(i,sortid(room,z,suf)); log.append(('reparent',i,z,round(d,1)))
+print([l for l in log if l[0]=='reparent'])
+# E.41 doorless openings to the new corridor pieces
+for z in ('E.flur-tr8-2','E.flur-tr8-3','E.flur-tr8-4','E.flur-tr8-5','E.flur-tr8-6'):
+    sh_=G['E.41'].boundary.intersection(G[z].boundary)
+    segs=[g for g in (sh_.geoms if hasattr(sh_,'geoms') else [sh_]) if g.geom_type=='LineString' and g.length>4]
+    for k_,g in enumerate(sorted(segs,key=lambda g:-g.length)):
+        c=list(g.coords); pid=sortid('E.41',z,'' if k_==0 else f'_{k_+1}')
+        addportal(pid,False,c[0],c[-1])
+print('kitchen: zones',len(NEWZ),'E.41 portals now',[i for i in PT if i.startswith('E.41_E.flur')])
+
+exec(open('batch2.py').read())
 # ================= validation of the fixed graph
 def ends(i): return ends2(i)
 adj=defaultdict(set)

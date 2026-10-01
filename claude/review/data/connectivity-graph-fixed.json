@@ -115,18 +115,6 @@
    "floor": "E",
    "crossable": true
   },
-  "E.flur-tr7-2": {
-   "floor": "E",
-   "crossable": true
-  },
-  "E.foyer": {
-   "floor": "E",
-   "crossable": true
-  },
-  "E.flur-tr7-1": {
-   "floor": "E",
-   "crossable": true
-  },
   "E.flur-tr9-3": {
    "floor": "E",
    "crossable": true
@@ -144,18 +132,6 @@
    "crossable": true
   },
   "E.TR8": {
-   "floor": "E",
-   "crossable": true
-  },
-  "E.flur-tr8-1": {
-   "floor": "E",
-   "crossable": true
-  },
-  "E.flur-tr8-2": {
-   "floor": "E",
-   "crossable": true
-  },
-  "E.flur-tr8-3": {
    "floor": "E",
    "crossable": true
   },
@@ -253,17 +229,13 @@
   },
   "E.50a": {
    "floor": "E",
-   "crossable": false
+   "crossable": true
   },
   "E.vorraum-e50": {
    "floor": "E",
    "crossable": true
   },
   "E.aufzug-tr7": {
-   "floor": "E",
-   "crossable": true
-  },
-  "E.aufzug-tr8-a": {
    "floor": "E",
    "crossable": true
   },
@@ -698,6 +670,66 @@
   "E.58": {
    "floor": "E",
    "crossable": true
+  },
+  "E.flur-tr8-1": {
+   "floor": "E",
+   "crossable": true
+  },
+  "E.flur-tr8-2": {
+   "floor": "E",
+   "crossable": true
+  },
+  "E.schacht-tr8": {
+   "floor": "E",
+   "crossable": false
+  },
+  "E.flur-tr8-3": {
+   "floor": "E",
+   "crossable": true
+  },
+  "E.flur-tr8-4": {
+   "floor": "E",
+   "crossable": true
+  },
+  "E.flur-tr8-5": {
+   "floor": "E",
+   "crossable": true
+  },
+  "E.flur-tr8-6": {
+   "floor": "E",
+   "crossable": true
+  },
+  "E.flur-tr7-5": {
+   "floor": "E",
+   "crossable": true
+  },
+  "E.flur-tr7-2": {
+   "floor": "E",
+   "crossable": true
+  },
+  "E.flur-tr7-1": {
+   "floor": "E",
+   "crossable": true
+  },
+  "E.foyer": {
+   "floor": "E",
+   "crossable": true
+  },
+  "E.block-e50": {
+   "floor": "E",
+   "crossable": false
+  },
+  "E.wc-beh-e50a": {
+   "floor": "E",
+   "crossable": false
+  },
+  "E.block-e52-a": {
+   "floor": "E",
+   "crossable": false
+  },
+  "E.block-e52-b": {
+   "floor": "E",
+   "crossable": false
   }
  },
  "portals": {
@@ -711,28 +743,21 @@
   "E.50b_E.vr-e50b": {
    "virtual": false,
    "point": [
-    1043,
-    568
-   ]
-  },
-  "E.51_E.flur-tr7-1": {
-   "virtual": false,
-   "point": [
-    1050,
-    541.5
+    1044.0,
+    572.9
    ]
   },
   "E.51_E.wachdienst": {
    "virtual": false,
    "point": [
-    1099.7,
-    542
+    1099.2,
+    543.0
    ]
   },
   "E.52_E.flur-tr9-3": {
    "virtual": false,
    "point": [
-    1201,
+    1208.6,
     528.2
    ]
   },
@@ -741,13 +766,6 @@
    "point": [
     1183,
     541.1
-   ]
-  },
-  "E.52_E.wachdienst_2": {
-   "virtual": false,
-   "point": [
-    1106.1,
-    555
    ]
   },
   "E.52_exterior": {
@@ -759,26 +777,18 @@
    "emergency_exit": true,
    "main_entrance": true
   },
-  "E.52_exterior_2": {
-   "virtual": false,
-   "point": [
-    1125.5,
-    628
-   ],
-   "emergency_exit": true
-  },
   "E.54a_E.vr-e54a": {
    "virtual": false,
    "point": [
-    1477,
-    516
+    1474.8,
+    514.9
    ]
   },
   "E.54b_E.vr-e54b": {
    "virtual": false,
    "point": [
-    1508,
-    516
+    1517.2,
+    516.0
    ]
   },
   "E.56b_E.flur-tr9-3": {
@@ -791,29 +801,29 @@
   "E.56c_E.flur-tr9-3": {
    "virtual": false,
    "point": [
-    1168.1,
-    480
+    1161.8,
+    482.9
    ]
   },
   "E.57_E.flur-tr9-3": {
    "virtual": false,
    "point": [
-    1305.1,
-    480
+    1314.7,
+    480.0
    ]
   },
   "E.59_E.flur-tr9-1": {
    "virtual": false,
    "point": [
-    1364.1,
-    563
+    1366.0,
+    562.2
    ]
   },
   "E.59b_E.flur-tr9-1": {
    "virtual": false,
    "point": [
-    1335,
-    546.1
+    1324.3,
+    546.0
    ]
   },
   "E.60a_E.flur-tr9-1": {
@@ -826,37 +836,37 @@
   "E.60b_E.flur-tr9-2": {
    "virtual": false,
    "point": [
-    1483.1,
-    563
+    1481.2,
+    563.5
    ]
   },
   "E.61_E.flur-tr9-2": {
    "virtual": false,
    "point": [
-    1532.1,
-    563
+    1539.5,
+    564.0
    ]
   },
   "E.61_exterior": {
    "virtual": false,
    "point": [
-    1552,
-    633.6
+    1547.0,
+    633.5
    ],
    "emergency_exit": true
   },
   "E.62_E.flur-tr9-2": {
    "virtual": false,
    "point": [
-    1541.1,
-    534
+    1538.7,
+    534.7
    ]
   },
   "E.63_E.flur-tr9-2": {
    "virtual": false,
    "point": [
-    1583,
-    548.1
+    1583.0,
+    546.7
    ]
   },
   "E.72a_E.flur-tr4-4": {
@@ -985,25 +995,18 @@
     556.1
    ]
   },
-  "E.TR7_E.aufzug-tr7": {
-   "virtual": false,
-   "point": [
-    778,
-    661.5
-   ]
-  },
   "E.TR7_E.flur-tr7-2": {
    "virtual": false,
    "point": [
-    828.1,
-    594
+    828.0,
+    596.5
    ]
   },
   "E.TR9_E.flur-tr9-1": {
    "virtual": false,
    "point": [
-    1392.2,
-    471.9
+    1407.1,
+    474.1
    ]
   },
   "E.durchgang_E.flur-tr5-1": {
@@ -1119,67 +1122,11 @@
     253
    ]
   },
-  "E.flur-tr7-1_E.flur-tr7-2": {
-   "virtual": true,
-   "point": [
-    905,
-    551
-   ]
-  },
-  "E.flur-tr7-1_E.foyer": {
-   "virtual": true,
-   "point": [
-    905,
-    511.5
-   ]
-  },
-  "E.flur-tr7-1_E.vr-e50b": {
-   "virtual": false,
-   "point": [
-    1037,
-    557
-   ]
-  },
-  "E.flur-tr7-2_E.flur-tr7-3": {
-   "virtual": true,
-   "point": [
-    809,
-    569.5
-   ]
-  },
-  "E.flur-tr7-2_E.foyer": {
-   "virtual": true,
-   "point": [
-    857,
-    545
-   ]
-  },
-  "E.flur-tr7-2_E.vorraum-e50": {
-   "virtual": false,
-   "point": [
-    905,
-    589
-   ]
-  },
   "E.flur-tr7-3_E.terrasse": {
    "virtual": false,
    "point": [
     762.8,
     545
-   ]
-  },
-  "E.flur-tr8-1_E.flur-tr8-2": {
-   "virtual": true,
-   "point": [
-    946.5,
-    845
-   ]
-  },
-  "E.flur-tr8-2_E.flur-tr8-3": {
-   "virtual": true,
-   "point": [
-    946.5,
-    948
    ]
   },
   "E.flur-tr9-1_E.flur-tr9-2": {
@@ -1192,57 +1139,29 @@
   "E.flur-tr9-1_E.flur-tr9-3": {
    "virtual": false,
    "point": [
-    1328.2,
-    505.1
+    1326.4,
+    507.8
    ]
   },
   "E.flur-tr9-2_E.vr-e54a": {
    "virtual": false,
    "point": [
-    1477,
-    534
+    1473.9,
+    533.7
    ]
   },
   "E.flur-tr9-2_E.vr-e54b": {
    "virtual": false,
    "point": [
-    1508,
-    534
+    1517.6,
+    534.5
    ]
   },
   "E.vr-e50b_E.wc-beh-e50b": {
    "virtual": false,
    "point": [
-    1043,
-    589
-   ]
-  },
-  "E.TR8_E.aufzug-tr8-a": {
-   "virtual": false,
-   "point": [
-    833.5,
-    809
-   ]
-  },
-  "E.aufzug-tr8-b_E.flur-tr8-1": {
-   "virtual": false,
-   "point": [
-    968.5,
-    829
-   ]
-  },
-  "E.TR8_E.flur-tr8-1": {
-   "virtual": false,
-   "point": [
-    903.5,
-    829
-   ]
-  },
-  "E.41_E.41a": {
-   "virtual": false,
-   "point": [
-    996,
-    830
+    1043.8,
+    586.0
    ]
   },
   "E.41_E.41a_2": {
@@ -1252,46 +1171,11 @@
     845
    ]
   },
-  "E.41_E.flur-tr8-1": {
-   "virtual": false,
-   "point": [
-    982,
-    837
-   ]
-  },
-  "E.41_E.flur-tr8-1_2": {
-   "virtual": false,
-   "point": [
-    968.5,
-    845
-   ]
-  },
-  "E.41_E.flur-tr8-2": {
-   "virtual": false,
-   "point": [
-    955,
-    852.5
-   ]
-  },
-  "E.41_E.41i": {
-   "virtual": false,
-   "point": [
-    974.5,
-    860
-   ]
-  },
   "E.41_E.41h": {
    "virtual": false,
    "point": [
     1035,
     900
-   ]
-  },
-  "E.41_E.41h_2": {
-   "virtual": false,
-   "point": [
-    1029.5,
-    860
    ]
   },
   "E.41h_E.41i": {
@@ -1304,15 +1188,15 @@
   "E.41g_E.41i": {
    "virtual": false,
    "point": [
-    987.5,
-    920
+    986.5,
+    917.3
    ]
   },
   "E.41f_E.41h": {
    "virtual": false,
    "point": [
-    1023,
-    920
+    1021.4,
+    918.1
    ]
   },
   "E.41_E.41e": {
@@ -1339,71 +1223,8 @@
   "E.41_E.41b": {
    "virtual": false,
    "point": [
-    1198,
-    920.5
-   ]
-  },
-  "E.42_E.flur-tr8-1": {
-   "virtual": false,
-   "point": [
-    932.5,
-    844.9
-   ]
-  },
-  "E.42_E.flur-tr8-2": {
-   "virtual": false,
-   "point": [
-    938,
-    866.8
-   ]
-  },
-  "E.43_E.flur-tr8-2": {
-   "virtual": false,
-   "point": [
-    938,
-    908
-   ]
-  },
-  "E.41g_E.flur-tr8-3": {
-   "virtual": false,
-   "point": [
-    987,
-    948
-   ]
-  },
-  "E.41f_E.flur-tr8-3": {
-   "virtual": false,
-   "point": [
-    1023,
-    948
-   ]
-  },
-  "E.flur-tr8-3_E.lueftung-e41": {
-   "virtual": false,
-   "point": [
-    1048.5,
-    948
-   ]
-  },
-  "E.41e_E.flur-tr8-3": {
-   "virtual": false,
-   "point": [
-    1083.5,
-    948
-   ]
-  },
-  "E.41c_E.flur-tr8-3": {
-   "virtual": false,
-   "point": [
-    1158,
-    948
-   ]
-  },
-  "E.41b_E.flur-tr8-3": {
-   "virtual": false,
-   "point": [
-    1163,
-    955.5
+    1190.8,
+    919.5
    ]
   },
   "E.41_exterior": {
@@ -1419,14 +1240,6 @@
    "point": [
     1231.3,
     939.5
-   ],
-   "emergency_exit": true
-  },
-  "E.flur-tr8-3_exterior": {
-   "virtual": false,
-   "point": [
-    941,
-    963
    ],
    "emergency_exit": true
   },
@@ -1988,24 +1801,10 @@
     632.1
    ]
   },
-  "E.abstell-e37_E.flur-tr7-3": {
-   "virtual": false,
-   "point": [
-    649.4,
-    594
-   ]
-  },
-  "E.53.2_E.foyer": {
-   "virtual": false,
-   "point": [
-    869.5,
-    477.5
-   ]
-  },
   "E.53.2_E.flur-tr7-1": {
    "virtual": false,
    "point": [
-    935.5,
+    920.0,
     477.5
    ]
   },
@@ -2023,60 +1822,11 @@
     424.0
    ]
   },
-  "E.56a_E.flur-tr7-1": {
-   "virtual": false,
-   "point": [
-    1018.5,
-    478.4
-   ]
-  },
-  "E.48_E.flur-tr7-3": {
-   "virtual": false,
-   "point": [
-    686,
-    594
-   ]
-  },
-  "E.48_E.TR7": {
-   "virtual": false,
-   "point": [
-    721,
-    618.2
-   ]
-  },
-  "E.49_E.TR7": {
-   "virtual": false,
-   "point": [
-    768.0,
-    699.4
-   ]
-  },
-  "E.TR7_E.speisesaal": {
-   "virtual": false,
-   "point": [
-    814.4,
-    654.6
-   ]
-  },
   "E.flur-tr7-2_E.speisesaal": {
-   "virtual": true,
-   "point": [
-    877,
-    594
-   ]
-  },
-  "E.52_E.speisesaal": {
    "virtual": false,
    "point": [
-    1104.0,
-    600.8
-   ]
-  },
-  "E.TR8_E.speisesaal": {
-   "virtual": false,
-   "point": [
-    890,
-    789.5
+    873.6,
+    596.2
    ]
   },
   "E.41a_E.speisesaal": {
@@ -2160,15 +1910,291 @@
   "E.58_E.58a": {
    "virtual": false,
    "point": [
-    1477.1,
-    465
+    1479.9,
+    463.4
    ]
   },
   "E.58_E.flur-tr9-1": {
    "virtual": false,
    "point": [
-    1371,
-    465
+    1372.3,
+    462.6
+   ]
+  },
+  "E.43_E.flur-tr8-4": {
+   "virtual": false,
+   "point": [
+    938.0,
+    908.0
+   ]
+  },
+  "E.aufzug-tr8-b_E.flur-tr8-2": {
+   "virtual": false,
+   "point": [
+    968.5,
+    819.8
+   ]
+  },
+  "E.flur-tr8-5_exterior": {
+   "virtual": false,
+   "point": [
+    941.0,
+    963.0
+   ],
+   "emergency_exit": true
+  },
+  "E.41b_E.flur-tr8-6": {
+   "virtual": false,
+   "point": [
+    1174.0,
+    958.1
+   ]
+  },
+  "E.41c_E.flur-tr8-6": {
+   "virtual": false,
+   "point": [
+    1158.0,
+    948.0
+   ]
+  },
+  "E.41e_E.flur-tr8-6": {
+   "virtual": false,
+   "point": [
+    1083.5,
+    948.0
+   ]
+  },
+  "E.41f_E.flur-tr8-6": {
+   "virtual": false,
+   "point": [
+    1021.0,
+    945.7
+   ]
+  },
+  "E.41g_E.flur-tr8-6": {
+   "virtual": false,
+   "point": [
+    986.6,
+    945.4
+   ]
+  },
+  "E.TR8_E.flur-tr8-2": {
+   "virtual": false,
+   "point": [
+    907.9,
+    833.5
+   ]
+  },
+  "E.flur-tr8-1_E.flur-tr8-2": {
+   "virtual": true,
+   "point": [
+    931.3,
+    819.8
+   ]
+  },
+  "E.flur-tr8-1_E.speisesaal": {
+   "virtual": true,
+   "point": [
+    931.3,
+    789.0
+   ]
+  },
+  "E.flur-tr8-2_E.flur-tr8-3": {
+   "virtual": true,
+   "point": [
+    967.0,
+    845.0
+   ]
+  },
+  "E.flur-tr8-3_E.flur-tr8-4": {
+   "virtual": true,
+   "point": [
+    946.5,
+    860.0
+   ]
+  },
+  "E.flur-tr8-4_E.flur-tr8-5": {
+   "virtual": true,
+   "point": [
+    946.5,
+    916.0
+   ]
+  },
+  "E.flur-tr8-5_E.flur-tr8-6": {
+   "virtual": true,
+   "point": [
+    959.7,
+    955.5
+   ]
+  },
+  "E.41a_E.flur-tr8-2": {
+   "virtual": false,
+   "point": [
+    996,
+    830
+   ]
+  },
+  "E.41i_E.flur-tr8-3": {
+   "virtual": false,
+   "point": [
+    974.5,
+    860
+   ]
+  },
+  "E.41_E.flur-tr8-3": {
+   "virtual": false,
+   "point": [
+    1035.0,
+    852.5
+   ]
+  },
+  "E.51_E.flur-tr7-5": {
+   "virtual": false,
+   "point": [
+    1050,
+    541.5
+   ]
+  },
+  "E.flur-tr7-5_E.vr-e50b": {
+   "virtual": false,
+   "point": [
+    1037,
+    557
+   ]
+  },
+  "E.56a_E.flur-tr9-3": {
+   "virtual": false,
+   "point": [
+    1030.0,
+    478.7
+   ]
+  },
+  "E.TR8_exterior": {
+   "virtual": false,
+   "point": [
+    875.5,
+    831.9
+   ],
+   "emergency_exit": true
+  },
+  "E.42_E.flur-tr8-3": {
+   "virtual": false,
+   "point": [
+    938.0,
+    850.8
+   ]
+  },
+  "E.41d_E.flur-tr8-6": {
+   "virtual": false,
+   "point": [
+    1116.3,
+    948.0
+   ]
+  },
+  "E.41b_E.41c": {
+   "virtual": false,
+   "point": [
+    1174.0,
+    941.6
+   ]
+  },
+  "E.speisesaal_exterior": {
+   "virtual": false,
+   "point": [
+    1116.6,
+    643.7
+   ],
+   "emergency_exit": true
+  },
+  "E.50a_E.wc-beh-e50a": {
+   "virtual": false,
+   "point": [
+    1002.0,
+    580.8
+   ]
+  },
+  "E.flur-tr7-2_E.vorraum-e50": {
+   "virtual": false,
+   "point": [
+    899.5,
+    587.5
+   ]
+  },
+  "E.56a_E.flur-tr9-3_2": {
+   "virtual": false,
+   "point": [
+    1050.9,
+    479.3
+   ]
+  },
+  "E.56a_E.56b": {
+   "virtual": false,
+   "point": [
+    1059.5,
+    440.7
+   ]
+  },
+  "E.TR7_E.aufzug-tr7": {
+   "virtual": false,
+   "point": [
+    774.5,
+    661.8
+   ]
+  },
+  "E.TR7_E.speisesaal": {
+   "virtual": false,
+   "point": [
+    782.5,
+    707.5
+   ]
+  },
+  "E.42_E.TR8": {
+   "virtual": false,
+   "point": [
+    890.0,
+    845.0
+   ]
+  },
+  "E.flur-tr7-2_E.foyer": {
+   "virtual": true,
+   "point": [
+    834.5,
+    545.0
+   ]
+  },
+  "E.flur-tr7-1_E.foyer": {
+   "virtual": true,
+   "point": [
+    882.5,
+    511.5
+   ]
+  },
+  "E.flur-tr7-1_E.flur-tr7-5": {
+   "virtual": true,
+   "point": [
+    1006.0,
+    541.5
+   ]
+  },
+  "E.flur-tr7-1_E.flur-tr7-2": {
+   "virtual": true,
+   "point": [
+    886.2,
+    556.1
+   ]
+  },
+  "E.flur-tr7-2_E.flur-tr7-3": {
+   "virtual": true,
+   "point": [
+    809.5,
+    570.0
+   ]
+  },
+  "E.flur-tr7-5_E.flur-tr9-3": {
+   "virtual": true,
+   "point": [
+    1043.1,
+    528.0
    ]
   }
  }
