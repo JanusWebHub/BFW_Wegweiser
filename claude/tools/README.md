@@ -25,8 +25,4 @@ The page is a published Claude artifact, private to its owner: https://claude.ai
 - Update the page: publish the same file with `url` set to the link. The link and the marks are kept.
 - The graph is embedded in the page. After the graph changes, regenerate that data and republish. The marks are stored separately and survive.
 - Opened as a plain file, the page works, but marks stay in that browser only and nobody else can read them.
-- Note: this file is page version 12 (graph after batch 2 and the hub redraw, Style panel). `page-source/` holds the template (`__DATA__`, `__IMG__` placeholders) and `gen_data.py`.
-
-## Style panel
-
-"Style" in the header: Lageplan opacity, fill strength, outline strength and colour, grey Lageplan, colour pickers for circulation, vertical connections (stairs, lifts), crossable rooms and other rooms, and Reset. Choices are kept in the browser.
+- Note: the file in the repo is page version 1. The published page has the later graph and the "Applied marks" toggle.

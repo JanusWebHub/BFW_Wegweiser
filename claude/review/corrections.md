@@ -62,6 +62,30 @@ All in the working graph (`fixed.py`, `batch2.py`); nothing in the repo. Coordin
 ## Page style requests (redline page, v6 to v12)
 Lageplan less prominent; circulation vs rooms clearly distinct; crossable rooms (incl. terrasse, foyer, Speisesaal) lighter and close to non-crossable; return to the original warm palette; stairs and lifts distinct from circulation; closer fill ratio; outlines more prominent (indigo, greyscale underlay); Style panel added.
 
+
+## Round 7: your redraws after the "botched" complaint (59 marks)
+- **Cause of the earlier mess (mine):** gap leftovers were grown outward in small steps (scalloped, zigzag edges), whole strips went to whichever neighbour was crossable, and unions were rounded with tiny buffers. Replaced by: drawn outlines exact; leftover gaps split among neighbours by nearest-neighbour regions with straight cuts; drawn zones never grow into gaps; excess a drawn zone gained goes back to its neighbours.
+- **E.48 / E.49 / kitchen:** E.49 and E.48 follow your diagonal split; new `E.kueche-ma` (Küche für Mitarbeiter Speisesaal); `E.abstell-e37` replaced by block `E.schacht-e37`. Doors: E.49–E.48, E.49–kitchen, kitchen–Speisesaal, E.49–TR7 (your "tr7 - e49"), E.48 exit. E.49 crossable (only access to E.48); kitchen not.
+- **TR2 junction:** `E.schacht-tr2` is your outline (block, no door); `E.flur-tr1-1`, `-1-2`, `-1-3`, `E.flur-tr2-1`, `-2-3` follow your redraws; tr1-1 and tr2-1 no longer touch; `E.aufzug-tr2-b`, `E.37`, `E.block-tr2` redrawn; row bottom on your straight line (553.5,623)–(666.2,624.9).
+- **Wing 1 WC group:** `E.01` (WC-H), `E.vr-e01`, `E.03` (WC-D), `E.vr-e03`, `E.TR1`, new `E.block-tr1`, `E.flur-tr1-2`, with your four doors.
+- **West hexagon:** `E.72a`, `E.72b` redrawn; `E.82` is the Vorraum (crossable), `E.82a` the WC; `E.73` east boundary is your straight line; tr4-3/tr4-8 boundary on your line; moved doors snapped; all E.76 doors removed, E.72a keeps its first door.
+- **Outer frame (shell) pulled back:** west edge of the IQ+UKM wing, E.33a bottom, TR3 bottom and the E.34 tip; `E.flur-tr3-2` has an exit to the outside (assumed emergency exit).
+- **Corridor `E.flur-tr3-1`:** exactly your strip; rooms beside it extend to it with straight walls.
+
+## Round 8: last 12 marks
+Doors of E.23, E.27 to E.33 snapped onto the corridor wall at your positions; second E.34 door and `E.TR3_exterior` removed; east wall of the wing is one straight line (459.3,866.6)–(606.5,623.8) with the outer frame and rooms following it.
+
+## State now
+193 zones, 219 portals (36 virtual, 14 exits), one connected component, 0 overlaps, gaps 315 units², outside shell 21. Still off a wall: `E.TR9_E.flur-tr9-1` (4.2). Suggestions regenerated (28 items) for the current graph.
+
 ## Not applied or still open
 Blocks exist in the working graph and on the redline page, but the exported connectivity JSON has no `kind` attribute yet, so they appear there as ordinary non-crossable zones. The scripts that produced all of this are a snapshot and do not run as they are (hard-coded paths).
 Hub thin triangles (later); `block`/nested-room rules into `docs/data`; skeleton fixes (`E.flur-tr3-1` refit, `E.flur-tr5-2` arc and split, `E.lager-tr3`, convexity of `E.41`/`E.52`); middle-area gaps and doors; `E.flur-tr2-6` identity; `E.TR8` exit (photo 056).
+
+## Round 6: TR2, TR3 and west hexagon (69 marks)
+- **Removed zones:** `E.flur-tr2-5` ("not a separate flur", merged into the new flur), `E.flur-tr2-6` ("in exterior": cut out of the shell), `E.technik-tr4-a`/`-b` (replaced). `E.flur-tr3-1`, `E.TR3`, `E.aufzug-tr3` were removed and redrawn under the same ids.
+- **New or reshaped zones (ids chosen by me):** `E.flur-tr4-5` (south corridor), `-6` (west vestibule), `-7` (north), `-8` (split from `-3`), `E.flur-tr2-3`, `E.flur-tr1-3`, `E.flur-tr3-2`, `E.vr-e72c`, `E.vr-e84`, `E.vr-e25b`, `E.putzmittel-tr4`, `E.lager-tr3`; blocks `E.schacht-tr4`, `E.block-tr4-a/-b`, `E.block-tr2`. Reshaped to your outlines: `E.flur-tr4-1` to `-4`, `E.TR4`, `E.aufzug-tr4`, `E.74`, `E.74a`, `E.75`, `E.76`, `E.80` to `E.84`, `E.83a`, `E.flur-tr2-2`, `E.25a`/`E.25b`/`E.vr-e25`, `E.aufzug-tr2-b`, `E.37`, `E.TR3`, `E.aufzug-tr3`, `E.flur-tr3-1`.
+- **Doors:** 20 adds, the `E.flur-tr2-4`/`E.flur-tr4-2` move (x 384), `E.TR4_E.aufzug-tr4` removed, `tr2-flur` door `E.TR2`–`E.flur-tr2-3`. Old doors kept by relocating them onto the room's wall: `E.80`, `E.82_E.82a`, `E.25a`, `E.29`, `E.31`, `E.33`. Dropped: `E.TR3_E.flur-tr3-1`, `E.flur-tr3-1`-side leftovers, `E.flur-tr1-1_E.flur-tr2-1` (no longer adjacent), `E.flur-tr4-3_E.technik-tr4-a`.
+- **Assumed by me:** door `E.flur-tr4-5_E.vr-e84` (no door was marked for the E.84 Vorraum); `E.82` kept crossable although you drew it as "wc-h".
+- **Result:** 190 zones, 230 portals (39 virtual), one component, 0 overlaps, gaps 391 units², outside shell 70. Doors off boundary by more than 1.5: `E.25a_E.vr-e25` 4.6, `E.72a_E.flur-tr4-4_3` 4.6, `E.flur-tr4-4_E.schacht-tr4` 3.4, `E.25b_E.vr-e25` 2.6, `E.76_E.flur-tr4-4` 2.4, `E.83_E.83a` 2.1, `E.80_E.flur-tr4-6` 1.9, `E.76_E.flur-tr4-4_2` 1.8, `E.flur-tr4-1_E.flur-tr4-4` 1.8, `E.73_E.flur-tr4-7` 1.6; virtual `E.flur-tr4-4_E.flur-tr4-7` and `E.flur-tr1-3_E.flur-tr2-1` about 10.
+- **Route note:** `E.72a`→`E.62` now passes through the TR2 stair via your `tr2-flur` door.

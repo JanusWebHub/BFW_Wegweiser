@@ -499,10 +499,6 @@
    "floor": "E",
    "crossable": false
   },
-  "E.abstell-e37": {
-   "floor": "E",
-   "crossable": false
-  },
   "E.23": {
    "floor": "E",
    "crossable": false
@@ -595,14 +591,6 @@
    "floor": "E",
    "crossable": false
   },
-  "E.technik-tr4-a": {
-   "floor": "E",
-   "crossable": false
-  },
-  "E.technik-tr4-b": {
-   "floor": "E",
-   "crossable": false
-  },
   "E.aufzug-tr4": {
    "floor": "E",
    "crossable": true
@@ -635,14 +623,6 @@
    "floor": "E",
    "crossable": false
   },
-  "E.flur-tr2-5": {
-   "floor": "E",
-   "crossable": false
-  },
-  "E.flur-tr2-6": {
-   "floor": "E",
-   "crossable": false
-  },
   "E.53.1": {
    "floor": "E",
    "crossable": false
@@ -661,7 +641,7 @@
   },
   "E.49": {
    "floor": "E",
-   "crossable": false
+   "crossable": true
   },
   "E.speisesaal": {
    "floor": "E",
@@ -728,6 +708,86 @@
    "crossable": false
   },
   "E.block-e52-b": {
+   "floor": "E",
+   "crossable": false
+  },
+  "E.schacht-tr2": {
+   "floor": "E",
+   "crossable": false
+  },
+  "E.schacht-e37": {
+   "floor": "E",
+   "crossable": false
+  },
+  "E.block-tr1": {
+   "floor": "E",
+   "crossable": false
+  },
+  "E.kueche-ma": {
+   "floor": "E",
+   "crossable": false
+  },
+  "E.flur-tr1-3": {
+   "floor": "E",
+   "crossable": true
+  },
+  "E.flur-tr2-3": {
+   "floor": "E",
+   "crossable": true
+  },
+  "E.flur-tr4-5": {
+   "floor": "E",
+   "crossable": true
+  },
+  "E.flur-tr4-6": {
+   "floor": "E",
+   "crossable": true
+  },
+  "E.schacht-tr4": {
+   "floor": "E",
+   "crossable": false
+  },
+  "E.block-tr4-a": {
+   "floor": "E",
+   "crossable": false
+  },
+  "E.putzmittel-tr4": {
+   "floor": "E",
+   "crossable": false
+  },
+  "E.block-tr4-b": {
+   "floor": "E",
+   "crossable": false
+  },
+  "E.vr-e72c": {
+   "floor": "E",
+   "crossable": true
+  },
+  "E.flur-tr4-7": {
+   "floor": "E",
+   "crossable": true
+  },
+  "E.flur-tr4-8": {
+   "floor": "E",
+   "crossable": true
+  },
+  "E.vr-e84": {
+   "floor": "E",
+   "crossable": true
+  },
+  "E.lager-tr3": {
+   "floor": "E",
+   "crossable": false
+  },
+  "E.flur-tr3-2": {
+   "floor": "E",
+   "crossable": true
+  },
+  "E.vr-e25b": {
+   "floor": "E",
+   "crossable": true
+  },
+  "E.block-tr2": {
    "floor": "E",
    "crossable": false
   }
@@ -872,29 +932,29 @@
   "E.72a_E.flur-tr4-4": {
    "virtual": false,
    "point": [
-    250.3,
-    510
+    258.3,
+    516.1
    ]
   },
   "E.72b_E.flur-tr4-4": {
    "virtual": false,
    "point": [
-    237.1,
-    485.3
+    244.1,
+    490.9
    ]
   },
   "E.72c_E.flur-tr4-4": {
    "virtual": false,
    "point": [
-    221.8,
-    456.8
+    223.1,
+    456.0
    ]
   },
   "E.73_E.74": {
    "virtual": false,
    "point": [
-    87.4,
-    444.8
+    84.5,
+    440.7
    ]
   },
   "E.74_E.74a": {
@@ -911,81 +971,39 @@
     491.9
    ]
   },
-  "E.75_E.flur-tr4-4": {
-   "virtual": false,
-   "point": [
-    202.6,
-    475.4
-   ]
-  },
-  "E.76_E.flur-tr4-4": {
-   "virtual": false,
-   "point": [
-    189.3,
-    452.3
-   ]
-  },
   "E.80_E.84": {
    "virtual": false,
    "point": [
-    150.1,
-    727
-   ]
-  },
-  "E.80_E.flur-tr4-3": {
-   "virtual": false,
-   "point": [
-    120,
-    578.9
-   ]
-  },
-  "E.81_E.flur-tr4-3": {
-   "virtual": false,
-   "point": [
-    166.1,
-    591
+    147.2,
+    725.2
    ]
   },
   "E.82_E.82a": {
    "virtual": false,
    "point": [
-    197.4,
-    628.1
+    201.3,
+    609.5
    ]
   },
   "E.82_E.flur-tr4-1": {
    "virtual": false,
    "point": [
-    208,
-    591
+    206.8,
+    593.9
    ]
   },
   "E.83_E.83a": {
    "virtual": false,
    "point": [
-    249.9,
-    624.1
+    236.0,
+    619.4
    ]
   },
   "E.83_E.flur-tr4-1": {
    "virtual": false,
    "point": [
-    254,
-    591
-   ]
-  },
-  "E.84_E.flur-tr4-2": {
-   "virtual": false,
-   "point": [
-    317.5,
-    618.3
-   ]
-  },
-  "E.TR4_E.aufzug-tr4": {
-   "virtual": false,
-   "point": [
-    196,
-    521.5
+    248.7,
+    594.1
    ]
   },
   "E.TR4_E.flur-tr4-1": {
@@ -998,8 +1016,8 @@
   "E.TR7_E.flur-tr7-2": {
    "virtual": false,
    "point": [
-    828.0,
-    596.5
+    828.1,
+    594.9
    ]
   },
   "E.TR9_E.flur-tr9-1": {
@@ -1012,7 +1030,7 @@
   "E.durchgang_E.flur-tr5-1": {
    "virtual": true,
    "point": [
-    1112,
+    1112.0,
     269.5
    ]
   },
@@ -1020,70 +1038,35 @@
    "virtual": true,
    "point": [
     1158.5,
-    260
-   ]
-  },
-  "E.flur-tr1-1_E.flur-tr1-2": {
-   "virtual": true,
-   "point": [
-    274.5,
-    95
-   ]
-  },
-  "E.flur-tr1-1_E.flur-tr2-1": {
-   "virtual": true,
-   "point": [
-    538.5,
-    533
-   ]
-  },
-  "E.flur-tr2-1_E.flur-tr2-2": {
-   "virtual": true,
-   "point": [
-    520.5,
-    528.5
+    260.0
    ]
   },
   "E.flur-tr2-1_E.flur-tr3-1": {
    "virtual": true,
    "point": [
-    564,
-    590
+    562.4,
+    588.9
    ]
   },
   "E.flur-tr2-4_E.flur-tr4-2": {
    "virtual": true,
    "point": [
-    362,
-    574
+    387.0,
+    573.2
    ]
   },
   "E.flur-tr4-1_E.flur-tr4-2": {
    "virtual": true,
    "point": [
-    272,
-    573.5
-   ]
-  },
-  "E.flur-tr4-1_E.flur-tr4-3": {
-   "virtual": true,
-   "point": [
-    184,
-    577.5
+    271.0,
+    574.5
    ]
   },
   "E.flur-tr4-1_E.flur-tr4-4": {
    "virtual": true,
    "point": [
-    248.5,
-    532
-   ]
-  },
-  "E.flur-tr4-3_E.technik-tr4-a": {
-   "virtual": false,
-   "point": [
-    152.3,
-    497
+    251.5,
+    531.2
    ]
   },
   "E.flur-tr4-3_exterior": {
@@ -1094,32 +1077,25 @@
    ],
    "emergency_exit": true
   },
-  "E.flur-tr4-4_E.technik-tr4-b": {
-   "virtual": false,
-   "point": [
-    211.4,
-    490.6
-   ]
-  },
   "E.flur-tr5-1_E.flur-tr5-2": {
    "virtual": true,
    "point": [
-    1087,
-    266
+    1087.0,
+    266.0
    ]
   },
   "E.flur-tr5-1_E.flur-tr5-4": {
    "virtual": true,
    "point": [
     1099.5,
-    253
+    253.1
    ]
   },
   "E.flur-tr5-2_E.flur-tr5-3": {
    "virtual": true,
    "point": [
     668.5,
-    253
+    253.0
    ]
   },
   "E.flur-tr7-3_E.terrasse": {
@@ -1132,7 +1108,7 @@
   "E.flur-tr9-1_E.flur-tr9-2": {
    "virtual": true,
    "point": [
-    1430,
+    1429.9,
     548.5
    ]
   },
@@ -1428,25 +1404,11 @@
     195.5
    ]
   },
-  "E.01_E.vr-e01": {
-   "virtual": false,
-   "point": [
-    235,
-    79.5
-   ]
-  },
   "E.02_E.flur-tr1-1": {
    "virtual": false,
    "point": [
     301.3,
     112.2
-   ]
-  },
-  "E.03_E.vr-e03": {
-   "virtual": false,
-   "point": [
-    245.2,
-    110
    ]
   },
   "E.04_E.flur-tr1-1": {
@@ -1466,22 +1428,22 @@
   "E.07_E.flur-tr1-1": {
    "virtual": false,
    "point": [
-    323.1,
-    202.4
+    329.6,
+    198.7
    ]
   },
   "E.07a_E.flur-tr1-1": {
    "virtual": false,
    "point": [
-    279.8,
-    131
+    287.8,
+    126.4
    ]
   },
   "E.07b_E.flur-tr1-1": {
    "virtual": false,
    "point": [
-    301.4,
-    166.7
+    308.7,
+    162.5
    ]
   },
   "E.08_E.flur-tr1-1": {
@@ -1494,92 +1456,92 @@
   "E.09_E.flur-tr1-1": {
    "virtual": false,
    "point": [
-    345.3,
-    239.2
+    351.0,
+    235.8
    ]
   },
   "E.10_E.flur-tr1-1": {
    "virtual": false,
    "point": [
-    372.1,
-    230.2
+    371.2,
+    230.8
    ]
   },
   "E.11_E.flur-tr1-1": {
    "virtual": false,
    "point": [
-    389.2,
-    311.6
+    393.3,
+    309.2
    ]
   },
   "E.11a_E.flur-tr1-1": {
    "virtual": false,
    "point": [
-    367.6,
-    275.9
+    372.5,
+    273.0
    ]
   },
   "E.12_E.flur-tr1-1": {
    "virtual": false,
    "point": [
-    393.9,
-    266.6
+    392.6,
+    267.3
    ]
   },
   "E.13_E.flur-tr1-1": {
    "virtual": false,
    "point": [
-    411.1,
-    347.8
+    414.5,
+    345.8
    ]
   },
   "E.14_E.flur-tr1-1": {
    "virtual": false,
    "point": [
-    415.7,
-    302.8
+    413.9,
+    303.8
    ]
   },
   "E.15_E.flur-tr1-1": {
    "virtual": false,
    "point": [
-    433,
-    384
+    435.6,
+    382.5
    ]
   },
   "E.16_E.flur-tr1-1": {
    "virtual": false,
    "point": [
-    437.4,
-    339
+    435.1,
+    340.3
    ]
   },
   "E.17_E.flur-tr1-1": {
    "virtual": false,
    "point": [
-    455.3,
-    420.8
+    457.2,
+    419.7
    ]
   },
   "E.18_E.flur-tr1-1": {
    "virtual": false,
    "point": [
-    458.9,
-    374.9
+    456.3,
+    376.4
    ]
   },
   "E.19_E.flur-tr1-1": {
    "virtual": false,
    "point": [
-    477.3,
-    457.2
+    478.4,
+    456.5
    ]
   },
   "E.20_E.flur-tr1-1": {
    "virtual": false,
    "point": [
-    480.3,
-    410.6
+    477.2,
+    412.4
    ]
   },
   "E.21_E.flur-tr1-1": {
@@ -1592,36 +1554,15 @@
   "E.22_E.flur-tr1-1": {
    "virtual": false,
    "point": [
-    502.2,
-    447
+    498.6,
+    449.0
    ]
   },
   "E.24_E.flur-tr1-1": {
    "virtual": false,
    "point": [
-    524.3,
-    483.8
-   ]
-  },
-  "E.25a_E.vr-e25": {
-   "virtual": false,
-   "point": [
-    519.5,
-    623.6
-   ]
-  },
-  "E.25b_E.vr-e25": {
-   "virtual": false,
-   "point": [
-    507,
-    628.1
-   ]
-  },
-  "E.26_E.flur-tr1-1": {
-   "virtual": false,
-   "point": [
-    548.2,
-    523.7
+    520.3,
+    486.1
    ]
   },
   "E.TR1_E.flur-tr1-2": {
@@ -1639,13 +1580,6 @@
    ],
    "emergency_exit": true
   },
-  "E.TR2_E.flur-tr2-1": {
-   "virtual": false,
-   "point": [
-    541,
-    561
-   ]
-  },
   "E.aufzug-tr2-a_E.flur-tr2-1": {
    "virtual": false,
    "point": [
@@ -1660,20 +1594,6 @@
     594
    ]
   },
-  "E.flur-tr1-1_E.vr-e03": {
-   "virtual": false,
-   "point": [
-    263.5,
-    104.1
-   ]
-  },
-  "E.flur-tr1-2_E.vr-e01": {
-   "virtual": false,
-   "point": [
-    253.7,
-    74.5
-   ]
-  },
   "E.71_E.flur-tr2-4": {
    "virtual": false,
    "point": [
@@ -1684,29 +1604,22 @@
   "E.29_E.flur-tr3-1": {
    "virtual": false,
    "point": [
-    498.57,
-    690
+    489.1,
+    690.5
    ]
   },
   "E.31_E.flur-tr3-1": {
    "virtual": false,
    "point": [
-    471.31,
-    743
+    458.2,
+    741.8
    ]
   },
   "E.33_E.flur-tr3-1": {
    "virtual": false,
    "point": [
-    439.43,
-    805
-   ]
-  },
-  "E.aufzug-tr3_E.flur-tr3-1": {
-   "virtual": false,
-   "point": [
-    413.54,
-    855.35
+    413.8,
+    815.5
    ]
   },
   "E.33_E.33a": {
@@ -1719,86 +1632,43 @@
   "E.32_E.flur-tr3-1": {
    "virtual": false,
    "point": [
-    490.5,
-    755
+    477.1,
+    749.5
    ]
   },
   "E.34_E.flur-tr3-1": {
    "virtual": false,
    "point": [
-    465.5,
-    805
-   ]
-  },
-  "E.TR3_E.flur-tr3-1": {
-   "virtual": false,
-   "point": [
-    419.5,
-    870
-   ]
-  },
-  "E.TR3_exterior": {
-   "virtual": false,
-   "point": [
-    443,
-    890
-   ],
-   "emergency_exit": true
-  },
-  "E.flur-tr2-5_E.flur-tr4-2": {
-   "virtual": true,
-   "point": [
-    349.9,
-    609.4
-   ]
-  },
-  "E.flur-tr2-4_E.flur-tr2-5": {
-   "virtual": true,
-   "point": [
-    374.5,
-    593
-   ]
-  },
-  "E.flur-tr2-4_E.flur-tr2-6": {
-   "virtual": true,
-   "point": [
-    444.5,
-    593.0
+    449.7,
+    795.5
    ]
   },
   "E.23_E.flur-tr3-1": {
    "virtual": false,
    "point": [
-    551.8,
-    632.5
+    548.0,
+    634.5
    ]
   },
   "E.28_E.flur-tr3-1": {
    "virtual": false,
    "point": [
-    531.8,
-    672.5
+    531.1,
+    659.9
    ]
   },
   "E.30_E.flur-tr3-1": {
    "virtual": false,
    "point": [
-    507,
-    722
+    494.7,
+    720.2
    ]
   },
   "E.27_E.flur-tr3-1": {
    "virtual": false,
    "point": [
-    511.8,
-    664.4
-   ]
-  },
-  "E.flur-tr3-1_E.vr-e25": {
-   "virtual": false,
-   "point": [
-    528.3,
-    632.1
+    503.2,
+    666.9
    ]
   },
   "E.53.2_E.flur-tr7-1": {
@@ -1836,25 +1706,18 @@
     791.7
    ]
   },
-  "E.48_E.49": {
-   "virtual": false,
-   "point": [
-    698.5,
-    683
-   ]
-  },
   "E.flur-tr5-1_E.flur-tr7-4": {
    "virtual": true,
    "point": [
-    1100,
-    279
+    1099.5,
+    278.9
    ]
   },
   "E.flur-tr7-1_E.flur-tr7-4": {
    "virtual": true,
    "point": [
-    977,
-    478
+    976.0,
+    479.3
    ]
   },
   "E.flur-tr2-1_E.flur-tr7-3": {
@@ -1869,13 +1732,6 @@
    "point": [
     622,
     594
-   ]
-  },
-  "E.flur-tr2-2_E.flur-tr2-6": {
-   "virtual": false,
-   "point": [
-    472.5,
-    593.1
    ]
   },
   "E.flur-tr2-2_E.flur-tr2-4": {
@@ -1895,15 +1751,15 @@
   "E.53.1_E.53.2": {
    "virtual": true,
    "point": [
-    959.0,
+    959.4,
     372.0
    ]
   },
   "E.48_exterior": {
    "virtual": false,
    "point": [
-    646.4,
-    668.7
+    646.2,
+    669.2
    ],
    "emergency_exit": true
   },
@@ -1995,7 +1851,7 @@
   "E.flur-tr8-1_E.speisesaal": {
    "virtual": true,
    "point": [
-    931.3,
+    932.0,
     789.0
    ]
   },
@@ -2055,18 +1911,60 @@
     541.5
    ]
   },
+  "E.80_E.flur-tr4-6": {
+   "virtual": false,
+   "point": [
+    111.3,
+    594.1
+   ]
+  },
+  "E.81_E.flur-tr4-8": {
+   "virtual": false,
+   "point": [
+    166.1,
+    594.0
+   ]
+  },
+  "E.84_E.vr-e84": {
+   "virtual": false,
+   "point": [
+    277.1,
+    690.0
+   ]
+  },
+  "E.flur-tr1-3_E.flur-tr2-3": {
+   "virtual": true,
+   "point": [
+    520.5,
+    528.5
+   ]
+  },
+  "E.flur-tr4-1_E.flur-tr4-8": {
+   "virtual": true,
+   "point": [
+    186.3,
+    578.5
+   ]
+  },
   "E.flur-tr7-5_E.vr-e50b": {
    "virtual": false,
    "point": [
-    1037,
-    557
+    1037.0,
+    555.0
+   ]
+  },
+  "E.26_E.flur-tr1-3": {
+   "virtual": false,
+   "point": [
+    543.8,
+    526.3
    ]
   },
   "E.56a_E.flur-tr9-3": {
    "virtual": false,
    "point": [
-    1030.0,
-    478.7
+    1029.9,
+    480.0
    ]
   },
   "E.TR8_exterior": {
@@ -2124,7 +2022,7 @@
    "virtual": false,
    "point": [
     1050.9,
-    479.3
+    480.0
    ]
   },
   "E.56a_E.56b": {
@@ -2141,7 +2039,7 @@
     661.8
    ]
   },
-  "E.TR7_E.speisesaal": {
+  "E.49_E.TR7": {
    "virtual": false,
    "point": [
     782.5,
@@ -2165,36 +2063,282 @@
   "E.flur-tr7-1_E.foyer": {
    "virtual": true,
    "point": [
-    882.5,
+    882.4,
     511.5
    ]
   },
   "E.flur-tr7-1_E.flur-tr7-5": {
    "virtual": true,
    "point": [
-    1006.0,
-    541.5
+    1034.3,
+    529.1
+   ]
+  },
+  "E.25b_E.vr-e25b": {
+   "virtual": false,
+   "point": [
+    503.2,
+    640.0
+   ]
+  },
+  "E.TR2_E.flur-tr2-3": {
+   "virtual": false,
+   "point": [
+    511.1,
+    562.5
+   ]
+  },
+  "E.flur-tr3-2_E.lager-tr3": {
+   "virtual": false,
+   "point": [
+    426.9,
+    846.0
+   ]
+  },
+  "E.25a_E.vr-e25_2": {
+   "virtual": false,
+   "point": [
+    517.4,
+    616.5
+   ]
+  },
+  "E.flur-tr3-2_exterior": {
+   "virtual": false,
+   "point": [
+    455.1,
+    872.8
+   ],
+   "emergency_exit": true
+  },
+  "E.flur-tr4-3_E.putzmittel-tr4": {
+   "virtual": false,
+   "point": [
+    170.6,
+    504.5
+   ]
+  },
+  "E.aufzug-tr3_E.flur-tr3-1": {
+   "virtual": false,
+   "point": [
+    414.3,
+    834.6
+   ]
+  },
+  "E.flur-tr1-1_E.flur-tr1-3": {
+   "virtual": false,
+   "point": [
+    516.5,
+    499.9
+   ]
+  },
+  "E.75_E.flur-tr4-3": {
+   "virtual": false,
+   "point": [
+    160.3,
+    487.6
+   ]
+  },
+  "E.TR3_E.flur-tr3-2": {
+   "virtual": false,
+   "point": [
+    443.6,
+    870.2
+   ]
+  },
+  "E.76_E.flur-tr4-7": {
+   "virtual": false,
+   "point": [
+    179.8,
+    446.7
+   ]
+  },
+  "E.72b_E.flur-tr4-4_2": {
+   "virtual": false,
+   "point": [
+    243.9,
+    491.1
+   ]
+  },
+  "E.flur-tr3-1_E.vr-e25_2": {
+   "virtual": false,
+   "point": [
+    526.5,
+    629.0
+   ]
+  },
+  "E.72c_E.vr-e72c": {
+   "virtual": false,
+   "point": [
+    233.1,
+    459.2
+   ]
+  },
+  "E.flur-tr4-4_E.vr-e72c": {
+   "virtual": false,
+   "point": [
+    229.8,
+    467.0
+   ]
+  },
+  "E.aufzug-tr4_E.flur-tr4-3": {
+   "virtual": false,
+   "point": [
+    178.5,
+    518.2
+   ]
+  },
+  "E.flur-tr3-1_E.vr-e25b": {
+   "virtual": false,
+   "point": [
+    516.3,
+    646.0
+   ]
+  },
+  "E.73_E.flur-tr4-7": {
+   "virtual": false,
+   "point": [
+    179.9,
+    431.0
+   ]
+  },
+  "E.48_E.49_2": {
+   "virtual": false,
+   "point": [
+    704.2,
+    722.1
+   ]
+  },
+  "E.01_E.vr-e01_2": {
+   "virtual": false,
+   "point": [
+    231.9,
+    92.7
+   ]
+  },
+  "E.flur-tr1-2_E.vr-e01_2": {
+   "virtual": false,
+   "point": [
+    260.1,
+    77.8
+   ]
+  },
+  "E.49_E.kueche-ma": {
+   "virtual": false,
+   "point": [
+    854.5,
+    750.3
+   ]
+  },
+  "E.flur-tr1-2_E.vr-e03": {
+   "virtual": false,
+   "point": [
+    267.1,
+    90.2
+   ]
+  },
+  "E.kueche-ma_E.speisesaal": {
+   "virtual": false,
+   "point": [
+    909.2,
+    780.3
+   ]
+  },
+  "E.03_E.vr-e03_3": {
+   "virtual": false,
+   "point": [
+    253.3,
+    97.7
+   ]
+  },
+  "E.flur-tr4-5_E.vr-e84": {
+   "virtual": false,
+   "point": [
+    300.4,
+    640.2
    ]
   },
   "E.flur-tr7-1_E.flur-tr7-2": {
    "virtual": true,
    "point": [
-    886.2,
-    556.1
+    885.3,
+    555.7
    ]
   },
   "E.flur-tr7-2_E.flur-tr7-3": {
    "virtual": true,
    "point": [
-    809.5,
-    570.0
+    809.0,
+    569.5
    ]
   },
   "E.flur-tr7-5_E.flur-tr9-3": {
    "virtual": true,
    "point": [
-    1043.1,
+    1043.5,
     528.0
+   ]
+  },
+  "E.flur-tr4-2_E.flur-tr4-5": {
+   "virtual": true,
+   "point": [
+    323.6,
+    592.6
+   ]
+  },
+  "E.flur-tr4-3_E.flur-tr4-8": {
+   "virtual": true,
+   "point": [
+    138.2,
+    555.3
+   ]
+  },
+  "E.flur-tr4-4_E.flur-tr4-7": {
+   "virtual": true,
+   "point": [
+    200.4,
+    442.9
+   ]
+  },
+  "E.flur-tr2-4_E.flur-tr4-5": {
+   "virtual": true,
+   "point": [
+    386.2,
+    592.7
+   ]
+  },
+  "E.flur-tr4-6_E.flur-tr4-8": {
+   "virtual": true,
+   "point": [
+    131.4,
+    584.0
+   ]
+  },
+  "E.flur-tr1-3_E.flur-tr2-1": {
+   "virtual": true,
+   "point": [
+    541.5,
+    543.1
+   ]
+  },
+  "E.flur-tr2-2_E.flur-tr2-3": {
+   "virtual": true,
+   "point": [
+    496.0,
+    567.0
+   ]
+  },
+  "E.flur-tr1-1_E.flur-tr1-2": {
+   "virtual": true,
+   "point": [
+    285.6,
+    103.1
+   ]
+  },
+  "E.flur-tr3-1_E.flur-tr3-2": {
+   "virtual": true,
+   "point": [
+    428.0,
+    831.5
    ]
   }
  }

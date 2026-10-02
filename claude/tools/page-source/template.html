@@ -68,6 +68,19 @@ aside h2 { margin: 0; font-size: 12px; font-weight: 600; text-transform: upperca
 .stybox { position: absolute; z-index: 20; top: 34px; left: 0; width: 230px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px; display: grid; gap: 8px; box-shadow: 0 6px 20px rgba(0,0,0,.18); }
 .stybox label { display: flex; justify-content: space-between; align-items: center; gap: 8px; color: var(--ink); font-size: 12px; }
 .stybox input[type=range] { width: 110px; } .stybox input[type=color] { width: 38px; height: 24px; padding: 0; border: 1px solid var(--line); background: none; }
+.tabs { display: flex; gap: 4px; } .tabs button { padding: 3px 8px; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; } .tabs b { font-weight: 600; opacity: .7; }
+#spane { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 6px; } #spane[hidden] { display: none; } #log[hidden] { display: none; }
+.sfilter { display: flex; flex-wrap: wrap; gap: 4px; } .sfilter button { padding: 2px 7px; font-size: 11px; }
+#slog { list-style: none; margin: 0; padding: 0; overflow: auto; flex: 1; min-height: 80px; display: flex; flex-direction: column; gap: 5px; }
+#slog li { border: 1px solid var(--line); border-radius: 6px; padding: 5px 8px; display: grid; grid-template-columns: auto minmax(0,1fr); gap: 2px 8px; cursor: pointer; background: var(--bg); font-size: 12px; }
+#slog li.sel { border-color: #7a3fd1; } #slog li.acc { border-left: 4px solid #1a8f3c; } #slog li.rej { opacity: .5; border-left: 4px solid #999; } #slog li.rej .st { text-decoration: line-through; }
+#slog .n { font-family: var(--mono); font-size: 10.5px; background: #7a3fd1; color: #fff; border-radius: 4px; padding: 1px 5px; align-self: start; }
+#slog li.acc .n { background: #1a8f3c; } #slog li.rej .n { background: #999; }
+#slog .c { grid-column: 2; font-family: var(--mono); font-size: 10px; color: var(--muted); }
+#sdet { border: 1px solid #7a3fd1; border-radius: 8px; padding: 8px; font-size: 12px; display: grid; gap: 6px; background: var(--bg); max-height: 46%; overflow: auto; }
+#sdet[hidden] { display: none; } #sdet h3 { margin: 0; font-size: 13px; } #sdet p { margin: 0; line-height: 1.4; } #sdet .why { color: var(--muted); } #sdet .row { display: flex; gap: 6px; }
+#sdet .acc { background: #1a8f3c; color: #fff; border-color: #1a8f3c; } #sdet .rej { background: #8a8a8a; color: #fff; border-color: #8a8a8a; }
+#slog li.sol { border-left: 4px solid #1f6fd1; } #slog li.sol .n { background: #1f6fd1; } #slog li.part { border-left: 4px solid #d98a00; } #slog li.part .n { background: #d98a00; }
 </style>
 
 <div class="app">
@@ -93,6 +106,7 @@ aside h2 { margin: 0; font-size: 12px; font-weight: 600; text-transform: upperca
       </div></details>
       <label class="chk"><input type="checkbox" id="snap" checked>Snap</label>
       <label class="chk"><input type="checkbox" id="l-applied">Applied marks</label>
+      <label class="chk"><input type="checkbox" id="l-sugg" checked>Suggestions</label>
     </div>
   </header>
   <div class="row" id="tools" role="toolbar" aria-label="Tools"></div>
@@ -112,8 +126,13 @@ aside h2 { margin: 0; font-size: 12px; font-weight: 600; text-transform: upperca
       </div>
     </div>
     <aside>
-      <h2><span>Marks</span><span id="count">0</span></h2>
+      <h2><span class="tabs"><button id="tab-m" class="on" type="button">Marks <b id="count">0</b></button><button id="tab-s" type="button">Suggestions <b id="scount">0</b></button></span></h2>
       <ul id="log"></ul>
+      <div id="spane" hidden>
+        <div class="sfilter" id="sfilter"></div>
+        <ul id="slog"></ul>
+        <div id="sdet" hidden></div>
+      </div>
       <div class="legend">
         <span><i style="border-color:var(--portal)"></i>door</span>
         <span><i style="border-color:var(--portal);border-top-style:dashed"></i>virtual</span>
@@ -126,6 +145,7 @@ aside h2 { margin: 0; font-size: 12px; font-weight: 600; text-transform: upperca
 
 <script>
 const DATA = __DATA__;
+const SUGG = __SUGG__;
 const IMG = "__IMG__";
 const STD = { circ: "#d8c9a3", vert: "#a89a80", xroom: "#ece3cf", room: "#f5eedd", fill: 100, line: 100, img: 45, oc: "#2f3fa8", grey: true };
 let ST = { ...STD };
@@ -325,6 +345,7 @@ function draw() {
     o.push(`<g opacity="${rm.has(p.id) ? .35 : 1}"><line x1="${l[0]}" y1="${l[1]}" x2="${l[2]}" y2="${l[3]}" stroke="${col}" stroke-width="${2.2 * s}" ${p.v ? `stroke-dasharray="${5 * s} ${3 * s}"` : ""} stroke-linecap="butt"/><circle cx="${(l[0] + l[2]) / 2}" cy="${(l[1] + l[3]) / 2}" r="${3.6 * s}" fill="${col}" stroke="#fff" stroke-width="${1 * s}"/></g>`);
     if (showIds && ppu > 5) o.push(`<text x="${(l[0] + l[2]) / 2}" y="${(l[1] + l[3]) / 2 - 6 * s}" font-size="${9.5 * s}" text-anchor="middle" font-family="IBM Plex Mono, monospace" fill="${col}" stroke="#fff" stroke-width="${2.2 * s}" stroke-opacity=".8" paint-order="stroke">${esc(p.id.replace(/E\./g, ""))}</text>`);
   }
+  drawSugg(o, s);
   /* marks */
   let n = 0; const showApplied = $("l-applied").checked;
   for (const [id, m] of [...marks].sort((a, b) => (a[1].at || 0) - (b[1].at || 0))) {
@@ -433,7 +454,7 @@ function renderLog() {
   const ul = $("log"), items = [...marks].sort((a, b) => (a[1].at || 0) - (b[1].at || 0));
   $("count").textContent = items.length;
   if (!items.length) { ul.innerHTML = `<li class="empty" style="border:0;background:none;cursor:default;display:block">No marks yet. Pick a tool above and draw on the plan. Each mark is saved as exact plan coordinates, so Claude reads positions, not pixels.</li>`; return; }
-  ul.innerHTML = items.map(([id, m], i) => {
+  ul.innerHTML = items.map(([id, m], i) => [id, m, i]).reverse().map(([id, m, i]) => {
     const c = m.kind === "zone" ? centroid(m.pts) : m.pts && m.pts[0] || [0, 0];
     const geo = m.kind === "remove" ? m.target : m.pts.map(q => `${fmt(q[0])},${fmt(q[1])}`).join("  ");
     return `<li data-id="${esc(id)}" class="${id === selected ? "sel" : ""}${m.applied ? " done" : ""}"><span class="chip">${m.applied ? "done" : (i + 1) + " " + KIND_LABEL[m.kind]}</span><span class="t">${esc(m.text || m.target || "")}</span><button class="x" data-del="${esc(id)}" aria-label="Delete mark ${i + 1}">&times;</button><span class="m">${esc(m.kind === "move" ? m.target + "  " + geo : geo)}</span></li>`;
@@ -477,6 +498,7 @@ svg.addEventListener("pointerdown", e => {
   pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
   if (pointers.size === 2) { drag = { type: "pinch", d0: pdist(), w0: vb.w, c: [...pointers.values()] }; draft = draft && tool === "zone" ? draft : null; return; }
   const raw = toSvg(e), s = k();
+  { const pid = hitPin(raw, s); if (pid) { selectS(pid, false); return; } }
   const panning = e.button === 1 || e.button === 2 || spaceDown || tool === "pan";
   if (panning) { drag = { type: "pan", sx: e.clientX, sy: e.clientY, vx: vb.x, vy: vb.y, moved: 0, raw }; return; }
   if (tool === "move") {
@@ -584,7 +606,71 @@ $("area").addEventListener("change", () => fitBox(AREAS[+$("area").value][1]));
 window.addEventListener("resize", render);
 if (window.ResizeObserver) new ResizeObserver(render).observe(svg);
 
-buildTools(); renderLog(); showComposer();
+
+/* ---------- suggestions ---------- */
+let SS = new Map(), sel = null, sTab = false, sCat = "all";
+const SCOL = { pending: "#7a3fd1", acc: "#1a8f3c", rej: "#9a9a9a", sol: "#1f6fd1", part: "#d98a00" };
+const SLAB = { acc: "accepted", rej: "rejected", sol: "solved by your marks", part: "partly covered by your marks" };
+const sst = id => (SS.get(id) || {}).status || "pending";
+function persistS(id) {
+  const d = SS.get(id);
+  if (!db) { try { localStorage.setItem("egr-sugg", JSON.stringify([...SS])); } catch (e) {} return; }
+  Promise.resolve(d && d.status !== "pending" ? db.doc("suggestions/" + id).set(d) : db.doc("suggestions/" + id).delete()).catch(e => banner("Could not save a decision: " + (e && e.code || e)));
+}
+function setS(id, status) { if (status === "pending") SS.delete(id); else SS.set(id, { status, at: Date.now() }); persistS(id); renderS(); render(); }
+function selectS(id, zoom) {
+  sel = id; sTab = true; showTab(); renderS(); render();
+  const s = SUGG.find(x => x.id === id); if (s && zoom) fitBox(s.bb, 60);
+}
+function showTab() { $("log").hidden = sTab; $("spane").hidden = !sTab; $("tab-m").classList.toggle("on", !sTab); $("tab-s").classList.toggle("on", sTab); }
+function renderS() {
+  const cats = ["all", ...new Set(SUGG.map(s => s.cat))];
+  $("sfilter").innerHTML = cats.map(c => `<button type="button" data-c="${c}" aria-pressed="${c === sCat}">${c}</button>`).join("");
+  const list = SUGG.filter(s => sCat === "all" || s.cat === sCat);
+  const done = SUGG.filter(s => ["acc", "rej", "sol"].includes(sst(s.id))).length;
+  $("scount").textContent = done + "/" + SUGG.length;
+  $("slog").innerHTML = list.map(s => `<li data-id="${s.id}" class="${s.id === sel ? "sel " : ""}${sst(s.id) === "pending" ? "" : sst(s.id)}"><span class="n">${s.id.slice(1)}</span><span class="st">${esc(s.title)}</span><span class="c">${s.cat}${sst(s.id) !== "pending" ? " - " + SLAB[sst(s.id)] : ""}</span></li>`).join("");
+  const s = SUGG.find(x => x.id === sel), d = $("sdet");
+  d.hidden = !s;
+  if (s) d.innerHTML = `<h3>${esc(s.title)}</h3><p class="why">${esc(s.why)}</p>${(SS.get(s.id) || {}).note ? `<p style="color:${SCOL[sst(s.id)]}"><b>${SLAB[sst(s.id)]}.</b> ${esc(SS.get(s.id).note)}</p>` : ""}<p><b>Proposal.</b> ${esc(s.act)}</p><div class="row"><button class="acc" type="button" data-a="acc">Accept</button><button class="rej" type="button" data-a="rej">Reject</button><button type="button" data-a="pending">Reset</button></div>`;
+}
+$("sfilter").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { sCat = b.dataset.c; renderS(); } });
+$("slog").addEventListener("click", e => { const li = e.target.closest("li"); if (li) selectS(li.dataset.id, true); });
+$("sdet").addEventListener("click", e => { const b = e.target.closest("button"); if (b && sel) setS(sel, b.dataset.a); });
+$("tab-m").onclick = () => { sTab = false; showTab(); };
+$("tab-s").onclick = () => { sTab = true; showTab(); renderS(); };
+$("l-sugg").addEventListener("change", render);
+function pinOf(s) { return [(s.bb[0] + s.bb[2]) / 2, Math.min(s.bb[1], s.bb[3]) - 0]; }
+function drawSugg(o, s0) {
+  if (!$("l-sugg").checked) return;
+  for (const s of SUGG) {
+    if (s.bb[2] < vb.x - 20 || s.bb[0] > vb.x + vb.w + 20 || s.bb[3] < vb.y - 20 || s.bb[1] > vb.y + vb.h + 20) continue;
+    const st = sst(s.id), on = s.id === sel, col = SCOL[st], al = st === "rej" ? .35 : 1, w = (on ? 1.6 : 1) * s0;
+    o.push(`<g opacity="${al}">`);
+    for (const h of s.hl) {
+      if (h.t === "poly") o.push(`<polygon points="${h.p.map(q => q.join(",")).join(" ")}" fill="${h.k === "gap" ? "#e8590c" : "#ff9f1c"}" fill-opacity="${on ? .55 : .35}" stroke="#c25b00" stroke-width="${1.4 * w}" stroke-dasharray="${4 * s0} ${3 * s0}"/>`);
+      else o.push(`<line x1="${h.p[0][0]}" y1="${h.p[0][1]}" x2="${h.p[1][0]}" y2="${h.p[1][1]}" stroke="#c25b00" stroke-width="${3 * w}" stroke-linecap="round"/>`);
+    }
+    for (const h of s.pr) {
+      if (h.t === "line") o.push(`<line x1="${h.p[0][0]}" y1="${h.p[0][1]}" x2="${h.p[1][0]}" y2="${h.p[1][1]}" stroke="${col}" stroke-width="${3.4 * w}" stroke-linecap="round" ${h.k === "cut" ? `stroke-dasharray="${7 * s0} ${4 * s0}"` : ""}/>`);
+      else if (h.t === "note") o.push(`<text x="${h.p[0]}" y="${h.p[1]}" font-size="${11 * s0}" font-family="IBM Plex Sans, sans-serif" font-weight="600" fill="${col}" stroke="#fff" stroke-width="${3 * s0}" paint-order="stroke">${esc(h.x)}</text>`);
+    }
+    const p = pinOf(s);
+    o.push(`<circle cx="${p[0]}" cy="${p[1]}" r="${(on ? 11 : 9) * s0}" fill="${col}" stroke="#fff" stroke-width="${1.6 * s0}"/><text x="${p[0]}" y="${p[1] + 3.6 * s0}" font-size="${10 * s0}" font-weight="600" text-anchor="middle" fill="#fff" font-family="IBM Plex Mono, monospace">${s.id.slice(1)}</text></g>`);
+  }
+}
+function hitPin(raw, s0) {
+  if (!$("l-sugg").checked) return null;
+  for (const s of SUGG) { const p = pinOf(s); if (Math.hypot(raw[0] - p[0], raw[1] - p[1]) < 12 * s0) return s.id; }
+  return null;
+}
+async function initS() {
+  try { SS = new Map(JSON.parse(localStorage.getItem("egr-sugg") || "[]")); } catch (e) {}
+  if (db) { try { db.collection("suggestions").onSnapshot(snap => { const m = new Map(); snap.docs.forEach(d => { const v = d.data(); if (v) m.set(d.id, v); }); SS = m; renderS(); render(); }); } catch (e) {} }
+  renderS(); render();
+}
+
+buildTools(); renderLog(); showComposer(); renderS();
 requestAnimationFrame(() => { fitBox(AREAS[0][1]); });
-initDb();
+initDb().then(initS);
 </script>

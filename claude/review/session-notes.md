@@ -1,0 +1,31 @@
+# Session notes (written before the "latest marks" batch, 2026-10-02)
+
+## Standing rules from the user
+- Extremely brief answers; restate each correction in one line; apply only when told ("go ahead", "apply"). No pushes (no repo access). Do not resend files unless asked. No PNGs in repo packaging.
+- User said "I don't have access to versions": never say "version N". Say "updated the page at the same link". Republishing the page does not touch marks (marks live in the shared db `marks`, suggestions in `suggestions`).
+- User is angry about sloppy application: "understand genuinely and meta-cognitively", follow what they DREW exactly, no squiggly lines, check results visually against their outlines before publishing.
+
+## Pipeline (scratchpad = /tmp/claude-0/-home-user-BFW-Wegweiser/255821fa-d462-5ea3-b45c-fe956299e386/scratchpad)
+- `fixed.py` (loads merged step 8 graph, applies early fixes, kitchen, then `exec(open('batch2.py').read())`, validation, routing JSON, sample routes). Outputs `review/routing/*-fixed.json`.
+- `batch2.py` reads `marks_batch2.json` (all marks merged, incl. already applied; pipeline re-derives everything from scratch each run). To add new marks: append non-applied marks from the db dump (`marks7/marks/*.json`, add key `id`) to `marks_batch2.json`, extend `ZMAP` (mark id -> zone id), `order` list, `C` flags, `zel` classes, `BLOCKS`.
+- Geometry principles now in batch2.py (after the "botched" complaint): user polygons are exact (cluster-snapped, clipped to shell `sh`); NO growth/buffer smoothing; `_merge` = union + tiny mitre buffer; `_faces(piece,nbrs)` splits leftover gaps among neighbours with a Voronoi of boundary samples (straight cuts); `_fill` prefers non-user zones (drawn outlines do not grow into gaps unless touching shell); `_trim(n)` returns any area a drawn zone gained beyond its polygon to neighbours (drawn zones that lost area first); junction tail trim keeps `E.flur-tr1-3` between `E.flur-tr1-1` and `E.flur-tr2-1` (halfplane cuts at tr1-3's top and bottom edges, tails to rooms such as E.26); virtual portals recomputed at the end from the longest straight shared edge (`_shared`); doors on blocks removed; stale assumed doors dropped; user doors supersede assumed doors of the same pair; `E.25a/25b/vr-e25/vr-e25b` assumed doors dropped; reachability restore (`restored door`) for rooms cut off (not E.48/E.49/E.abstell-e37); wall-move strips (user doors 0.6-4.5 off) still exist (door-to-wall step 7), snap step 7b radii 3.7/6.5/10.
+- Debug/visual helpers: `viz.py` (zones + doors coloured, regions), `viz2.py` (adds your outlines in red and add-marks in orange), `chk.py` (deviation of final zones from drawn polygons: DEV list), `sugg2.py` (suggestion generator -> `sugg.json`), `mk/` page build: `mk/gen_data.py` -> `mk/data.json`, `mk/build.py` -> `mk/eg-redline.html` (template `mk/template.html`, placeholders __DATA__ __SUGG__ __IMG__), publish with Artifact tool (same file path, url https://claude.ai/artifact/1s54MKxn2Y6afHkv17D9KR).
+- IMPORTANT tool hygiene: do not print polygons (output floods); never `pkill -f fixed.py` (kills own shell); `python3 fixed.py > /tmp/fixed.out` then grep.
+
+## State before the new batch
+- Graph: 191 zones, 221 portals (36 virtual, 14 exits), one component, 0 overlaps, gap ~412, outside shell 19. 6 user doors still 1.7-4.6 off wall: E.83_E.83a, E.TR9_E.flur-tr9-1, E.76_E.flur-tr4-4_2, E.80_E.flur-tr4-6, E.72a_E.flur-tr4-4_3, E.73_E.flur-tr4-7.
+- Applied so far: kitchen (12), batch 2 (75), hub (10), batch 3 TR2/TR3/west hexagon (69) incl. my fixes: E.schacht-tr2 block (strip along TR2 east edge, door E.TR2_E.flur-tr2-1 removed - an ASSUMPTION), E.flur-tr1-3 between tr1-1/tr2-1, assumed door E.flur-tr4-5_E.vr-e84, E.flur-tr2-6 removed from shell ("in exterior").
+- Marks in db: 224 total; the 58 newest (ids like add_muqk*, add_muql*, line_muqk*, line_muql*, zone_muqk*, zone_muql*, move_E.72a_*, rm_E.72a_*, rm_E.76_*, move_E.73_*, move_E.80_*, move_E.82_*, move_E.83_*, move_E.TR3_E.flur-tr3-2, move_E.flur-tr3-1_E.flur-tr3-2, move_E.flur-tr4-3_E.flur-tr4-8, move_E.flur-tr4-4_E.flur-tr4-7, rm_E.aufzug-tr3_E.lager-tr3) are NOT yet applied: they respond to my botched results.
+- Suggestions layer in page (39 items s01..s39, static from earlier graph; decisions in db `suggestions`: s06,s07,s13,s15,s30 solved; s08,s09,s14,s29 partial). Pins numbered; stale in places.
+- Comments: thread b461f620 (E.flur-tr3-1 outline) resolved; thread 1f75c307 (tr1-3 between, "schacht next to TR2 is a block, no door") answered, still open (schacht guess).
+- Packaging: claude-updated.zip + RECAP.md/CORRECTIONS.md in scratchpad are outdated (before batch 3/clean geometry). Repo commit e0c4ef0 on the user's side contains the earlier package. Known gaps: scripts snapshot not runnable; connectivity JSON lacks `kind: block`.
+
+## Plan for the latest batch
+1. Read all 58 new marks (list non-applied from `marks7`), render them over the current graph (mv3-style overlay), restate each cluster.
+2. Merge into `marks_batch2.json`, extend mapping, rerun, verify visually per region (viz2 + chk DEV), measure vs user outlines.
+3. Rebuild page (`mk/gen_data.py`, `mk/build.py`), publish, mark the 58 marks `applied` via ArtifactData batch (need versions from listing), reply on open comment thread if relevant, update notes.
+
+## Done: latest batch (59 marks) applied
+- Applied via batch2.py: E.48/E.49/E.kueche-ma (E.49 crossable via TR7 door + kitchen door; E.48 via E.49; küche-ma non-crossable), E.abstell-e37 replaced by block E.schacht-e37, user's E.schacht-tr2 block, flur-tr1-1/1-2/1-3/2-1/2-3 redrawn, wing-1 WC group (E.01, E.vr-e01, E.03, E.vr-e03, E.TR1, E.block-tr1, flur-tr1-2), E.72a/E.72b, E.82 (Vorraum, crossable)/E.82a (WC), E.aufzug-tr2-b/E.37/E.block-tr2 redrawn, E.73 east boundary = straight line, shell pulled back (west edge of IQ+UKM wing, E.33a bottom, TR3/E.34 tip), flur-tr3-2 exit to exterior (assumed emergency), doors: E.76 all removed, E.72a first door only, late moves/removals after adds (PENDING mechanism), line marks snap vertices (_snap_to_line).
+- Suggestions regenerated (28 items, ids s01-s28); old decision docs deleted.
+- 59 marks marked applied. Remaining off-wall door: E.TR9_E.flur-tr9-1 (4.2).

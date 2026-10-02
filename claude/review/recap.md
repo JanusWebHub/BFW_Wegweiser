@@ -51,3 +51,8 @@ Earlier proposals A to F are resolved by your drawings: `E.53.2_E.flur-tr7-1` mo
 - Regenerate routing images and JSONs; re-package the zip (no PNGs in the repo).
 - Skeleton and middle area: arc at x 1061–1072 on the `E.flur-tr5-2` south wall; `E.flur-tr3-1` refit; convexity splits for `E.41` and `E.52`; middle-area gaps (part of the 740 units²); `E.flur-tr2-6` identity; `E.TR8` exit (door leaf seen on photo 056); assumed doors and door review images A to F only partly checked; bridge opening to the Speisesaal (virtual portal is my assumption).
 - 8 doors still off boundary by 0.6 to 1.3: `E.flur-tr2-5_E.flur-tr4-2`, `E.53.1_E.53.2`, `E.41b_E.flur-tr8-6`, `E.56a_E.flur-tr9-3` and `_2`, three virtual hub portals.
+
+## Update (2026-10-02)
+- Geometry rewritten to follow your drawn outlines exactly (no growth/smoothing); see CORRECTIONS.md rounds 6 to 8. Page: style panel, suggestions layer (28 current items), newest marks on top.
+- Current graph: 193 zones, 219 portals, one component, 0 overlaps. Marks in db: all applied (236 total).
+- Open: hub thin triangles (later), `block`/nested-room rules into `docs/data`, `kind` attribute in the JSON, runnable scripts, door `E.TR9_E.flur-tr9-1` 4.2 off wall, stair outlines vs Lageplan, assumed doors (about 84 originally) unverified.
