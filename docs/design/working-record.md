@@ -33,15 +33,13 @@ Recommendation by Copilot: establish the app branch after rule reconciliation an
 
 ## Rule reconciliation and recovery
 
-First reconcile confirmed review decisions with the rulebook and system design. In particular, distinguish blocks outside navigable zones from obstacles within zones. The review proposal to represent blocks as a zone kind is not automatically the final definition. Other review-driven rule changes also require explicit reconciliation; the AI-written app plan is not a silently adopted specification.
+The cloud review was directed by the zoning author, with AI assistance in interpreting, applying and checking changes.
 
-The cloud review was the zoning author's interpretation, drawing, decisions and corrections with AI assistance, not wholesale acceptance of AI output. The supplied conversation summary is intermediate; later work must be considered when establishing the recoverable state. That summary is a temporary contextual aid, intended for deletion after planning, not the baseline itself.
+Certain ideas and decisions arose during that review that would necessitate modifying existing rules and methods, for example blocks outside navigable zones, distinct from obstacles within zones.
 
-Preserve a reference snapshot of the latest recoverable inputs, scripts, marks and outputs. Make the pipeline runnable locally without intentionally changing its results; compare regeneration against the reference and record discrepancies instead of silently repairing them. Keep recovery separate from improvements. Reproduction establishes reproducibility, not correctness or approval.
+Confirmed decisions need to be reflected in the rulebook and system design. Changes and plans recommended by AI still require the human author’s review and approval.
 
-Conditional agreement: preserve the inputs, dependencies, scripts and outputs needed for reproduction without imposing excessive maintenance burden. The preservation mechanism is not yet agreed. Keep recovery bounded; its purpose is to preserve and understand the experiment.
-
-Source photographs, the older whole-building plan, composites, overlays and simplified models have different evidential roles. Overlays aid comparison but do not resolve conflicting sources. Detecting larger structures or passing geometry and connectivity checks does not establish architectural truth.
+The latest cloud review state is to be brought into the local workspace so the review can continue. A reference snapshot would help keep the recovered existing work distinct from future changes.
 
 ## Representations and generated outputs
 
@@ -63,10 +61,12 @@ One editable project supports distinct representations, not three independently 
 | Working Arrangement | Meaning |
 | --- | --- |
 | Reference underlay | Source PDF or image |
-| Approved baseline | Model state accepted by the zoning author at the latest revision checkpoint. |
-| Working overlay | Requested or proposed changes, annotations, and applied edits awaiting approval |
+| Approved baseline | Model state at latest checkpoint |
+| Working overlay | Current markup and model changes |
 
-Within the working overlay, candidate geometry shows proposed changes and applied edits awaiting approval. Separately toggleable revision markup shows drawn requests, notes and remarks communicating intent.
+Within the working overlay, candidate geometry shows proposed changes and applied edits, including edits already approved during the session. Separately toggleable revision markup shows drawn requests, notes and remarks communicating intent. Approved edits remain in the overlay until a checkpoint updates the baseline.
+
+Source photographs, the older whole-building plan, composites, overlays and simplified models have different evidential roles.
 
 Four independent dimensions distinguish the work:
 
@@ -81,21 +81,23 @@ Editing shared boundaries across content layers requires coordination; the mecha
 
 ## Intent, application and approval
 
-A request records intent. A proposal describes a candidate implementation. Applying it changes the working model but does not imply approval. Approval records the zoning author's acceptance and explicitly updates the baseline, preserving the previous revision. The baseline remains inspectable during review; approval does not guarantee absolute correctness.
+A request records intent. A proposal describes a candidate implementation. Applying a change alters the working model but does not imply approval.
 
-A drawn request may resemble geometry but remains markup until explicitly applied. A proposal can be previewed without altering the model. The zoning author can draw requested changes for an AI assistant or script to apply, or leave notes asking an AI assistant to propose changes. Notes need not be change requests. "Corrected" is not a review status because it implies correctness prematurely.
+A drawn request may resemble geometry but remains markup until explicitly applied. A proposal can be previewed without altering the model. The zoning author can draw requested changes for an AI assistant or script to apply, or leave notes asking an AI assistant to propose changes. Notes need not be change requests.
 
-AI assistants and scripts may propose changes or apply authorized changes; only the zoning author grants approval. Passing checks does not constitute approval. Do not silently replace existing geometry, reverse explicit removals to satisfy connectivity, or infer approval.
+Approved edits remain in the working overlay until the zoning author explicitly establishes a new revision checkpoint and updates the baseline. Not every editing batch creates a checkpoint. The baseline remains inspectable during review; approval does not guarantee absolute correctness.
 
-Conditional agreement: lightweight links from requests or proposals to resulting edits and approval decisions should make "what changed and why" recoverable without conversation memory. This must not introduce substantial complexity; implementation details are not agreed.
+Checkpoints need not be retained as separate revisions within the app. Regular Git commits at checkpoints are a best practice for preserving history, not a requirement.
+
+AI assistants and scripts may propose changes or apply authorized changes; only the zoning author grants approval. Passing checks does not constitute approval. Existing geometry is not to be silently replaced, explicit removals are not to be reversed to satisfy connectivity, and approval is not to be inferred.
+
+Recommendation by Copilot: potential feature for the app; linking each request or proposal to the resulting edits and approval decision, provided this adds little complexity.
 
 ## Incremental app development
 
 The redline artifact originated as a visual communication tool, avoiding the need to express every spatial correction in text. Initially, the zoning author communicates intent through marks; the AI assistant interprets and applies changes, saves model data as JSON, runs checks, regenerates the view, and returns it for further human review.
 
 Bring those operations into the app incrementally: persist and communicate intent, support applying changes directly, then support checking and regenerating the model and views. The end goal is a self-sufficient semantic SVG authoring app usable without AI assistance. Optional assistance may remain, but must not be necessary to remember or execute decisions.
-
-Prove a small complete workflow: open the BFW project, inspect the underlay, edit a boundary or door, undo, save, reopen, and inspect validation results. Each stage must keep requested changes distinguishable from actual model edits. Expand as review work demonstrates a need, not by blindly porting historical workarounds.
 
 ## Related Documents
 
