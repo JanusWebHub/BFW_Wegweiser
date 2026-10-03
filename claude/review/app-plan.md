@@ -1,7 +1,21 @@
 # Plan: Zoning Studio, a standalone web app (GitHub Pages)
 
 ## Goal
-Static, client-only web app (no server, no accounts) that turns a real floor plan (image/PDF) into a **semantic SVG + connectivity graph + routing graph**, via a human-in-the-loop workflow proven on BFW Charlottenburg EG. Hosted on github.io; all data stays in the browser; projects import/export as files.
+Static, client-only web app (no server, no accounts) for a zoning author to create and review a semantic zoning SVG and its counterpart connectivity graph, serialized as JSON, with derived routing data. The intended end goal is self-sufficient authoring without AI assistance, informed by the BFW Charlottenburg EG review. Hosted on github.io; all project data stays in the browser; projects import/export as files.
+
+## Roles and incremental development
+
+The zoning author operates this app to create and review the building model. When discussing communication with an AI assistant, "human participant" means the person chatting with that assistant. The navi-user uses the separate Wegweiser navigation application, not this authoring app. The zoning SVG is distinct from the navigation SVG used to present routes to the navi-user.
+
+The visual interface initially serves primarily as a communication tool: the zoning author records requested changes as marks, and an AI assistant interprets and applies them, saves model data, runs checks, and regenerates the view for further review. A requested change is not the same as an applied model edit; both states must remain distinguishable.
+
+Development should bring those operations into the app incrementally: first persist and communicate intent, then support applying changes directly, then checking and regenerating the model and its views. The eventual complete workflow is usable by a zoning author without AI assistance, with undo and inspection of changes. Assistance may remain optional rather than necessary to remember or execute decisions.
+
+Start with a few clear interface controls rather than exposing every combination of content categories, review states, origins and edit protection at once.
+
+The app is developed on a separate feature branch. Recovery and continuation of the BFW review in the local working directory are independent work and do not wait for the app. The review informs requirements and supplies candidate reference data; its historical scripts are not automatically the app's implementation.
+
+The detailed proposals below remain subject to explicit reconciliation with the rulebook, system design, and confirmed review decisions. This clarification does not approve all proposed rules or change the detailed milestones.
 
 ## Inputs to read first (in this repo / the claude-updated.zip)
 - `docs/data/zoning_guidelines.md`, `docs/data/graph_format.md` (the spec; authoritative)
@@ -15,7 +29,7 @@ Static, client-only web app (no server, no accounts) that turns a real floor pla
 - `meta`: name, floor, `units_per_meter`, frame (viewBox), underlay image ref/offset/scale/rotation.
 - `zones[]`: id, polygon (+holes), kind (`room|corridor|stair|lift|anteroom|terrace|block|exterior`), `crossable`, label, flags.
 - `portals[]`: id (`A_B`, `_2` suffix), zones, point, kind (`door|virtual|opening|emergency_exit|main_entrance`), `assumed` flag.
-- `underlay`: the plan image/PDF **embedded in the project file** as base64 (default; e.g. a 511 KB PDF becomes ~680 KB), plus rotation (the BFW Lageplan PDF is stored upside down, so rotate 180° on import), offset, scale, opacity, greyscale. Option "don't embed" (reference by file name; user re-selects it on open). Warn above 10 MB. PDFs render via pdf.js, kept as PDF (not rasterised) in the file.
+- `underlay`: the plan image/PDF **embedded in the project file** as base64 (default; e.g. a 511 KB PDF becomes ~680 KB), plus rotation (the BFW Lageplan PDF is stored upside down, so rotate 180° on import), offset, scale, opacity, greyscale. Option "don't embed" (reference by file name; zoning author re-selects it on open). Warn above 10 MB. PDFs render via pdf.js, kept as PDF (not rasterised) in the file.
 - `marks[]` (optional history of edits, for undo/audit).
 - Derived (never hand-edited): routing segments, validation report.
 - Export: `connectivity-graph.json`, `routing-graph.json`, semantic `plan.svg` (classes per kind, ids = zone ids, portals as `<circle>`), `report.md`.
@@ -27,7 +41,7 @@ Static, client-only web app (no server, no accounts) that turns a real floor pla
 4. Nested room: cut out of host as notch/hole; host crossable only if sole access.
 5. Split halls/corridors: whole shared edge = one virtual portal.
 6. Routing graph = connectivity + straight segments between portal pairs inside crossable zones; segments must stay inside their zone (non-convex zones need splitting or visibility-graph routing); distance = length / units_per_meter.
-7. User-drawn geometry is exact: **no smoothing, no buffering, no zigzag**. Leftover gaps are split between neighbours by straight Voronoi cuts, never by growing shapes.
+7. Geometry drawn by the zoning author is exact: **no smoothing, no buffering, no zigzag**. Leftover gaps are split between neighbours by straight Voronoi cuts, never by growing shapes.
 8. Validity: one connected component (except blocks), every non-block zone has a portal, assumed doors flagged and listed.
 
 ## Architecture
@@ -49,7 +63,7 @@ Static, client-only web app (no server, no accounts) that turns a real floor pla
 Also: suggestion layer (rule-based proposals; accept/reject per item) and notes/comments pins, as in the redline page.
 
 ## Optional later: assisted tracing
-Browser-side vectorization of the underlay (wall detection, door arcs) to pre-draw candidate zones; everything remains reviewable. Optionally an LLM call with a user-provided API key. Out of scope for v1.
+Browser-side vectorization of the underlay (wall detection, door arcs) to pre-draw candidate zones; everything remains reviewable. Optionally an LLM call with an API key provided by the zoning author. Out of scope for v1.
 
 ## Milestones
 1. Scaffold + project model + SVG canvas + underlay + calibration.
