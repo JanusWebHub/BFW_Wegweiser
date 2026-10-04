@@ -2,6 +2,20 @@
 
 The rulebook and system-design define what the system is and must be. This document lists the planned development work of building the program itself, ordered into phases by dependency. Each phase outlines what to build (a script, a process, a test suite) and the constraints, properties, and criteria it must satisfy.
 
+## Development lifecycle
+
+```mermaid
+flowchart LR
+A[Model and design] --> B[Shared data contracts]
+B --> C[Implement tools and browser]
+B --> D[Author plans and configuration]
+C --> E[Test with fixtures and verified building data]
+D --> E
+E --> F[Integrate and release]
+F --> G[Maintain and extend]
+G --> B
+```
+
 ## Phases
 
 Ordered by dependency: each phase builds on the previous phase's output.
@@ -65,3 +79,9 @@ A validator script:
 ### Phase 4
 
 - Add parser tests, validator tests, a fixture SVG, and contract tests.
+
+## future directions
+
+- Direct-file deployment (opening the HTML without a server) and HTTP deployment remain intended options. HTTP implementation is deferred to a later implementation level.
+
+- Algorithm tests check routing behavior separately from interface tests that check compatibility between compiler output and browser-client input.
