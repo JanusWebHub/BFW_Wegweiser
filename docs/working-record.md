@@ -37,6 +37,12 @@ Certain ideas and decisions arose during that review that would necessitate modi
 
 Source photographs, the older whole-building plan, composites, overlays and simplified models have different evidential roles.
 
+For the initial BFW EG model, the 2018 Lageplan supplied outline, geometry and scale; the May 2026 emergency-plan photos supplied room divisions, doors, labels and exits. Discrepancies required the zoning author's judgment.
+
+The middle area was initially modeled from the Lageplan without corresponding emergency-plan photos. Its room numbers and doors included unverified readings or assumptions; this records the evidence gap at that stage, not the current availability of photographs.
+
+The 2026-09-29 handoff recorded approval through step 3.2, but no approval of the parallel wing outputs or step-8 merge. This is the original approval boundary, distinct from subsequent human-led review and approvals.
+
 Proposed observation by Copilot: the existing materials also serve different working purposes. Marks communicate intent; scripts apply and check changes; generated artifacts represent results; accounts and plans written by AI describe or propose work. Their presence does not make every statement in them a confirmed decision.
 
 ## Authoring Concepts
