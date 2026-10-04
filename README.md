@@ -2,13 +2,14 @@
 
 This is a project for developing an indoor navigation and pathfinding tool for the BFW facility.
 
-## Roles And Artifacts
+## Roles and precise language
 
-The project author develops and maintains Wegweiser. The zoning author creates and reviews the building model. The navi-user uses the finished navigation application to request and inspect directions. One person may occupy several roles.
+- Project author: develops and maintains the project.
+- Zoning author: creates and reviews the building model.
+- Navi-user: uses the finished navigation application.
+- Human participant: the person chatting with the AI assistant.
 
-When describing AI-assisted work, "human participant" means the person chatting with the AI assistant, not the navi-user. Use the specific role or artifact name wherever an unqualified term such as "user" or "SVG" could refer to different people or outputs.
-
-The intended outputs are two separate SVGs: the zoning SVG is the visual counterpart of the connectivity graph; the navigation SVG is the map used to present routes to the navi-user. This distinction describes the intended design, not a claim that both outputs are already implemented.
+One person may occupy several roles. Specific role and artifact names are to be used wherever generic terms would be ambiguous.
 
 ## Architecture
 
@@ -64,13 +65,13 @@ wegweiser/
 │   └── test_main.py
 └── web/
     ├── assets/
-   │   ├── bfw-eg-ost.svg
+    │   ├── bfw-eg-ost.svg
     │   └── Grundriss_mit_Knotenpunkten.png
     ├── data.js
     ├── data.json
-   ├── east_wing.css
-   ├── east_wing.html
-   ├── east_wing.js
+    ├── east_wing.css
+    ├── east_wing.html
+    ├── east_wing.js
     ├── index.html
     ├── script.js
     └── style.css

@@ -1,7 +1,7 @@
 # Working Record: Decisions And Agreements
 
 Started: 2026-10-03
-Last updated: 2026-10-03
+Last updated: 2026-10-04
 Human participant: Deniz
 AI assistant: GitHub Copilot
 
@@ -10,15 +10,6 @@ AI assistant: GitHub Copilot
 This is a provisional and amendable record of decisions, agreements, qualifications, insights, ideas, and understanding confirmed by the human participant. It provides a persistent reference point within and across sessions with AI assistants. It does not replace authoritative project documents.
 
 Confirmed agreements, conditional agreements, provisional terms and recommendations are distinguished explicitly. Changes to recorded agreements require the human participant's explicit confirmation.
-
-## Roles and precise language
-
-- Project author: develops and maintains the project.
-- Zoning author: creates and reviews the building model.
-- Navi-user: uses the finished navigation application.
-- Human participant: the person chatting with the AI assistant.
-
-One person may occupy several roles. Use specific role and artifact names wherever generic terms would be ambiguous.
 
 ## Historical review and existing work
 
@@ -54,6 +45,8 @@ One editable project supports distinct representations, not three independently 
 | Circulation layout | Main circulation areas and their boundaries |
 | Detailed spaces | Rooms, subdivisions, blocks and similar modeled areas |
 | Connection elements | Doors, openings and virtual portals |
+
+Provisional idea: a zone category "mass", particularly for wall masses. Its definition and relationship to navigable and non-navigable zones are not yet settled.
 
 | Working Arrangement | Meaning |
 | --- | --- |

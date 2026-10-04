@@ -16,7 +16,7 @@ This level covers the connectivity graph, the routing config and the routing gra
 
 ## Connectivity graph
 
-Created by zoning. Floors with their SVG frame and scale, zones with floor and crossability, portals with the virtual flag and their midpoint in the floor's frame. A vertical portal joins zones on two floors (stairs, lift) and has a point on each. A portal to `exterior` lies on the floor of its other zone and may carry `emergency_exit: true` or `main_entrance: true`. Zones are drawn roughly convex, so that a straight line between two portals of a zone stays inside it.
+Created by zoning. Floors with their SVG frame and scale, zones with floor, navigability and crossability, portals with the virtual flag and their midpoint in the floor's frame. A vertical portal joins zones on two floors (stairs, lift) and has a point on each. A portal to `exterior` lies on the floor of its other zone and may carry `emergency_exit: true` or `main_entrance: true`. Navigable zones are drawn roughly convex, so that a straight line between two portals of a zone stays inside it.
 
 `provenance` is `demo` for fictional data, `unverified` for data not yet checked against the plans, `verified` after that check.
 
@@ -51,7 +51,7 @@ Created by zoning. Floors with their SVG frame and scale, zones with floor and c
 
 ## Routing config
 
-Extra costs are per direction; anything not authored is 0, so both directions cost the same unless authored otherwise. Climbing or descending a floor is a state cost on the vertical portal. A variant is a named list of zones made non-crossable in addition to the connectivity graph's own.
+Extra costs are per direction; anything not authored is 0, so both directions cost the same unless authored otherwise. Climbing or descending a floor is a state cost on the vertical portal. A variant is a named list of navigable zones made non-crossable in addition to the connectivity graph's own.
 
 ```json
 {
@@ -74,7 +74,7 @@ Extra costs are per direction; anything not authored is 0, so both directions co
 
 ## Routing graph
 
-Built from the connectivity graph and the routing config. Segments are computed: in every crossable zone, each pair of its portals gets one segment, a straight line between the two portal points on the zone's floor. Portals are listed in sorted order and the line runs from the first to the second; walking backwards uses the reversed line. `distance_m` is the line length divided by `units_per_meter`. Non-crossable zones get no segments.
+Built from the connectivity graph and the routing config. Segments are computed: in every navigable, crossable zone, each pair of its portals gets one segment, a straight line between the two portal points on the zone's floor. Portals are listed in sorted order and the line runs from the first to the second; walking backwards uses the reversed line. `distance_m` is the line length divided by `units_per_meter`. Non-crossable and non-navigable zones get no segments.
 
 ```json
 {
@@ -112,22 +112,22 @@ Built from the connectivity graph and the routing config. Segments are computed:
 Connectivity graph:
 
 - Zone ids contain no `_`. Every zone except `exterior` has a `floor` that exists.
-- Portal id is its two zone ids in sorted order joined by `_`, plus optional `_n`; both zones exist and differ.
+- Portal id is its two zone ids in sorted order joined by `_`, plus optional `_n`; both zones exist, differ and are navigable.
 - A non-vertical portal joins zones on the same floor; a vertical portal joins zones on different floors. Exception: a portal to `exterior` lies on the floor of its other zone.
-- Every zone has at least one portal; every portal has `virtual`.
+- Every navigable zone has at least one portal; non-navigable zones have none. Every portal has `virtual`.
 - `emergency_exit` and `main_entrance` appear only on portals to `exterior`.
 - Every floor has `svg`, `view_box`, `units_per_meter`.
 - A non-vertical portal has `point` inside its floor's view box; a vertical portal has `points` inside the view boxes of both floors.
 
 Routing config:
 
-- All extra costs are zero or more; every key refers to an existing state or segment; every variant zone exists.
+- All extra costs are zero or more; every key refers to an existing state or segment; every variant zone exists and is navigable.
 
 ## Search rules
 
-- Input is a start zone, a target zone and a variant. Start and target must differ; equal zones are an invalid query.
+- Input is a navigable start zone, a navigable target zone and a variant. A non-navigable endpoint is an invalid query. Start and target must differ; equal zones are an invalid query.
 - Route cost is the sum of segment distances, segment extra costs and state extra costs, including the first state.
-- Every zone between start and target must be crossable in the chosen variant. Start and target may be non-crossable.
+- Every zone between start and target must be navigable and crossable in the chosen variant. Start and target may be non-crossable, but must be navigable.
 - If no path exists, the result is `unreachable`.
 
 ## Files

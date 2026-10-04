@@ -14,7 +14,7 @@ Architectural and simplified floor plans are two-dimensional representations of 
 
 A zone is a two-dimensional space that partitions the simplified floor plan without gaps or overlaps.
 
-A zone may be crossable or non-crossable. A non-crossable zone may be a route's start or target, but cannot be passed through.
+A zone can be navigable or non-navigable.
 
 ### 1.3
 
@@ -50,6 +50,8 @@ A zone divides into a walkable part and a non-walkable part.
 
 An obstacle is a fixed obstruction in the non-walkable part of a zone; routes neither end at nor pass through it.
 
+A block is an inaccessible space within the building, represented as a non-navigable zone.
+
 ### 2.3
 
 The movement zone is the circulation space within the walkable part.
@@ -72,13 +74,17 @@ Zoning is the process of converting spaces and separators into zones and boundar
 
 The connectivity graph is produced alongside the simplified floor plans. Its nodes are zones and its edges are portals.
 
-Every zone must have at least one portal, and its portals must be mutually reachable without obstruction.
+Crossability determines whether a navigable zone may also be passed through.
+
+Navigability determines whether a zone can be entered or used as a route endpoint.
+
+Every navigable zone must have at least one portal, and its portals must be mutually reachable without obstruction.
 
 ### 3.3
 
 The routing graph is constructed from the connectivity graph using movement geometry and routing decisions. Its nodes are portals, and its edges are segments.
 
-Marking additional zones as non-crossable creates a routing variant in which those zones remain reachable but cannot be passed through.
+Marking additional navigable zones as non-crossable creates a routing variant in which those zones remain reachable but cannot be passed through.
 
 ## 4. Queries and search
 
@@ -86,7 +92,7 @@ Defines queries, states, routes, costs, and the search for lowest-cost routes.
 
 ### 4.1
 
-A query is a user's request for navigation from one location to another. Start and target locations can only be specified as zones. Precise positions within those zones are not represented.
+A query is a navi-user's request for navigation from one location to another. Start and target locations can only be specified as navigable zones. Precise positions within those zones are not represented.
 
 ### 4.2
 

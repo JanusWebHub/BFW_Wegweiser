@@ -13,7 +13,7 @@ Graph --> Compute[Compute routes]
 Compute --> Data[Precomputed browser dataset]
 end
 subgraph Browser[Browser operation]
-Input[User input] --> Resolve[Resolve start and destination to zones]
+Input[Navi-user input] --> Resolve[Resolve start and destination to navigable zones]
 Resolve --> Lookup[Look up precomputed route]
 Lookup --> Output[Display plan and directions]
 end
@@ -31,4 +31,4 @@ Development creates and verifies the tools and client that carry out these flows
 | [Build pipeline](build-pipeline.md) | How do authored plans become deployable route data? |
 | [Operation flow](operation-flow.md) | How does a request become displayed guidance? |
 
-Use distinct terms: input resolution finds a zone from a user's entry; offline route computation searches the graph; runtime route lookup selects a precomputed result.
+Use distinct terms: input resolution finds a navigable zone from a navi-user's entry; offline route computation searches the graph; runtime route lookup selects a precomputed result.

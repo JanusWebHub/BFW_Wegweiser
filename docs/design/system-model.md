@@ -4,11 +4,11 @@ This is a relationship view, not a sequence of processing steps. The [rulebook](
 
 ```mermaid
 flowchart LR
-Z[Zones] -->|joined by| P[Portals]
-P -->|paired within a zone| S[Segments]
+Z[Navigable zones] -->|joined by| P[Portals]
+P -->|paired within a crossable zone| S[Segments]
 P -->|crossed in a direction| T[States]
 S --> R[Route]
 T --> R
 ```
 
-A route alternates zones and portals. Its directed states describe crossings; its segments describe travel between successive portals within a zone. The search finds a lowest-cost route between start and target zones.
+A route alternates zones and portals. Its directed states describe crossings; its segments describe travel between successive portals within a zone. The search finds a lowest-cost route between navigable start and target zones.

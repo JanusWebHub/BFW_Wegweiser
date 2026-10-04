@@ -28,15 +28,19 @@ How the architectural plan and the emergency plans of one floor become the simpl
 - Every unnumbered space is one zone: anterooms (VR, Vorraum), technical and storage spaces, lifts, Foyer, Speisesaal, Durchgang, Infodienst, Terrasse.
 - `E.53.1` and `E.53.2` are two zones joined by a virtual portal.
 - Halls and corridors are split into roughly convex zones, so that a straight line between any two portals of a zone stays inside it. Splits go at corners, junctions and where a hall narrows.
-- A room enclosed by another room is cut out of the outer zone as a hole.
+- Stair areas and adjoining landings or passages may be zoned partially as horizontal circulation areas, judgement exclusive to zoning author.
+- A room nested inside another room is excluded from its host's area.
 - Zones cover the inside of the shell without gaps or overlaps. Neighbouring zones share their boundary exactly, along the centre line of the wall between them.
 - The exterior is one zone, `exterior`, and is not drawn.
 - Obstacles and movement lines are not drawn.
+- Navigable zones can be entered and used as route endpoints; non-navigable zones cannot be entered, traversed or used as route endpoints and have no portals.
+- Inaccessible blocks are non-navigable zones.
+- Both navigable and non-navigable zones participate in the partition without gaps or overlaps. Obstacles within a zone remain distinct from non-navigable zones.
 
 ## Crossability
 
-- Crossable: corridors, Durchgang, Foyer, Vorraum and anterooms, stairwells, lifts, Speisesaal, Terrasse, and `E.52`.
-- Non-crossable: all other rooms and spaces.
+- Among navigable zones, crossable: corridors, Durchgang, Foyer, Vorraum and anterooms, stairwells, lifts, Speisesaal, Terrasse, and `E.52`.
+- Non-crossable: all other navigable rooms and spaces.
 - A room that is the only access to another room is crossable, e.g. `E.41`.
 - Every room made crossable is listed in the report.
 
@@ -50,7 +54,15 @@ How the architectural plan and the emergency plans of one floor become the simpl
 - The Haupteingang is a portal to `exterior` with `main_entrance: true`.
 - Notausstiege (escape windows) are not portals.
 - No vertical portals while only one floor is drawn.
-- Every zone has at least one portal.
+- Every navigable zone has at least one portal; non-navigable zones have none.
+
+## Review and corrections
+
+- Correction markup expresses the zoning author's intent, not merely coordinates. Applying a correction requires understanding its consequences for related boundaries, zones and portals and updating them consistently.
+- Existing boundaries adapt to doors drawn by the zoning author; existing doors adapt to boundaries drawn by the zoning author. Conflicting explicit instructions require clarification rather than silent resolution.
+- Cleanup of discrepancies, gaps and overlaps must preserve the intended geometry and complete, non-overlapping coverage, rather than introduce invented shapes or connections merely to improve check results.
+- Uncertain doors, missing access and resulting reachability problems are reported to the zoning author. Connections are never invented or restored merely to make the graph connected.
+- Gaps, overlaps, off-boundary portals and segments leaving their zones may remain temporarily in working states, but must be reported and resolved by the zoning author before final acceptance. Routes through the exterior remain prohibited.
 
 ## Ids
 
@@ -100,5 +112,6 @@ Everything not read directly from the sources:
 - room numbers taken only from the Lageplan
 - unreadable or conflicting room numbers and labels
 - assumed doors and openings
+- spaces classified as non-navigable and the basis for that classification
 - rooms made crossable
 - the rooms and areas used to measure `units_per_meter`, with the resulting values

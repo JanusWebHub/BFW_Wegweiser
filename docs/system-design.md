@@ -2,7 +2,7 @@
 
 The rulebook defines the model theoretically, covering its terms and their relationships. This document specifies the current system design by making the system-level design decisions that conform strictly to the model, using tools such as clarifying and exemplifying rulebook terms and resolving what the rulebook deliberately leaves open.
 
-## 1. Modeling pipeline
+## Modeling pipeline
 
 The system implements a human-in-the-loop, computer-assisted modeling pipeline with two complementary representation types:
 
@@ -15,12 +15,26 @@ The system implements a human-in-the-loop, computer-assisted modeling pipeline w
 4. Routes are computed by searching the routing graph and serialized for the browser client.
 5. The browser renders routes on the navigation SVG for the navi-user.
 
-### SVG outputs
+## Zoning
 
-The intended design distinguishes two separate artifacts. The zoning SVG is the semantic visual counterpart of the connectivity graph, used by the zoning author to inspect and review the building model. The navigation SVG is a map for presenting routes to the navi-user; it serves a different audience and purpose and is not assumed to be the zoning SVG.
+### Tenets
 
-The connectivity graph is serialized as JSON alongside its zoning SVG. The navigation SVG and displayed route geometry must agree on their coordinate frame. How the navigation SVG is produced from the reviewed model remains to be specified; this distinction does not imply that both SVG outputs are already implemented.
+- A navigable zone that provides the only access to another navigable zone must be crossable.
 
-## 2. Costs
+### Representations and outputs
+
+The intended design uses one editable project to support distinct representations, not three independently edited SVG files:
+
+- Zoning working view: the model plus review layers, used by the zoning author during authoring and review.
+- Zoned SVG (provisional name): the clean semantic floor plan, paired with connectivity JSON.
+- Navigation SVG: a generated map for displaying routes to the navi-user.
+
+The Zoned SVG and connectivity JSON are generated from the same explicitly selected approved baseline revision, excluding the reference underlay and review annotations.
+
+The navigation SVG and displayed route geometry must share a coordinate frame. Its generation point in the pipeline remains unspecified. These are intended representation and output responsibilities, not claims that the capabilities are already implemented.
+
+## Tuning
+
+### Costs
 
 A special cost is any factor beyond distance that makes a state or segment harder or easier for a person, for example a turn, a door, or a floor change. These factors and their weights are a tuning decision, made when the routing graph is constructed from the connectivity graph.
