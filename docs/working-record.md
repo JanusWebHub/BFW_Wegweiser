@@ -97,7 +97,7 @@ Recommendation by Copilot: potential feature for the app; linking each request o
 
 ## Related Documents
 
-- [README.md](../../README.md): roles and project overview.
-- [system-design.md](../system-design.md): pipeline and SVG purposes.
-- [rulebook.md](../rulebook.md): navigation rules to reconcile with review decisions.
-- [app-plan.md](../../claude/review/app-plan.md): incremental zoning-app development.
+- [README.md](../README.md): roles and project overview.
+- [system-design.md](system-design.md): pipeline and SVG purposes.
+- [rulebook.md](rulebook.md): navigation rules to reconcile with review decisions.
+- [app-plan.md](../claude/review/app-plan.md): incremental zoning-app development.

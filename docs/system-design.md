@@ -2,6 +2,12 @@
 
 The rulebook defines the model theoretically, covering its terms and their relationships. This document specifies the current system design by making the system-level design decisions that conform strictly to the model, using tools such as clarifying and exemplifying rulebook terms and resolving what the rulebook deliberately leaves open.
 
+## Compiler and browser client
+
+Route search happens offline in the compiler. The browser client selects and presents a precomputed route rather than searching the graph.
+
+Direct-file deployment (opening the HTML without a server) and HTTP deployment remain intended options. HTTP implementation is deferred to a later implementation level.
+
 ## Modeling pipeline
 
 The system implements a human-in-the-loop, computer-assisted modeling pipeline with two complementary representation types:
@@ -38,3 +44,7 @@ The navigation SVG and displayed route geometry must share a coordinate frame. I
 ### Costs
 
 A special cost is any factor beyond distance that makes a state or segment harder or easier for a person, for example a turn, a door, or a floor change. These factors and their weights are a tuning decision, made when the routing graph is constructed from the connectivity graph.
+
+## Test suite
+
+Algorithm tests check routing behavior separately from interface tests that check compatibility between compiler output and browser-client input.
