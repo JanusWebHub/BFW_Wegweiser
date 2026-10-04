@@ -17,43 +17,13 @@ Pipeline reformulation and documentation simplification are distinct from the lo
 
 ### Confirmed direction
 
-The active core documents are the rulebook, system design, implementation plan and working record. README is the entry point.
-
-System design describes intended architecture, not implementation status. Diagrams explain responsibilities, flows and handoffs; prose records substantive decisions and qualifications rather than paraphrasing diagrams.
-
 Development lifecycle belongs in the implementation plan. Implementation levels describe increasing capability, whereas lifecycle activities recur during development and maintenance. Their detailed organization will be reconsidered separately.
 
-The system is organized into independent authoring, compiler and browser-client modules. This permits different buildings to supply compatible authored inputs without changing the compiler, and route-search algorithms to change without changing their routing-graph input.
+The system is organized into independent Zoning, Routing and Navigation modules. This permits different buildings to supply compatible authored inputs without changing the Routing module, and route-search algorithms to change without changing their routing-graph input.
 
-Authoring produces Zoned SVG, connectivity JSON and Navigation SVG. Movement geometry, including designer-authored movement lines, is intended to be part of the connectivity graph.
+The zoning module produces Zoned SVG, connectivity JSON and Navigation SVG. Movement geometry, including designer-authored movement lines, is intended to be part of the connectivity graph. The exact movement-geometry encoding and Routing module input requirements remain unspecified. Navigation SVG passes from the Zoning module to the Navigation module.
 
-Navigation SVG passes from authoring to the browser client. The precomputed browser dataset passes from the compiler to the browser client.
-
-The routing/tuning editor edits routing configuration to tune calculated route outcomes. Movement geometry is editable in the zoning editor but fixed and inspectable in the routing/tuning editor. This restriction is scoped to the editor, not permanent immutability or automatic locking through approval.
-
-The system overview is to show the three modules and their handoffs, accompanied by a detailed pipeline diagram for each. Module boundaries do not decide programming languages, directory placement or interfaces.
-
-### Provisional design direction
-
-Deniz proposed placing iterative configuration editing and tuning within the compiler module. Zoned SVG would provide the visual basis for inspecting calculated routes; connectivity JSON would supply authored movement geometry for computation.
-
-The connectivity graph would persist across tuning iterations, while routing graphs and routes would be derived under the selected configuration.
-
-A repurposed redline interface is a candidate for the tuning editor, not a selected implementation.
-
-### Still unresolved or not approved
-
-Copilot recommends keeping variant-specific restrictions in routing configuration, separate from the connectivity graph's base properties. Deniz explicitly raised their placement as a question; this recommendation has not been confirmed.
-
-The exact movement-geometry encoding and compiler input requirements remain unspecified. If connectivity JSON carries all required geometry, numerical route computation need not parse Zoned SVG; this is a conditional observation, not a finalized interface decision.
-
-The conceptual-model diagram was rejected as unhelpful and confusing. Its replacement remains for later discussion with Deniz.
-
-### Rejected or superseded approaches
-
-Consolidating the design views by shortening their prose or replacing existing pipeline lists was rejected. Their visual purpose and the document's structure must guide integration.
-
-Copilot's recommendation to place routing configuration editing in authoring was challenged by Deniz's compiler-side tuning proposal; it is not an adopted responsibility.
+The Routing module contains a graph compiler, routing computer and tuning editor. Connectivity graph and routing configuration feed the graph compiler, which produces a routing graph. The routing computer consumes that graph and produces the precomputed routes dataset. The dataset and Zoned SVG feed the tuning editor, which uses a repurposed version of the zoning interface to inspect calculated routes on Zoned SVG and updates routing configuration for the next iteration. The optimized and finalized version of the precomputed routes dataset passes from the Routing module to the Navigation module.
 
 ## Historical review and existing work
 
@@ -79,7 +49,7 @@ One editable project supports distinct representations, not three independently 
 
 - Zoning working view: the model plus review layers, used during authoring and review.
 - Zoned SVG (provisional name): clean semantic floor plan paired with connectivity JSON, without review annotations. Both are generated from an explicitly selected approved baseline revision, excluding the reference underlay and pending review overlays.
-- Navigation SVG: a separate map for displaying routes to the navi-user, generated by the authoring module.
+- Navigation SVG: a separate map for displaying routes to the navi-user, generated by the zoning module.
 
 ### Layers and independent dimensions
 

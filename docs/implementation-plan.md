@@ -28,6 +28,13 @@ Ordered by dependency: each phase builds on the previous phase's output.
 
 4. Test suite. Review the minimal tests written during Phases 1-3 against the rulebook's constraints, close any gaps, and remove any duplication or contradiction between checks.
 
+## Additional planned work
+
+- Zoning module: editable working review view, Navigation SVG, Zoned SVG and connectivity graph JSON generation.
+- Routing module interface: specify the movement-geometry encoding and derive routing data from compatible zoning outputs.
+- Routing/tuning editor: implement editing of costs and variants within the Routing module, iteratively adjusting route outcomes.
+- Navigation module: consume the precomputed dataset and Navigation SVG for direct-file navigation.
+
 ## Future direction
 
 Distant, surface-level ideas, not yet detailed to the level of the phases above.
@@ -79,6 +86,7 @@ A validator script:
 ### Phase 4
 
 - Add parser tests, validator tests, a fixture SVG, and contract tests.
+- Use controlled fixtures to test changes before and after real plans are available, including when adding buildings or maintaining the program.
 
 ## future directions
 

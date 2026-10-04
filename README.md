@@ -17,7 +17,7 @@ Identifiers, documentation and commit messages are in English; comments and user
 
 ## Architecture
 
-The architecture separates building-model authoring, offline compilation and browser presentation. The compiler and browser-client code are organized as follows:
+The architecture separates Zoning, Routing and Navigation modules. The compiler and browser-client code are organized as follows:
 
 - [src/](src/): Python compiler that builds the routing graph from the modeled floor plans, computes the routes, and serializes the routing data.
 - [web/](web/): Browser client that takes the navi-user's request and renders the route on the floor plan alongside navigation instructions.
@@ -44,8 +44,8 @@ The project is built around computer-assisted modeling under human supervision. 
 
 | Document | Responsibility |
 | --- | --- |
-| `README.md` | Introduce the project and guide readers toward its parts. |
-| Rulebook | Establish model tenets, definitions and constraints. |
-| System design | Specify how those commitments become an organized system: responsibilities, representations, transformations and interfaces. |
-| Implementation plan | Outline how planned work is to be implemented. |
-| Working record | Preserve current agreements, qualifications and reasoning while they remain provisional. |
+| `README.md` | Project introduction and orientation |
+| Rulebook | Model tenets, definitions and constraints |
+| System design | Architecture and design decisions |
+| Implementation plan | Planned work and implementation methodology |
+| Working record | Provisional agreements, qualifications and reasoning |
