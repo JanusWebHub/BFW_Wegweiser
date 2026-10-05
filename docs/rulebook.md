@@ -1,6 +1,6 @@
 # Rulebook
 
-This rulebook defines the project's navigation model and is its source of truth. Every project file that concerns the navigation model must conform to it.
+This rulebook is the source of truth for the project's conceptual model, and every project file must conform to it.
 
 ## 1. Structural elements and topology
 
@@ -8,11 +8,11 @@ Defines the spaces, zones, boundaries, portals, and segment relations that struc
 
 ### 1.1
 
-Architectural and simplified floor plans are two-dimensional representations of the building. The simplified plan is derived from the architectural, retaining only features relevant to navigation.
+Architectural plans and the Zoned SVG are two-dimensional representations of the building. The Zoned SVG is derived from the architectural plans, retaining only features relevant to navigation.
 
 ### 1.2
 
-A zone is a two-dimensional space that partitions the simplified floor plan without gaps or overlaps.
+A zone is a two-dimensional space that partitions the modeled area without gaps or overlaps.
 
 A zone can be navigable or non-navigable.
 
@@ -20,11 +20,11 @@ A zone can be navigable or non-navigable.
 
 A separator is a fixed, non-crossable division between two spaces in the architectural plan.
 
-A boundary is a one-dimensional division between two zones in the simplified floor plan. It may represent a physical separator or be virtual.
+A boundary is a one-dimensional division between two zones in the Zoned SVG. It may represent a physical separator or be virtual.
 
 ### 1.4
 
-A portal represents the crossable portion of a boundary and is drawn in the simplified floor plan as a highlighted section with its midpoint marked. In the navigation model, it is represented by that midpoint.
+A portal represents the crossable portion of a boundary and is drawn in the Zoned SVG as a highlighted section with its midpoint marked. In the conceptual model, it is represented by that midpoint.
 
 A portal may correspond to a physical door or other opening between distinct architectural spaces, or to a virtual opening on a virtual boundary.
 
@@ -36,11 +36,11 @@ A segment is a traversal through one zone, from one portal to another. It lies i
 
 ### 1.6
 
-The exterior is a single zone surrounding the building. A route may begin or end there but never cross it.
+The exterior is treated as a single zone surrounding the building. A route may begin or end there but never cross it.
 
 ## 2. Movement geometry and constraints
 
-Defines walkable space, obstacles, movement zones, movement lines, and segment geometry.
+Defines walkable space, obstacles, blocks, movement zones, and movement lines.
 
 ### 2.1
 
@@ -62,7 +62,7 @@ A movement line is a designer-drawn representation of the path people actually t
 
 ## 3. Zoning and graph construction
 
-Defines how the simplified floor plans are produced from the architectural plans, and how the adjacency, connectivity, and routing graphs are derived.
+Defines how the Zoned SVG is produced from the architectural plans, and how the adjacency, connectivity, and routing graphs are derived.
 
 ### 3.1
 
@@ -70,21 +70,19 @@ The adjacency graph is the machine-readable abstraction of the spaces and separa
 
 ### 3.2
 
-Zoning is the process of converting spaces and separators into zones and boundaries and creating portals, movement zones, and movement lines that form essential elements of the navigation model.
+Zoning is the process of converting spaces and separators into zones and boundaries and creating portals, movement zones, and movement lines that form essential elements of the conceptual model.
 
-The connectivity graph is produced alongside the simplified floor plans. Its nodes are zones and its edges are portals.
+The connectivity graph is produced alongside the Zoned SVG. Its nodes are zones and its edges are portals.
 
 Crossability determines whether a navigable zone may also be passed through.
 
 Navigability determines whether a zone can be entered or used as a route endpoint.
 
-Every navigable zone must have at least one portal, and its portals must be mutually reachable without obstruction.
-
 ### 3.3
 
 The routing graph is constructed from the connectivity graph using movement geometry and routing decisions. Its nodes are portals, and its edges are segments.
 
-Marking additional navigable zones as non-crossable creates a routing variant in which those zones remain reachable but cannot be passed through.
+Marking additional navigable zones as non-crossable creates a variant of the routing graph.
 
 ## 4. Queries and search
 
@@ -114,4 +112,4 @@ The search is multi-source and multi-target and returns the route with the lowes
 
 ### 4.6
 
-The search produces a portal chain. The portal chain determines the zone sequence and the zone of each segment. The route is interpreted as navigation instructions and rendered on the building plan.
+The search produces a portal chain. The portal chain determines the zone sequence and the zone of each segment. The route is interpreted as navigation instructions and rendered on the Navigation SVG.

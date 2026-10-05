@@ -28,16 +28,13 @@ Navigation --> Output([Displayed route and instructions])
 
 ## Modeling pipeline
 
-The system implements a human-in-the-loop, computer-assisted modeling pipeline with two complementary representation types:
-
-- visual representations: architectural plans, simplified floor plans, spatial routing plans, and graph visualizations
-- machine-readable symbolic representations: serialized graph models containing nodes, edges, and attributes
+The system implements a human-in-the-loop, computer-assisted modeling pipeline.
 
 1. Architectural plans are interpreted into a machine-readable adjacency graph.
-2. The plans and adjacency graph are used in zoning to produce zoning SVGs and a connectivity graph.
+2. The plans and adjacency graph are used in zoning to produce the Zoned SVG, Navigation SVG and connectivity graph.
 3. The routing graph is constructed from the connectivity graph and serialized.
-4. Routes are computed by searching the routing graph and serialized for the browser client.
-5. The browser renders routes on the navigation SVG for the navi-user.
+4. Routes are computed by searching the routing graph and serialized for the Navigation module.
+5. The Navigation module renders routes on the Navigation SVG for the navi-user.
 
 ## Zoning module
 
@@ -71,7 +68,7 @@ Export --> Map([Navigation SVG])
 - A navigable zone that provides the only access to another navigable zone must be crossable.
 - The connectivity graph includes authored movement geometry, including designer-drawn movement lines.
 - The Zoned SVG and connectivity JSON are generated from the same explicitly selected approved baseline revision, excluding the reference underlay and review annotations.
-- The navigation SVG and displayed route geometry must share a coordinate frame.
+- The Navigation SVG and displayed route geometry must share a coordinate frame.
 
 ## Routing module
 
@@ -89,15 +86,9 @@ Data --> Editor
 
 ### Tuning
 
-The routing/tuning editor edits routing configuration to tune calculated route outcomes.
+Tuning is the iterative adjustment of routing configuration, which holds costs and variant-specific restrictions. The tuning editor, a repurposed version of the zoning interface, shows the calculated routes of the precomputed routes dataset on the Zoned SVG.
 
-The Routing module's tuning editor uses a repurposed version of the zoning interface to inspect calculated routes.
-
-Costs and variant-specific restrictions are authored in routing configuration.
-
-#### Costs
-
-A special cost is any factor beyond distance that makes a state or segment harder or easier for a person, for example a turn, a door, or a floor change. These factors and their weights are a tuning decision, made when the routing graph is constructed from the connectivity graph.
+A special cost is any factor beyond distance that makes a state or segment harder or easier for a person, for example a turn, a door, or a floor change. The graph compiler applies special costs to the states and segments of the routing graph.
 
 ## Navigation module
 
@@ -113,5 +104,5 @@ Map([Navigation SVG]) --> Display
 
 - Input resolution may require correction or disambiguation and excludes non-navigable zones.
 - Lookup may return an unreachable result.
-- The current browser implementation can not track the navi-user's realtime position.
-- The browser uses an already built dataset and plan. Route lookup is not graph search.
+- The current browser implementation cannot track the navi-user's realtime position.
+- The browser uses an already built dataset and plan.
