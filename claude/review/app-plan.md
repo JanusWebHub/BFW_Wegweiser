@@ -22,14 +22,14 @@ The detailed proposals below remain subject to explicit reconciliation with the 
 - `claude/review/SPEC-PROPOSALS.md` (zone kind `block`, nested rooms; adopt as spec)
 - `claude/review/CORRECTIONS.md`, `RECAP.md` (what the review learned; rules below come from it)
 - `claude/tools/page-source/*` (existing redline UI: template, tools, style panel)
-- `claude/review/scripts/` (geometry pipeline: `batch2.py`, `fixed.py`; the logic to port)
+- `claude/review/scripts/`: inspiration only, not rules. Written by Claude Code in a cloud session without a browser: they applied marks, checked the graph with shapely and rendered images with Pillow and cairosvg so the assistant could inspect the geometry. Several checks encode things since changed or never approved (straight segments between portals, "every zone has a portal", the 0.6 and 0.5 tolerances). `batch2.py` and `fixed.py` are in `legacy/`, not the logic to port. Dependencies and the idea each script holds are in `claude/review/scripts/README.md`.
 - `claude/review/data/*.json` (reference output = acceptance fixture)
 
 ## Data model (single project file `*.zoning.json`)
 - `meta`: name, floor, `units_per_meter`, frame (viewBox), underlay image ref/offset/scale/rotation.
 - `zones[]`: id, polygon (+holes), kind (`room|corridor|stair|lift|anteroom|terrace|block|exterior`), `crossable`, label, flags.
 - `portals[]`: id (`A_B`, `_2` suffix), zones, point, kind (`door|virtual|opening|emergency_exit|main_entrance`), `assumed` flag.
-- `underlay`: the plan image/PDF **embedded in the project file** as base64 (default; e.g. a 511 KB PDF becomes ~680 KB), plus rotation (the BFW Lageplan PDF is stored upside down, so rotate 180° on import), offset, scale, opacity, greyscale. Option "don't embed" (reference by file name; zoning author re-selects it on open). Warn above 10 MB. PDFs render via pdf.js, kept as PDF (not rasterised) in the file.
+- `underlay`: the plan image/PDF **embedded in the project file** as base64 (default; e.g. a 511 KB PDF becomes ~680 KB), plus rotation (the BFW Lageplan PDF is stored upside down, so rotate 180° on import; for the BFW EG fixture the SVG frame then equals scan pixels minus (40, 77) on the half-size render, whose full size is 3507 x 2480 px), offset, scale, opacity, greyscale. Option "don't embed" (reference by file name; zoning author re-selects it on open). Warn above 10 MB. PDFs render via pdf.js, kept as PDF (not rasterised) in the file.
 - `marks[]` (optional history of edits, for undo/audit).
 - Derived (never hand-edited): routing segments, validation report.
 - Export: `connectivity-graph.json`, `routing-graph.json`, semantic `plan.svg` (classes per kind, ids = zone ids, portals as `<circle>`), `report.md`.

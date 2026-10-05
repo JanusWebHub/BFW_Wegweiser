@@ -1,14 +1,15 @@
-# Review scripts (snapshot, not runnable yet)
+# Review scripts (inspiration only)
 
-These are the scripts used in the review session, copied as they were. They do not run from this folder as they are.
+Written by Claude Code in a cloud session. They do not run as they are (hardcoded paths, scripts that execute each other's source, missing Lageplan renders). Dependencies: shapely, pillow, cairosvg, pymupdf. Some of their rules were later changed or never approved; take ideas, not rules.
 
-- Paths are hard-coded to the session's folders (`/home/user/BFW_Wegweiser/docs/data/...`, a scratchpad for outputs).
-- Several scripts read each other's source text and cut it at marker comments, so they only work together in the original layout.
-- They need `lp_full.png` and `lp_half.png`, renders of the Lageplan PDF that are not in the repo.
-- Dependencies: `shapely`, `pillow`, `cairosvg`, `pymupdf`.
+- `load.py`: parser for the zoning SVG and connectivity JSON.
+- `check.py`: validator checklist (id parity, portal geometry, overlaps, gaps, outside-shell area).
+- `graph.py`: reachability, crossable components, adjacent zones without a portal.
+- `geo.py`: convexity ratio, segments leaving their zone.
+- `gaps.py`: coverage by difference and union.
+- `chk.py`: deviation of final zones from drawn outlines.
+- `route.py`: what-if routing with added portals.
+- `sugg2.py`: suggestion record with highlight and proposed geometry.
+- `render.py`: Lageplan overlay with the BFW registration offset.
 
-Making them runnable is planned in `../TIDYUP-PLAN.md`.
-
-Order of use: `load.py` (loader) → `check.py`, `cmp.py`, `graph.py`, `geo.py`, `gaps.py`, `route.py` (checks) → `fixed.py` (corrected graph, routing graph) → `drawgraph.py`, `cutouts3.py`, `doors.py`, `render.py` (images).
-
-Also added: `viz.py`, `viz2.py` (zone renders with your outlines), `chk.py` (deviation of zones from drawn polygons), `sugg2.py` (suggestion generator), `mv3.py` (marks overlay). `batch2.py` holds all geometry rules since batch 2; `marks_batch2.json` (in `../data`) holds every mark it uses. Same caveats: hard-coded paths, scripts only work together in the original layout.
+`legacy/`: the pipeline that applied the marks (`batch2.py`, `fixed.py`), image renderers and comparison scripts.
