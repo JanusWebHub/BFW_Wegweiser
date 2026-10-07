@@ -1,0 +1,24 @@
+@import url("east_wing.css");
+
+.map-frame { aspect-ratio: 1790 / 1000; }
+.map-unavailable {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    margin: 0;
+    color: var(--muted);
+    background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.7), transparent 55%),
+        repeating-linear-gradient(0deg, transparent 0 39px, rgba(36, 33, 29, 0.035) 40px),
+        repeating-linear-gradient(90deg, transparent 0 39px, rgba(36, 33, 29, 0.035) 40px),
+        #f8f7f3;
+    font: 600 0.95rem "Trebuchet MS", sans-serif;
+}
+.map-unavailable[hidden] { display: none; }
+.model-status[data-unverified] { border-color: #d8c28d; color: #72531d; background: #fff8e6; }
+
+@media (max-width: 680px) {
+    .map-frame { min-height: 0; }
+    .model-status { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+}
