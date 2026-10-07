@@ -10,6 +10,7 @@ const swapButton = document.querySelector("#swap-zones");
 const startEntranceButton = document.querySelector("#start-entrance");
 const targetEntranceButton = document.querySelector("#target-entrance");
 const mapPickOptions = document.querySelectorAll('input[name="map-pick-endpoint"]');
+const mapLayerToggles = document.querySelectorAll(".map-display-options input[type='checkbox']");
 const modelStatus = document.querySelector("#model-status");
 const mapFrame = document.querySelector("#map-frame");
 const mapViewport = document.querySelector("#map-viewport");
@@ -32,7 +33,7 @@ const stateChain = document.querySelector("#state-chain");
 
 let graph = null;
 let routeTable = null;
-let mapPickEndpoint = "start";
+let mapPickEndpoint = "target";
 let mapScale = 1;
 let mapOffsetX = 0;
 let mapOffsetY = 0;
@@ -44,17 +45,61 @@ function clampMapScale(scale) {
     return Math.max(1, Math.min(4, scale));
 }
 
+function applyMapLayerVisibility() {
+    floorPlan.dataset.showZoneNames = String(document.querySelector("#toggle-zone-names").checked);
+    floorPlan.dataset.showZoneOutlines = String(document.querySelector("#toggle-zone-outlines").checked);
+    floorPlan.dataset.showPortals = String(document.querySelector("#toggle-portals").checked);
+    mapFrame.dataset.showPortals = String(document.querySelector("#toggle-portals").checked);
+    floorPlan.dataset.showBuildingOutline = String(document.querySelector("#toggle-building-outline").checked);
+}
+
 function clampMapOffset(offset, scale) {
     return Math.max(1 - scale, Math.min(0, offset));
 }
 
 function applyMapView() {
+    const mapUnitScale = mapFrame.clientWidth / 1790 / mapScale;
+    mapFrame.style.setProperty("--shell-stroke-width", `${3.5 * mapUnitScale / mapScale}px`);
+    mapFrame.style.setProperty("--zone-stroke-width", `${0.8 * mapUnitScale}px`);
+    mapFrame.style.setProperty("--zone-emphasis-stroke-width", `${1.6 * mapUnitScale}px`);
+    mapFrame.style.setProperty("--portal-stroke-width", `${3 * mapUnitScale}px`);
+    mapFrame.style.setProperty("--portal-exit-stroke-width", `${4 * mapUnitScale}px`);
+    mapFrame.style.setProperty("--portal-point-stroke-width", `${2 * mapUnitScale}px`);
+    mapFrame.style.setProperty("--route-stroke-width", `${4 * mapUnitScale}px`);
+    mapFrame.style.setProperty("--route-dash-length", `${12 * mapUnitScale}px`);
+    mapFrame.style.setProperty("--route-dash-gap", `${8 * mapUnitScale}px`);
+    mapFrame.style.setProperty("--route-marker-stroke-width", `${2 * mapUnitScale}px`);
     mapViewport.style.transform = `translate3d(${mapOffsetX * mapFrame.clientWidth}px, ${mapOffsetY * mapFrame.clientHeight}px, 0) scale(${mapScale})`;
     zoomLevel.value = `${Math.round(mapScale * 100)}%`;
     zoomInButton.disabled = mapScale >= 4;
     zoomOutButton.disabled = mapScale <= 1;
     zoomResetButton.disabled = mapScale === 1 && mapOffsetX === 0 && mapOffsetY === 0;
     mapFrame.dataset.zoomed = String(mapScale > 1);
+
+    for (const line of floorPlan.querySelectorAll(".portal-line")) {
+        if (line.dataset.baseX1 === undefined) {
+            for (const coordinate of ["x1", "y1", "x2", "y2"]) {
+                line.dataset[`base${coordinate.toUpperCase()}`] = line.getAttribute(coordinate);
+            }
+        }
+        const x1 = Number(line.dataset.baseX1);
+        const y1 = Number(line.dataset.baseY1);
+        const x2 = Number(line.dataset.baseX2);
+        const y2 = Number(line.dataset.baseY2);
+        const centerX = (x1 + x2) / 2;
+        const centerY = (y1 + y2) / 2;
+        line.setAttribute("x1", centerX + (x1 - centerX) / mapScale);
+        line.setAttribute("y1", centerY + (y1 - centerY) / mapScale);
+        line.setAttribute("x2", centerX + (x2 - centerX) / mapScale);
+        line.setAttribute("y2", centerY + (y2 - centerY) / mapScale);
+    }
+    for (const point of floorPlan.querySelectorAll(".portal-point")) {
+        point.dataset.baseRadius ??= point.getAttribute("r");
+        point.setAttribute("r", Number(point.dataset.baseRadius) / mapScale);
+    }
+    for (const marker of routeMarkers.querySelectorAll(".route-marker")) {
+        marker.setAttribute("r", Number(marker.dataset.baseRadius) / mapScale);
+    }
 }
 
 function zoomMapAt(scale, x, y) {
@@ -284,7 +329,9 @@ function drawRoute(route, startZone, targetZone) {
         const marker = document.createElementNS(SVG_NS, "circle");
         marker.setAttribute("cx", portal.point[0]);
         marker.setAttribute("cy", portal.point[1]);
-        marker.setAttribute("r", index === 0 || index === route.portal_chain.length - 1 ? "13" : "10");
+        const markerRadius = index === 0 || index === route.portal_chain.length - 1 ? 8 : 6;
+        marker.dataset.baseRadius = String(markerRadius);
+        marker.setAttribute("r", markerRadius / mapScale);
         const classes = ["route-marker"];
         if (portal.virtual) classes.push("virtual");
         if (index === route.portal_chain.length - 1) classes.push("terminal");
@@ -396,7 +443,7 @@ async function loadPrototype() {
 
         populateSelect(startSelect, routeTable.zones);
         populateSelect(targetSelect, routeTable.zones);
-        startSelect.value = routeTable.zones.includes("E.01") ? "E.01" : routeTable.zones[0];
+        startSelect.value = routeTable.zones.includes("exterior") ? "exterior" : routeTable.zones[0];
         targetSelect.value = routeTable.zones.includes("E.52") ? "E.52" : routeTable.zones.at(-1);
         const mainEntrances = routeTable.portals.filter(
             (portalId) => graph.portals[portalId]?.main_entrance
@@ -413,6 +460,7 @@ async function loadPrototype() {
         if (svgResponse.ok) {
             floorPlan.innerHTML = await svgResponse.text();
             configureMapZones();
+            applyMapView();
             mapUnavailable.hidden = true;
         }
         renderSelectedRoute();
@@ -440,6 +488,10 @@ for (const option of mapPickOptions) {
             label.classList.toggle("is-selected", label.contains(option));
         }
     });
+}
+
+for (const toggle of mapLayerToggles) {
+    toggle.addEventListener("change", applyMapLayerVisibility);
 }
 
 floorPlan.addEventListener("click", (event) => {
@@ -506,4 +558,5 @@ swapButton.addEventListener("click", () => {
 });
 
 applyMapView();
+window.addEventListener("resize", applyMapView);
 loadPrototype();

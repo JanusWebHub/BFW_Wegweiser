@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#efede8">
     <title>Wegweiser · EG-Prototyp</title>
-    <link rel="stylesheet" href="eg.css?v=2">
+    <link rel="stylesheet" href="eg.css?v=3">
 </head>
 <body>
     <main class="app-shell">
@@ -33,12 +33,19 @@
                 </div>
                 <fieldset class="map-pick-mode" aria-label="Auf Karte auswählen als">
                     <legend>Klick auf Karte setzt</legend>
-                    <label class="is-selected"><input type="radio" name="map-pick-endpoint" value="start" checked><span>Start</span></label>
-                    <label><input type="radio" name="map-pick-endpoint" value="target"><span>Ziel</span></label>
+                    <label><input type="radio" name="map-pick-endpoint" value="start"><span>Start</span></label>
+                    <label class="is-selected"><input type="radio" name="map-pick-endpoint" value="target" checked><span>Ziel</span></label>
                 </fieldset>
-                <div class="map-frame" id="map-frame">
+                <fieldset class="map-display-options">
+                    <legend>Karte anzeigen</legend>
+                    <label><input id="toggle-zone-names" type="checkbox"> Zonennamen</label>
+                    <label><input id="toggle-zone-outlines" type="checkbox" checked> Zonenumrisse</label>
+                    <label><input id="toggle-portals" type="checkbox"> Portale</label>
+                    <label><input id="toggle-building-outline" type="checkbox" checked> Gebäudeumriss</label>
+                </fieldset>
+                <div class="map-frame" id="map-frame" data-show-portals="false">
                     <div class="map-viewport" id="map-viewport">
-                        <div id="floor-plan" aria-label="Grundriss"></div>
+                        <div id="floor-plan" data-show-zone-names="false" data-show-zone-outlines="true" data-show-portals="false" data-show-building-outline="true" aria-label="Grundriss"></div>
                         <svg id="route-overlay" viewBox="0 0 1790 1000" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
                             <g id="route-segments"></g>
                             <g id="route-markers"></g>

@@ -10,6 +10,18 @@
 .map-frame[data-panning="true"] { cursor: grabbing; }
 .map-frame[data-zoomed="true"] { cursor: grab; }
 .map-frame[data-panning="true"][data-zoomed="true"] { cursor: grabbing; }
+#route-overlay .route-segment {
+    stroke-width: var(--route-stroke-width);
+    filter: none;
+    vector-effect: non-scaling-stroke;
+}
+#route-overlay .route-segment.transit {
+    stroke-dasharray: var(--route-dash-length) var(--route-dash-gap);
+}
+#route-overlay .route-marker {
+    stroke-width: var(--route-marker-stroke-width);
+    vector-effect: non-scaling-stroke;
+}
 .map-zoom-controls {
     position: absolute;
     z-index: 2;
@@ -69,6 +81,32 @@
 }
 .map-pick-mode label.is-selected { border-color: var(--green); background: #eef5f2; }
 .map-pick-mode input { accent-color: var(--green); }
+.map-display-options {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 12px;
+    margin: 0 0 12px;
+    padding: 0;
+    border: 0;
+}
+.map-display-options legend {
+    float: left;
+    margin-right: 8px;
+    color: var(--muted);
+    font: 700 0.75rem "Trebuchet MS", sans-serif;
+}
+.map-display-options label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin: 0;
+    padding: 5px 2px;
+    color: var(--ink);
+    cursor: pointer;
+    font: 0.75rem "Trebuchet MS", sans-serif;
+}
+.map-display-options input { accent-color: var(--green); }
 .entrance-button {
     width: 100%;
     min-height: 38px;
@@ -84,8 +122,31 @@
     stroke: var(--green);
     stroke-width: 5;
 }
+#floor-plan .zone { vector-effect: non-scaling-stroke; stroke-width: 1.6px; }
+#floor-plan .shell { stroke-width: var(--shell-stroke-width); }
+#floor-plan .portal-line {
+    vector-effect: non-scaling-stroke;
+    stroke-width: var(--portal-stroke-width);
+}
+#floor-plan .portal-line--exit { stroke-width: var(--portal-exit-stroke-width); }
+#floor-plan .portal-point { vector-effect: non-scaling-stroke; stroke-width: var(--portal-point-stroke-width); }
+#floor-plan .zone { stroke-width: var(--zone-stroke-width); }
+#floor-plan .map-zone-selectable:hover,
+#floor-plan .route-zone,
+#floor-plan .start-zone,
+#floor-plan .target-zone { stroke-width: var(--zone-emphasis-stroke-width); }
 #floor-plan .map-zone-passive { cursor: not-allowed; opacity: 0.5; }
+#floor-plan[data-show-zone-names="false"] .zone-label { display: none; }
 #floor-plan .zone-label { pointer-events: none; }
+#floor-plan[data-show-zone-outlines="false"] .zone { stroke: transparent; }
+#floor-plan[data-show-zone-outlines="true"] .zone { stroke-opacity: 0.5; }
+#floor-plan[data-show-zone-outlines="true"] .route-zone,
+#floor-plan[data-show-zone-outlines="true"] .start-zone,
+#floor-plan[data-show-zone-outlines="true"] .target-zone { stroke-opacity: 0.75; }
+#floor-plan[data-show-portals="false"] #portals { display: none; }
+#map-frame[data-show-portals="false"] #route-markers { display: none; }
+#floor-plan[data-show-building-outline="false"] #shell { display: none; }
+#floor-plan[data-show-building-outline="true"] .shell { stroke-opacity: 0.55; }
 .map-unavailable {
     position: absolute;
     inset: 0;
