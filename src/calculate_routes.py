@@ -12,6 +12,7 @@ DEFAULT_INPUT = ROOT / "claude" / "review" / "data" / "routing-graph-fixed.json"
 DEFAULT_OUTPUT = ROOT / "web" / "eg-routes.json"
 
 State = tuple[str, str, str]
+EXTERIOR_ZONE_IDS = {"aussen", "exterior"}
 
 
 def portal_zones(portal_id: str, zone_ids: list[str]) -> list[str]:
@@ -34,9 +35,11 @@ def normalize_routing_graph(graph: dict[str, Any]) -> dict[str, Any]:
 
     source_zones = graph["zones"]
     zone_ids = sorted(source_zones)
+    source_portals = graph["portals"]
     portals = {
         portal_id: {"id": portal_id, **portal, "zones": portal_zones(portal_id, zone_ids)}
-        for portal_id, portal in graph["portals"].items()
+        for portal_id, portal in source_portals.items()
+        if not portal.get("emergency_exit") or portal.get("main_entrance")
     }
     zone_portals = {zone_id: [] for zone_id in zone_ids}
     for portal_id, portal in portals.items():
@@ -49,7 +52,7 @@ def normalize_routing_graph(graph: dict[str, Any]) -> dict[str, Any]:
             "label": zone_id,
             "floor": source_zone.get("floor"),
             "crossable": bool(source_zone.get("crossable", False)),
-            "navigable": zone_id != "exterior" and bool(zone_portals[zone_id]),
+            "navigable": bool(zone_portals[zone_id]),
         }
         for zone_id, source_zone in source_zones.items()
     }
@@ -60,10 +63,15 @@ def normalize_routing_graph(graph: dict[str, Any]) -> dict[str, Any]:
             raise ValueError(f"Segments reference unknown zone: {zone_id}")
         for index, source_segment in enumerate(zone_segments):
             segment_portals = source_segment["portals"]
-            if len(segment_portals) != 2 or any(portal_id not in portals for portal_id in segment_portals):
+            if len(segment_portals) != 2 or any(portal_id not in source_portals for portal_id in segment_portals):
                 raise ValueError(f"Invalid segment portal pair in zone {zone_id}")
-            if any(zone_id not in portals[portal_id]["zones"] for portal_id in segment_portals):
+            if any(
+                zone_id not in portal_zones(portal_id, zone_ids)
+                for portal_id in segment_portals
+            ):
                 raise ValueError(f"Segment portal does not touch zone {zone_id}")
+            if any(portal_id not in portals for portal_id in segment_portals):
+                continue
             segment_id = f"segment:{zone_id}:{index}"
             segments[segment_id] = {
                 "id": segment_id,
@@ -228,7 +236,7 @@ def shortest_route(
                 reconstruct_states(parents, current), segment_index, special_costs, segment_costs
             )
         if (
-            entered_zone == "aussen"
+            entered_zone in EXTERIOR_ZONE_IDS
             or not zones[entered_zone].get("crossable", True)
             or entered_zone in additionally_non_crossable
         ):
@@ -238,7 +246,7 @@ def shortest_route(
             if next_portal_id == current_portal_id:
                 continue
             next_zone = far_zone(portals[next_portal_id], entered_zone)
-            if next_zone == "aussen" and target_zone != "aussen":
+            if next_zone in EXTERIOR_ZONE_IDS and target_zone != next_zone:
                 continue
             next_state = (entered_zone, next_portal_id, next_zone)
             segment = segment_index.get(
@@ -322,8 +330,11 @@ def validate_routes(database: dict[str, Any]) -> None:
                 raise ValueError(f"Route does not alternate: {start_zone} -> {target_zone}")
             if len(route["segment_ids"]) != max(0, len(route["portal_chain"]) - 1):
                 raise ValueError(f"Segment count mismatch: {start_zone} -> {target_zone}")
-            if any(zone == "aussen" for zone in route["zone_sequence"][1:-1]):
-                raise ValueError(f"Exterior used as an intermediate: {start_zone} -> {target_zone}")
+            if any(
+                zone in EXTERIOR_ZONE_IDS or not database["zones"][zone].get("crossable", True)
+                for zone in route["zone_sequence"][1:-1]
+            ):
+                raise ValueError(f"Non-crossable zone used as an intermediate: {start_zone} -> {target_zone}")
             for index in range(0, len(sequence) - 2, 2):
                 zone_from, portal_id, zone_to = sequence[index : index + 3]
                 if set(portals[portal_id]["zones"]) != {zone_from, zone_to}:

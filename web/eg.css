@@ -1,6 +1,49 @@
 @import url("east_wing.css");
 
 .map-frame { aspect-ratio: 1790 / 1000; }
+.map-pick-mode {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 12px;
+    padding: 0;
+    border: 0;
+}
+.map-pick-mode legend {
+    float: left;
+    margin-right: 8px;
+    color: var(--muted);
+    font: 700 0.75rem "Trebuchet MS", sans-serif;
+}
+.map-pick-mode label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding: 6px 9px;
+    border: 1px solid var(--line);
+    background: #fbfaf7;
+    cursor: pointer;
+}
+.map-pick-mode label.is-selected { border-color: var(--green); background: #eef5f2; }
+.map-pick-mode input { accent-color: var(--green); }
+.entrance-button {
+    width: 100%;
+    min-height: 38px;
+    margin-top: 8px;
+    color: var(--green);
+    background: #eef5f2;
+    font: 700 0.78rem "Trebuchet MS", sans-serif;
+}
+.entrance-button:disabled { cursor: not-allowed; opacity: 0.55; }
+#floor-plan .map-zone-selectable { cursor: pointer; }
+#floor-plan .map-zone-selectable:hover {
+    filter: brightness(1.08);
+    stroke: var(--green);
+    stroke-width: 5;
+}
+#floor-plan .map-zone-passive { cursor: not-allowed; opacity: 0.5; }
+#floor-plan .zone-label { pointer-events: none; }
 .map-unavailable {
     position: absolute;
     inset: 0;

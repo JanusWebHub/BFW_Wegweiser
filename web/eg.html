@@ -31,6 +31,11 @@
                         <span><i class="swatch swatch-portal"></i>Portal</span>
                     </div>
                 </div>
+                <fieldset class="map-pick-mode" aria-label="Auf Karte auswählen als">
+                    <legend>Klick auf Karte setzt</legend>
+                    <label class="is-selected"><input type="radio" name="map-pick-endpoint" value="start" checked><span>Start</span></label>
+                    <label><input type="radio" name="map-pick-endpoint" value="target"><span>Ziel</span></label>
+                </fieldset>
                 <div class="map-frame" id="map-frame">
                     <div id="floor-plan" aria-label="Grundriss"></div>
                     <svg id="route-overlay" viewBox="0 0 1790 1000" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
@@ -46,11 +51,13 @@
                     <div class="field-group">
                         <label for="start-zone">Startzone</label>
                         <select id="start-zone" name="start-zone" required></select>
+                        <button class="entrance-button" id="start-entrance" type="button" disabled>Vom Haupteingang</button>
                     </div>
                     <button class="swap-button" id="swap-zones" type="button" aria-label="Start und Ziel tauschen" title="Start und Ziel tauschen">⇅</button>
                     <div class="field-group">
                         <label for="target-zone">Zielzone</label>
                         <select id="target-zone" name="target-zone" required></select>
+                        <button class="entrance-button" id="target-entrance" type="button" disabled>Zum Haupteingang</button>
                     </div>
                     <button class="route-button" type="submit">Route anzeigen</button>
                 </form>

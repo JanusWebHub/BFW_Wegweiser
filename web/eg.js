@@ -7,6 +7,9 @@ const form = document.querySelector("#route-form");
 const startSelect = document.querySelector("#start-zone");
 const targetSelect = document.querySelector("#target-zone");
 const swapButton = document.querySelector("#swap-zones");
+const startEntranceButton = document.querySelector("#start-entrance");
+const targetEntranceButton = document.querySelector("#target-entrance");
+const mapPickOptions = document.querySelectorAll('input[name="map-pick-endpoint"]');
 const modelStatus = document.querySelector("#model-status");
 const floorPlan = document.querySelector("#floor-plan");
 const mapUnavailable = document.querySelector("#map-unavailable");
@@ -23,13 +26,14 @@ const stateChain = document.querySelector("#state-chain");
 
 let graph = null;
 let routeTable = null;
+let mapPickEndpoint = "start";
 
 function populateSelect(select, zoneIds) {
     const fragment = document.createDocumentFragment();
     for (const zoneId of zoneIds) {
         const option = document.createElement("option");
         option.value = zoneId;
-        option.textContent = zoneId;
+        option.textContent = zoneId === "exterior" ? "Haupteingang" : zoneId;
         fragment.appendChild(option);
     }
     select.replaceChildren(fragment);
@@ -49,6 +53,23 @@ function zonesForPortal(portalId) {
         throw new Error(`Portal-ID ist keinem Zonenpaar zuzuordnen: ${portalId}`);
     }
     return zones;
+}
+
+function setEndpoint(role, zoneId) {
+    if (!routeTable?.zones.includes(zoneId)) return;
+    (role === "start" ? startSelect : targetSelect).value = zoneId;
+    renderSelectedRoute();
+}
+
+function configureMapZones() {
+    const selectableZoneIds = new Set(routeTable.zones);
+    for (const zoneElement of floorPlan.querySelectorAll('[id^="zone-"]')) {
+        const zoneId = zoneElement.id.slice("zone-".length);
+        zoneElement.dataset.routeZone = zoneId;
+        zoneElement.classList.add(
+            selectableZoneIds.has(zoneId) ? "map-zone-selectable" : "map-zone-passive"
+        );
+    }
 }
 
 function buildRoute(startZone, targetZone) {
@@ -146,20 +167,40 @@ function drawRoute(route, startZone, targetZone) {
 function makeInstructions(route) {
     if (!route.portal_chain.length) {
         const item = document.createElement("li");
-        item.textContent = `Start und Ziel liegen in ${route.zone_sequence[0]}.`;
+        item.textContent = route.zone_sequence[0] === "exterior"
+            ? "Start und Ziel liegen am Haupteingang."
+            : `Start und Ziel liegen in ${route.zone_sequence[0]}.`;
+        return [item];
+    }
+
+    if (
+        route.segments.length === 0
+        && route.zone_sequence.at(-1) === "exterior"
+        && graph.portals[route.portal_chain.at(-1)]?.main_entrance
+    ) {
+        const item = document.createElement("li");
+        item.textContent = `Verlassen Sie ${route.zone_sequence[0]} durch den Haupteingang.`;
         return [item];
     }
 
     const instructions = [];
     const firstPortal = route.portal_chain[0];
-    instructions.push(`Verlassen Sie ${route.zone_sequence[0]} durch ${firstPortal} in ${route.zone_sequence[1]}.`);
+    const startsAtMainEntrance = route.zone_sequence[0] === "exterior"
+        && graph.portals[firstPortal]?.main_entrance;
+    instructions.push(startsAtMainEntrance
+        ? `Betreten Sie ${route.zone_sequence[1]} durch den Haupteingang.`
+        : `Verlassen Sie ${route.zone_sequence[0]} durch ${firstPortal} in ${route.zone_sequence[1]}.`);
     route.segments.forEach((segment, index) => {
         const fromPortal = route.portal_chain[index];
         const toPortal = route.portal_chain[index + 1];
         const nextZone = route.zone_sequence[index + 2];
-        const text = index === route.segments.length - 1
-            ? `Durchqueren Sie ${segment.zone_id} von ${fromPortal} bis ${toPortal} und betreten Sie ${nextZone}.`
-            : `Durchqueren Sie ${segment.zone_id} von ${fromPortal} bis ${toPortal}; weiter nach ${nextZone}.`;
+        const reachesMainEntrance = nextZone === "exterior"
+            && graph.portals[toPortal]?.main_entrance;
+        const text = reachesMainEntrance
+            ? `Gehen Sie in ${segment.zone_id} von ${fromPortal} bis zum Haupteingang.`
+            : index === route.segments.length - 1
+                ? `Durchqueren Sie ${segment.zone_id} von ${fromPortal} bis ${toPortal} und betreten Sie ${nextZone}.`
+                : `Durchqueren Sie ${segment.zone_id} von ${fromPortal} bis ${toPortal}; weiter nach ${nextZone}.`;
         instructions.push(text);
     });
     return instructions.map((text) => {
@@ -186,6 +227,8 @@ function renderSelectedRoute() {
         clearRoute();
         routeSummary.hidden = true;
         instructionList.replaceChildren();
+        canonicalRoute.textContent = "";
+        stateChain.replaceChildren();
         emptyState.hidden = false;
         emptyState.textContent = "Für dieses Zonenpaar wurde keine Route gefunden.";
         return;
@@ -211,8 +254,8 @@ function renderSelectedRoute() {
 async function loadPrototype() {
     try {
         const [graphResponse, routesResponse] = await Promise.all([
-            fetch(GRAPH_URL),
-            fetch(ROUTES_URL),
+            fetch(GRAPH_URL, { cache: "no-cache" }),
+            fetch(ROUTES_URL, { cache: "no-cache" }),
         ]);
         if (!graphResponse.ok || !routesResponse.ok) {
             throw new Error(`Routendaten: ${graphResponse.status}, ${routesResponse.status}`);
@@ -226,13 +269,21 @@ async function loadPrototype() {
         populateSelect(targetSelect, routeTable.zones);
         startSelect.value = routeTable.zones.includes("E.01") ? "E.01" : routeTable.zones[0];
         targetSelect.value = routeTable.zones.includes("E.52") ? "E.52" : routeTable.zones.at(-1);
+        const mainEntrances = routeTable.portals.filter(
+            (portalId) => graph.portals[portalId]?.main_entrance
+                && zonesForPortal(portalId).includes("exterior")
+        );
+        const entranceAvailable = routeTable.zones.includes("exterior") && mainEntrances.length === 1;
+        startEntranceButton.disabled = !entranceAvailable;
+        targetEntranceButton.disabled = !entranceAvailable;
         const pairCount = routeTable.zones.length ** 2;
-        modelStatus.textContent = `${routeTable.zones.length} Zonen · ${Object.keys(graph.portals).length} Portale · ${pairCount.toLocaleString("de-DE")} Routen · ${routeTable.provenance}`;
+        modelStatus.textContent = `${routeTable.zones.length} Zonen · ${routeTable.portals.length} Portale · ${pairCount.toLocaleString("de-DE")} Routen · ${routeTable.provenance}`;
         if (routeTable.provenance !== "verified") modelStatus.dataset.unverified = "true";
 
-        const svgResponse = await fetch(SVG_URL);
+        const svgResponse = await fetch(SVG_URL, { cache: "no-cache" });
         if (svgResponse.ok) {
             floorPlan.innerHTML = await svgResponse.text();
+            configureMapZones();
             mapUnavailable.hidden = true;
         }
         renderSelectedRoute();
@@ -248,6 +299,28 @@ form.addEventListener("submit", (event) => {
     event.preventDefault();
     renderSelectedRoute();
 });
+
+startSelect.addEventListener("change", renderSelectedRoute);
+targetSelect.addEventListener("change", renderSelectedRoute);
+
+for (const option of mapPickOptions) {
+    option.addEventListener("change", () => {
+        if (!option.checked) return;
+        mapPickEndpoint = option.value;
+        for (const label of document.querySelectorAll(".map-pick-mode label")) {
+            label.classList.toggle("is-selected", label.contains(option));
+        }
+    });
+}
+
+floorPlan.addEventListener("click", (event) => {
+    const zoneElement = event.target.closest?.("[data-route-zone]");
+    if (!zoneElement || !routeTable.zones.includes(zoneElement.dataset.routeZone)) return;
+    setEndpoint(mapPickEndpoint, zoneElement.dataset.routeZone);
+});
+
+startEntranceButton.addEventListener("click", () => setEndpoint("start", "exterior"));
+targetEntranceButton.addEventListener("click", () => setEndpoint("target", "exterior"));
 
 swapButton.addEventListener("click", () => {
     const start = startSelect.value;
