@@ -95,6 +95,14 @@ AI assistants and scripts may propose changes or apply authorized changes; only 
 
 The cloud review scripts are not made runnable locally; the zoning editor is the next focus. The corrected graphs, marks and correction log remain in `claude/review`. Remaining review corrections are expected to wait for the editor. `graph_format.md` and `zoning_guidelines.md` remain to be reconciled.
 
+## Historical EG demo
+
+The following work was a one-off demo, not part of or connected to project development on any other branch. Ignore its outputs, implementation choices, and commit history when working on the current project unless explicitly instructed. It establishes no model verification, design approval, or implementation requirement.
+
+On 2026-10-07, the EG navigation prototype was added on Janus branch `feature/eg-prototype` in commit `f66181a`. Its process record, `docs/eg-prototype-process-record.md`, documents its creation, implementation choices, checks, and limitations. The source graph remains `unverified`; its SVG is prototype output, not the finalized Navigation SVG.
+
+The Python build adapts `claude/review/data/routing-graph-fixed.json` and precomputes route pairs into a compact portal-index table. A separate SVG builder uses the underlay and geometry embedded in `claude/tools/eg-redline.html`; the browser combines those assets to reconstruct and display the selected route. The build scripts and tests remain on `feature/eg-prototype`, not `local/simpler`.
+
 ## Standalone app development
 
 Standalone zoning app: develop an uncomplicated authoring tool on a separate feature branch, independently of the local review but sharing its concepts and compatible outputs, without requiring reuse of its scripts.
