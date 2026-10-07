@@ -11,6 +11,12 @@ const startEntranceButton = document.querySelector("#start-entrance");
 const targetEntranceButton = document.querySelector("#target-entrance");
 const mapPickOptions = document.querySelectorAll('input[name="map-pick-endpoint"]');
 const modelStatus = document.querySelector("#model-status");
+const mapFrame = document.querySelector("#map-frame");
+const mapViewport = document.querySelector("#map-viewport");
+const zoomInButton = document.querySelector("#zoom-in");
+const zoomOutButton = document.querySelector("#zoom-out");
+const zoomResetButton = document.querySelector("#zoom-reset");
+const zoomLevel = document.querySelector("#zoom-level");
 const floorPlan = document.querySelector("#floor-plan");
 const mapUnavailable = document.querySelector("#map-unavailable");
 const routeSegments = document.querySelector("#route-segments");
@@ -27,6 +33,129 @@ const stateChain = document.querySelector("#state-chain");
 let graph = null;
 let routeTable = null;
 let mapPickEndpoint = "start";
+let mapScale = 1;
+let mapOffsetX = 0;
+let mapOffsetY = 0;
+let pointerPositions = new Map();
+let pointerGesture = null;
+let suppressMapClick = false;
+
+function clampMapScale(scale) {
+    return Math.max(1, Math.min(4, scale));
+}
+
+function clampMapOffset(offset, scale) {
+    return Math.max(1 - scale, Math.min(0, offset));
+}
+
+function applyMapView() {
+    mapViewport.style.transform = `translate3d(${mapOffsetX * mapFrame.clientWidth}px, ${mapOffsetY * mapFrame.clientHeight}px, 0) scale(${mapScale})`;
+    zoomLevel.value = `${Math.round(mapScale * 100)}%`;
+    zoomInButton.disabled = mapScale >= 4;
+    zoomOutButton.disabled = mapScale <= 1;
+    zoomResetButton.disabled = mapScale === 1 && mapOffsetX === 0 && mapOffsetY === 0;
+    mapFrame.dataset.zoomed = String(mapScale > 1);
+}
+
+function zoomMapAt(scale, x, y) {
+    const width = mapFrame.clientWidth;
+    const height = mapFrame.clientHeight;
+    if (!width || !height) return;
+
+    const anchorX = x / width;
+    const anchorY = y / height;
+    const mapPointX = (anchorX - mapOffsetX) / mapScale;
+    const mapPointY = (anchorY - mapOffsetY) / mapScale;
+    mapScale = clampMapScale(scale);
+    mapOffsetX = clampMapOffset(anchorX - mapPointX * mapScale, mapScale);
+    mapOffsetY = clampMapOffset(anchorY - mapPointY * mapScale, mapScale);
+    applyMapView();
+}
+
+function zoomMapBy(factor, x, y) {
+    const rect = mapFrame.getBoundingClientRect();
+    zoomMapAt(mapScale * factor, x ?? rect.width / 2, y ?? rect.height / 2);
+}
+
+function framePoint(event) {
+    const rect = mapFrame.getBoundingClientRect();
+    return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+}
+
+function pointerDistance(first, second) {
+    return Math.hypot(first.x - second.x, first.y - second.y);
+}
+
+function beginPinchGesture() {
+    const [first, second] = [...pointerPositions.values()];
+    const rect = mapFrame.getBoundingClientRect();
+    const midpointX = (first.x + second.x) / 2 - rect.left;
+    const midpointY = (first.y + second.y) / 2 - rect.top;
+    pointerGesture = {
+        mode: "pinch",
+        startDistance: Math.max(1, pointerDistance(first, second)),
+        startScale: mapScale,
+        mapPointX: (midpointX / rect.width - mapOffsetX) / mapScale,
+        mapPointY: (midpointY / rect.height - mapOffsetY) / mapScale,
+    };
+    suppressMapClick = true;
+}
+
+function updateMapGesture(event) {
+    if (!pointerPositions.has(event.pointerId)) return;
+    pointerPositions.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    const rect = mapFrame.getBoundingClientRect();
+
+    if (pointerPositions.size >= 2) {
+        if (pointerGesture?.mode !== "pinch") beginPinchGesture();
+        const [first, second] = [...pointerPositions.values()];
+        const midpointX = (first.x + second.x) / 2 - rect.left;
+        const midpointY = (first.y + second.y) / 2 - rect.top;
+        mapScale = clampMapScale(pointerGesture.startScale * pointerDistance(first, second) / pointerGesture.startDistance);
+        mapOffsetX = clampMapOffset(midpointX / rect.width - pointerGesture.mapPointX * mapScale, mapScale);
+        mapOffsetY = clampMapOffset(midpointY / rect.height - pointerGesture.mapPointY * mapScale, mapScale);
+        applyMapView();
+        event.preventDefault();
+        return;
+    }
+
+    if (pointerGesture?.mode === "pinch") {
+        const pointer = pointerPositions.get(event.pointerId);
+        pointerGesture = { mode: "pan", lastX: pointer.x, lastY: pointer.y };
+        return;
+    }
+
+    const pointer = pointerPositions.get(event.pointerId);
+    if (pointerGesture?.mode === "pending") {
+        if (Math.hypot(pointer.x - pointerGesture.startX, pointer.y - pointerGesture.startY) < 4) return;
+        pointerGesture.mode = "pan";
+        mapFrame.dataset.panning = "true";
+        suppressMapClick = true;
+    }
+    if (pointerGesture?.mode === "pan") {
+        mapOffsetX = clampMapOffset(mapOffsetX + (pointer.x - pointerGesture.lastX) / rect.width, mapScale);
+        mapOffsetY = clampMapOffset(mapOffsetY + (pointer.y - pointerGesture.lastY) / rect.height, mapScale);
+        pointerGesture.lastX = pointer.x;
+        pointerGesture.lastY = pointer.y;
+        applyMapView();
+        event.preventDefault();
+    }
+}
+
+function endMapGesture(event) {
+    pointerPositions.delete(event.pointerId);
+    if (pointerPositions.size === 1) {
+        const [pointer] = pointerPositions.values();
+        pointerGesture = { mode: "pan", lastX: pointer.x, lastY: pointer.y };
+        mapFrame.dataset.panning = "true";
+    } else if (pointerPositions.size === 0) {
+        if (pointerGesture?.mode === "pan" || pointerGesture?.mode === "pinch") {
+            window.setTimeout(() => { suppressMapClick = false; }, 0);
+        }
+        pointerGesture = null;
+        mapFrame.dataset.panning = "false";
+    }
+}
 
 function populateSelect(select, zoneIds) {
     const fragment = document.createDocumentFragment();
@@ -314,10 +443,57 @@ for (const option of mapPickOptions) {
 }
 
 floorPlan.addEventListener("click", (event) => {
+    if (suppressMapClick) {
+        suppressMapClick = false;
+        return;
+    }
     const zoneElement = event.target.closest?.("[data-route-zone]");
     if (!zoneElement || !routeTable.zones.includes(zoneElement.dataset.routeZone)) return;
     setEndpoint(mapPickEndpoint, zoneElement.dataset.routeZone);
 });
+
+zoomInButton.addEventListener("click", () => zoomMapBy(1.25));
+zoomOutButton.addEventListener("click", () => zoomMapBy(0.8));
+zoomResetButton.addEventListener("click", () => {
+    mapScale = 1;
+    mapOffsetX = 0;
+    mapOffsetY = 0;
+    applyMapView();
+});
+
+mapFrame.addEventListener("wheel", (event) => {
+    event.preventDefault();
+    const point = framePoint(event);
+    zoomMapBy(Math.exp(-event.deltaY * 0.0015), point.x, point.y);
+}, { passive: false });
+
+mapFrame.addEventListener("pointerdown", (event) => {
+    if (event.target.closest?.(".map-zoom-controls")) return;
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    if (pointerPositions.size >= 2) return;
+
+    pointerPositions.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    try {
+        event.target.setPointerCapture(event.pointerId);
+    } catch {}
+
+    if (pointerPositions.size === 1) {
+        pointerGesture = {
+            mode: "pending",
+            startX: event.clientX,
+            startY: event.clientY,
+            lastX: event.clientX,
+            lastY: event.clientY,
+        };
+    } else {
+        beginPinchGesture();
+    }
+});
+
+mapFrame.addEventListener("pointermove", updateMapGesture);
+mapFrame.addEventListener("pointerup", endMapGesture);
+mapFrame.addEventListener("pointercancel", endMapGesture);
+mapFrame.addEventListener("lostpointercapture", endMapGesture);
 
 startEntranceButton.addEventListener("click", () => setEndpoint("start", "exterior"));
 targetEntranceButton.addEventListener("click", () => setEndpoint("target", "exterior"));
@@ -329,4 +505,5 @@ swapButton.addEventListener("click", () => {
     renderSelectedRoute();
 });
 
+applyMapView();
 loadPrototype();

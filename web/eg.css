@@ -1,6 +1,48 @@
 @import url("east_wing.css");
 
-.map-frame { aspect-ratio: 1790 / 1000; }
+.map-frame { aspect-ratio: 1790 / 1000; touch-action: none; user-select: none; }
+.map-viewport {
+    position: absolute;
+    inset: 0;
+    transform-origin: top left;
+    will-change: transform;
+}
+.map-frame[data-panning="true"] { cursor: grabbing; }
+.map-frame[data-zoomed="true"] { cursor: grab; }
+.map-frame[data-panning="true"][data-zoomed="true"] { cursor: grabbing; }
+.map-zoom-controls {
+    position: absolute;
+    z-index: 2;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 2px 8px rgba(36, 33, 29, 0.12);
+}
+.map-zoom-controls button {
+    min-width: 38px;
+    min-height: 38px;
+    padding: 0 8px;
+    color: var(--ink);
+    background: #fbfaf7;
+    font: 700 1rem "Trebuchet MS", sans-serif;
+}
+.map-zoom-controls button:first-child,
+.map-zoom-controls button:nth-child(2),
+.map-zoom-controls button:nth-child(3) { font-size: 1.3rem; }
+.map-zoom-controls button:disabled { cursor: default; opacity: 0.5; }
+.map-zoom-controls output {
+    min-width: 42px;
+    padding: 0 4px;
+    color: var(--muted);
+    text-align: center;
+    font: 700 0.72rem "Trebuchet MS", sans-serif;
+}
+.map-frame[data-panning="true"] #floor-plan .map-zone-selectable { cursor: grabbing; }
 .map-pick-mode {
     display: flex;
     align-items: center;
@@ -63,5 +105,8 @@
 
 @media (max-width: 680px) {
     .map-frame { min-height: 0; }
+    .map-zoom-controls { top: 6px; right: 6px; gap: 2px; padding: 3px; }
+    .map-zoom-controls button { min-width: 34px; min-height: 34px; padding: 0 6px; }
+    .map-zoom-controls output { min-width: 36px; }
     .model-status { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
 }

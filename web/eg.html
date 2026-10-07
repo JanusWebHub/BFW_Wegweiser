@@ -37,11 +37,19 @@
                     <label><input type="radio" name="map-pick-endpoint" value="target"><span>Ziel</span></label>
                 </fieldset>
                 <div class="map-frame" id="map-frame">
-                    <div id="floor-plan" aria-label="Grundriss"></div>
-                    <svg id="route-overlay" viewBox="0 0 1790 1000" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-                        <g id="route-segments"></g>
-                        <g id="route-markers"></g>
-                    </svg>
+                    <div class="map-viewport" id="map-viewport">
+                        <div id="floor-plan" aria-label="Grundriss"></div>
+                        <svg id="route-overlay" viewBox="0 0 1790 1000" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                            <g id="route-segments"></g>
+                            <g id="route-markers"></g>
+                        </svg>
+                    </div>
+                    <div class="map-zoom-controls" role="group" aria-label="Kartenausschnitt">
+                        <button id="zoom-in" type="button" aria-label="Karte vergrößern" title="Karte vergrößern">+</button>
+                        <button id="zoom-out" type="button" aria-label="Karte verkleinern" title="Karte verkleinern">−</button>
+                        <button id="zoom-reset" type="button" aria-label="Kartenansicht zurücksetzen" title="Kartenansicht zurücksetzen">↺</button>
+                        <output id="zoom-level" aria-live="polite">100%</output>
+                    </div>
                     <p class="map-unavailable" id="map-unavailable">Der Grundriss wird ergänzt.</p>
                 </div>
             </section>
