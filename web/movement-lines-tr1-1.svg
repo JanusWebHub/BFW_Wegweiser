@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100vw" height="100vh" viewBox="250 -170 550 400" role="img" aria-labelledby="title description" style="display:block">
+<title id="title">Movement-line concept for E.flur-tr1-1</title>
+<desc id="description">A plan crop around E.20 shows an authored angled connector from its door to a corridor backbone, with route choices in both directions.</desc>
+<defs>
+  <marker id="arrow-west" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#087f8c"/>
+  </marker>
+  <marker id="arrow-east" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#c45a25"/>
+  </marker>
+  <style>
+    .caption { font: 700 7px Arial, sans-serif; fill: #28363a; }
+    .label { font: 600 5.5px Arial, sans-serif; fill: #28363a; paint-order: stroke; stroke: #fff; stroke-width: 1.5px; stroke-linejoin: round; }
+    .track-bed { fill: none; stroke: #fff; stroke-width: 10; stroke-linecap: round; stroke-linejoin: round; }
+    .backbone { fill: none; stroke: #263d43; stroke-width: 6.5; stroke-linecap: round; stroke-linejoin: round; }
+    .rail { fill: none; stroke: #d8a83c; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+    .connector-bed { fill: none; stroke: #fff; stroke-width: 9; stroke-linecap: round; }
+    .connector { fill: none; stroke: #c45a25; stroke-width: 4.2; stroke-linecap: round; stroke-linejoin: round; }
+    .connector-e09 { fill: none; stroke: #087f8c; stroke-width: 4.2; stroke-linecap: round; stroke-linejoin: round; }
+    .route-highlight-bed { fill: none; stroke: #fff; stroke-width: 12; stroke-linecap: round; stroke-linejoin: round; }
+    .route-highlight { fill: none; stroke: #d1492e; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+    .choice-west { fill: none; stroke: #087f8c; stroke-width: 2.2; stroke-dasharray: 3 2; marker-end: url(#arrow-west); }
+    .choice-east { fill: none; stroke: #c45a25; stroke-width: 2.2; stroke-dasharray: 3 2; marker-end: url(#arrow-east); }
+  </style>
+</defs>
+<g transform="rotate(-35)">
+<image href="assets/bfw-eg.svg" x="0" y="0" width="1790" height="1000" opacity="0.68"/>
+
+<g id="movement-backbone">
+  <path class="track-bed" d="M 285.6 103.1 L 516.5 499.9"/>
+  <path class="backbone" d="M 285.6 103.1 L 516.5 499.9"/>
+  <path class="rail" d="M 285.6 103.1 L 516.5 499.9"/>
+  <path class="choice-west" d="M 465 421 L 290 111"/>
+  <path class="choice-east" d="M 465 421 L 512 492"/>
+</g>
+
+<g id="E20-door-connector">
+  <path class="connector-bed" d="M 477.2 412.4 L 463.47 408.77 M 477.2 412.4 L 473.57 426.13"/>
+  <path class="connector" d="M 477.2 412.4 L 463.47 408.77 M 477.2 412.4 L 473.57 426.13"/>
+  <circle cx="463.47" cy="408.77" r="3.1" fill="#fff" stroke="#263d43" stroke-width="1.4"/>
+  <circle cx="473.57" cy="426.13" r="3.1" fill="#fff" stroke="#263d43" stroke-width="1.4"/>
+  <circle cx="477.2" cy="412.4" r="3.4" fill="#fff" stroke="#c45a25" stroke-width="1.8"/>
+</g>
+
+<g id="E09-door-connector">
+  <path class="connector-bed" d="M 351 235.8 L 354.69 221.83 M 351 235.8 L 364.97 239.49"/>
+  <path class="connector-e09" d="M 351 235.8 L 354.69 221.83 M 351 235.8 L 364.97 239.49"/>
+  <circle cx="354.69" cy="221.83" r="3.1" fill="#fff" stroke="#263d43" stroke-width="1.4"/>
+  <circle cx="364.97" cy="239.49" r="3.1" fill="#fff" stroke="#263d43" stroke-width="1.4"/>
+  <circle cx="351" cy="235.8" r="3.4" fill="#fff" stroke="#087f8c" stroke-width="1.8"/>
+</g>
+
+<g id="route-E09-to-E20">
+  <path class="route-highlight-bed" d="M 351 235.8 L 364.97 239.49 M 364.97 239.49 L 463.47 408.77 M 463.47 408.77 L 477.2 412.4"/>
+  <path class="route-highlight" d="M 351 235.8 L 364.97 239.49 M 364.97 239.49 L 463.47 408.77 M 463.47 408.77 L 477.2 412.4"/>
+</g>
+</g>
+
+<path d="M 640 -170 H 800 V -70 H 640 Z" fill="#fff"/>
+
+<g id="labels">
+  <text class="caption" x="270" y="-151">E.FLUR-TR1-1 · KONZEPTSKIZZE</text>
+  <text class="label" x="610" y="52">Türanschluss E.20</text>
+  <text class="label" x="374" y="-12" fill="#087f8c">Türanschluss E.09</text>
+  <text class="label" x="285" y="-91" fill="#087f8c">zu E.flur-tr1-2</text>
+  <text class="label" x="680" y="133" fill="#c45a25">zu E.flur-tr1-3</text>
+</g>
+
+<g id="legend" transform="translate(270 161)">
+  <rect x="0" y="0" width="450" height="57" rx="2" fill="#fff" fill-opacity="0.94" stroke="#c7c1b6" stroke-width="0.7"/>
+  <path d="M 9 12 H 34" class="backbone"/>
+  <path d="M 9 12 H 34" class="rail"/>
+  <text class="label" x="42" y="14">gemeinsame Hauptlinie zwischen den Korridorportalen</text>
+  <path d="M 9 28 H 34" class="connector"/>
+  <text class="label" x="42" y="30">gezeichnete Anschlüsse E.20 und E.09; Ziel bestimmt Richtung</text>
+  <path d="M 9 44 H 34" class="route-highlight"/>
+  <text class="label" x="42" y="46">Route E.09–E.20: zwei Anschlüsse und Zwischenstück der Hauptlinie</text>
+</g>
+</svg>

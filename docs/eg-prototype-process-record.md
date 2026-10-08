@@ -112,3 +112,27 @@ Floorfox Pages was configured to deploy from `feature/eg-prototype` at the repos
 After the publishing and recordkeeping discussion, the user returned the active checkout to `local/simpler` at `c326569`. This file holds the detailed process history; `docs/working-record.md` retains a brief implementation note with the branch, sources, and provenance caveat. The prototype branch and its build sources remain separate; no merge into `local/simpler` was made in this conversation.
 
 At the time of writing this record, `docs/working-record.md` is modified on `local/simpler`; `.github/`, `AGENTS.md`, and `history-path-inventory.md` are untracked workspace items and were not included in the prototype commit. No content from `history-path-inventory.md` was read or used.
+
+## Movement-network prototype follow-up (2026-10-08)
+
+### Design reasoning
+
+The work began with how one long corridor path should serve its many room portals. The user chose a shared backbone between the corridor-end portals, with a door connector toward each end; the next portal determines which connector is used. For E.09 and E.20, the user specified equal 45-degree connectors: project the door onto the backbone, then place attachment points the same perpendicular distance to either side. E.21 and E.24 use the TR1-3 endpoint on the short side because their symmetric attachment would lie beyond the zone.
+
+The connectors and intervening backbone form one segment between a portal pair; junctions do not add route transitions. Authored geometry must determine both displayed path and route distance, so the route search can choose using the distance people would follow. The display-only alternative was set aside because it would leave Euclidean costs in route selection. The scope was incremental: author `E.flur-tr1-1`, retain Euclidean segments for zones without movement data, and reject an incomplete network in an authored zone.
+
+### Prototype implementation
+
+The user supplied `web/eg-connectivity-graph.json` as a copy of the review connectivity graph, leaving the original review files unchanged. The user designed and authored the movement layout. I calculated the junction coordinates from existing portal points with a one-off PowerShell command, then added the resulting network data to the copy; no reusable coordinate-generation script was created. The prototype representation uses an ordered backbone, named junction points, and two connector references for each room portal. It was not established as a project-wide format.
+
+`src/build_routing_graph.py` reads that copy and rebuilds the routing graph. The user chose a full rebuild so its output could be compared with the existing browser graph before replacement, rather than silently patching the derived graph. The compiler finds one shortest authored path per target-zone portal pair and sums its length for `distance_m`; other crossable zones retain Euclidean segments. The browser's portal-chain route table, `web/eg-routes.json`, was semantically unchanged. The compiler output was directed to the canonical `web/eg-routing-graph.json`; the original review files were left untouched. The `docs/data/graph_format.md` edit made during development was reverted, so the prototype format remains local to these files.
+
+The user requested a readable comparison because the raw graph diff was unwieldy. `src/compare_routing_graphs.py` generates a local HTML report grouped by graph path and portal pair, with independent filters for target-zone segments and the zone's movement property. Before replacement, the report showed 298 changed portal-pair segments plus the new movement property, with no differences elsewhere; two of the 300 target pairs were unchanged. After the new graph replaced the old one, a fresh comparison showed no differences. The user then deleted the temporary candidate graph and report.
+
+`web/movement-lines-tr1-1.svg` visualizes the full corridor and the E.09-to-E.20 route as two connectors plus the intervening backbone. It references the existing `web/assets/bfw-eg.svg` through an SVG viewBox window. A small HTML preview was added because VS Code's direct SVG view did not consistently show that linked background.
+
+### Validation and limits
+
+The first compiler output included an empty `segments.exterior` entry. The user identified the rule violation; the compiler now omits exterior segments and tests that behavior. It also validates finite numeric input and network references, and rejects movement data on exterior or non-crossable zones. Focused compiler tests and the full Python suite passed. The rebuilt graph contains 300 target-zone portal-pair segments; the E.09-to-E.20 segment is 20.23 m.
+
+The prototype does not verify that authored paths stay inside zone boundaries or avoid obstacles; its connectivity input does not contain zone polygons for that check. It also defaults missing routing costs and variants to empty cost maps and `standard: []`. That matches the current prototype data, but future non-default settings stored only in the routing graph would need an explicit configuration source or preservation step. The source graph remains unverified, and a full navigation-app route interaction after graph replacement was not recorded.
