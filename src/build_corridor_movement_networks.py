@@ -14,6 +14,17 @@ DEFAULT_SVG = ROOT / "web" / "assets" / "bfw-eg.svg"
 Point = tuple[float, float]
 GRID_STEP = 2.0
 PORTAL_OUTLINE_TOLERANCE = 12.0
+DIRECT_CENTERLINE_PORTAL_PAIRS = {
+    "E.flur-tr7-1": (
+        "E.flur-tr7-1_E.flur-tr7-4",
+        "E.flur-tr7-1_E.flur-tr9-3",
+    ),
+}
+CENTERLINE_PORTAL_WAYPOINTS = {
+    "E.flur-tr1-3": {
+        "E.flur-tr1-3_E.flur-tr2-3": (520.5, 528.5),
+    },
+}
 
 
 def _simplify_polygon(points: list[Point]) -> list[Point]:
@@ -257,7 +268,12 @@ def _point_to_segment_projection(point: Point, first: Point, second: Point) -> P
     return (first[0] + projection * dx, first[1] + projection * dy)
 
 
-def _simplify_path(path: list[Point], polygon: list[Point]) -> list[Point]:
+def _simplify_path(
+    path: list[Point],
+    polygon: list[Point],
+    protected_points: set[Point] | None = None,
+) -> list[Point]:
+    protected_points = protected_points or set()
     path = [
         point
         for index, point in enumerate(path)
@@ -267,7 +283,12 @@ def _simplify_path(path: list[Point], polygon: list[Point]) -> list[Point]:
         return path
 
     keep = {0, len(path) - 1}
-    stack = [(0, len(path) - 1)]
+    protected_indices = {
+        index for index, point in enumerate(path) if point in protected_points
+    }
+    keep.update(protected_indices)
+    anchors = sorted(keep)
+    stack = list(zip(anchors, anchors[1:]))
     while stack:
         start, end = stack.pop()
         if end - start < 2:
@@ -291,29 +312,97 @@ def build_movement_network(
     zone_id: str,
     polygon_points: list[Point],
     portals: list[tuple[str, Point]],
+    centerline_portals: tuple[str, str] | None = None,
+    centerline_waypoints: dict[str, Point] | None = None,
 ) -> dict[str, Any]:
     if len(portals) < 2:
         raise ValueError(f"Corridor must have at least two portals: {zone_id}")
     polygon = _simplify_polygon(polygon_points)
     ordered_portals = sorted(portals)
-    start_index, end_index = max(
-        (
-            (first, second)
-            for first in range(len(ordered_portals))
-            for second in range(first + 1, len(ordered_portals))
-        ),
-        key=lambda pair: math.dist(
-            ordered_portals[pair[0]][1], ordered_portals[pair[1]][1]
-        ),
-    )
-    path = _simplify_path(
-        _grid_path(
-            polygon,
-            ordered_portals[start_index][1],
-            ordered_portals[end_index][1],
-        ),
-        polygon,
-    )
+    centerline_waypoints = centerline_waypoints or {}
+    portal_indices = {
+        portal_id: index for index, (portal_id, _) in enumerate(ordered_portals)
+    }
+    if any(portal_id not in portal_indices for portal_id in centerline_waypoints):
+        raise ValueError(f"Centerline waypoint portal is missing in {zone_id}")
+    if centerline_portals is None:
+        start_index, end_index = max(
+            (
+                (first, second)
+                for first in range(len(ordered_portals))
+                for second in range(first + 1, len(ordered_portals))
+            ),
+            key=lambda pair: math.dist(
+                ordered_portals[pair[0]][1], ordered_portals[pair[1]][1]
+            ),
+        )
+    else:
+        indices = {
+            portal_id: index
+            for index, (portal_id, _) in enumerate(ordered_portals)
+        }
+        if any(portal_id not in indices for portal_id in centerline_portals):
+            raise ValueError(
+                f"Centerline portal pair is missing from corridor {zone_id}"
+            )
+        start_index, end_index = (
+            indices[portal_id] for portal_id in centerline_portals
+        )
+    centerline_start = ordered_portals[start_index][1]
+    centerline_end = ordered_portals[end_index][1]
+    if centerline_portals is None:
+        if centerline_waypoints:
+            dx = centerline_end[0] - centerline_start[0]
+            dy = centerline_end[1] - centerline_start[1]
+            length_squared = dx * dx + dy * dy
+            waypoints = sorted(
+                centerline_waypoints.values(),
+                key=lambda point: (
+                    (point[0] - centerline_start[0]) * dx
+                    + (point[1] - centerline_start[1]) * dy
+                )
+                / length_squared,
+            )
+            path = []
+            current = centerline_start
+            for waypoint in [*waypoints, centerline_end]:
+                leg = _grid_path(polygon, current, waypoint)
+                if not path:
+                    path.extend(leg)
+                else:
+                    overlap = 0
+                    while (
+                        overlap < len(path) - 1
+                        and overlap < len(leg) - 1
+                        and math.dist(
+                            path[-2 - overlap], leg[1 + overlap]
+                        )
+                        <= 0.01
+                    ):
+                        overlap += 1
+                    path.extend(leg[1 + overlap :])
+                current = waypoint
+            path = _simplify_path(path, polygon, set(waypoints[:-1]))
+        else:
+            path = _simplify_path(
+                _grid_path(polygon, centerline_start, centerline_end), polygon
+            )
+    else:
+        sample_count = max(2, math.ceil(math.dist(centerline_start, centerline_end) / 0.5))
+        if not all(
+            point_in_polygon(
+                (
+                    centerline_start[0]
+                    + (centerline_end[0] - centerline_start[0]) * index / sample_count,
+                    centerline_start[1]
+                    + (centerline_end[1] - centerline_start[1]) * index / sample_count,
+                ),
+                polygon,
+            )
+            for index in range(1, sample_count)
+        ):
+            raise ValueError(f"Direct corridor centerline leaves zone {zone_id}")
+        path = [centerline_start, centerline_end]
     start_portal = ordered_portals[start_index][0]
     end_portal = ordered_portals[end_index][0]
 
@@ -339,6 +428,28 @@ def build_movement_network(
     connectors: dict[str, list[str]] = {}
     for portal_id, portal_point in ordered_portals:
         if portal_id in (start_portal, end_portal):
+            continue
+        if portal_id in centerline_waypoints:
+            waypoint_index = next(
+                (
+                    index
+                    for index, node_id in enumerate(backbone)
+                    if node_id in junctions
+                    and math.dist(
+                        tuple(junctions[node_id]), centerline_waypoints[portal_id]
+                    )
+                    <= 0.001
+                ),
+                None,
+            )
+            if waypoint_index is None or waypoint_index == 0 or waypoint_index == len(backbone) - 1:
+                raise ValueError(
+                    f"Centerline waypoint is not internal to the backbone: {portal_id}"
+                )
+            connectors[portal_id] = [
+                backbone[waypoint_index - 1],
+                backbone[waypoint_index + 1],
+            ]
             continue
         best_segment = min(
             range(len(backbone) - 1),
@@ -381,10 +492,13 @@ def add_connector_paths(
     for portal_id, targets in network.get("connectors", {}).items():
         connector_paths[portal_id] = {}
         for target in targets:
-            path = _grid_path(
-                polygon, portal_points[portal_id], node_points[target]
-            )
-            path = _simplify_path(path, polygon)
+            if portal_id in CENTERLINE_PORTAL_WAYPOINTS.get(zone_id, {}):
+                path = [portal_points[portal_id], node_points[target]]
+            else:
+                path = _grid_path(
+                    polygon, portal_points[portal_id], node_points[target]
+                )
+                path = _simplify_path(path, polygon)
             connector_paths[portal_id][target] = [
                 [x, y] for x, y in path
             ]
@@ -433,9 +547,19 @@ def build_missing_corridor_networks(
             tuple(float(value) for value in pair.split(","))
             for pair in raw_points
         ]
-        if zone.get("movement_network") is None:
+        centerline_portals = DIRECT_CENTERLINE_PORTAL_PAIRS.get(zone_id)
+        centerline_waypoints = CENTERLINE_PORTAL_WAYPOINTS.get(zone_id, {})
+        if (
+            zone.get("movement_network") is None
+            or centerline_portals is not None
+            or centerline_waypoints
+        ):
             zone["movement_network"] = build_movement_network(
-                zone_id, polygon, portal_map[zone_id]
+                zone_id,
+                polygon,
+                portal_map[zone_id],
+                centerline_portals,
+                centerline_waypoints,
             )
             added.append(zone_id)
         add_connector_paths(

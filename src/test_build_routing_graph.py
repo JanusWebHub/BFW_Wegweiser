@@ -219,6 +219,64 @@ class RoutingGraphBuilderTests(unittest.TestCase):
         self.assertEqual(len(segment["geometry"]), 16)
         self.assertEqual(segment["distance_m"], 20.92)
 
+        junction_portals = [
+            "E.flur-tr7-1_E.flur-tr7-4",
+            "E.flur-tr7-1_E.flur-tr9-3",
+        ]
+        junction_segment = next(
+            item
+            for item in routing_graph["segments"]["E.flur-tr7-1"]
+            if item["portals"] == junction_portals
+        )
+        self.assertEqual(
+            junction_segment["geometry"],
+            [
+                source["portals"][junction_portals[0]]["point"],
+                source["portals"][junction_portals[1]]["point"],
+            ],
+        )
+        direct_door_portal = "E.flur-tr7-1_E.flur-tr9-3"
+        routing_database = normalize_routing_graph(routing_graph)
+        for start_zone, target_zone in (("E.80", "E.63"), ("E.63", "E.80")):
+            route = shortest_route(routing_database, start_zone, target_zone)
+            self.assertIn(direct_door_portal, route["portal_chain"])
+            self.assertNotIn("E.flur-tr7-1_E.flur-tr7-5", route["portal_chain"])
+            self.assertNotIn("E.flur-tr7-5_E.flur-tr9-3", route["portal_chain"])
+
+        portal_waypoint = [520.5, 528.5]
+        portal_id = "E.flur-tr1-3_E.flur-tr2-3"
+        corridor_network = source["zones"]["E.flur-tr1-3"]["movement_network"]
+        waypoint_index = corridor_network["backbone"].index(
+            next(
+                junction_id
+                for junction_id, point in corridor_network["junctions"].items()
+                if point == portal_waypoint
+            )
+        )
+        self.assertEqual(
+            corridor_network["connectors"][portal_id],
+            [
+                corridor_network["backbone"][waypoint_index - 1],
+                corridor_network["backbone"][waypoint_index + 1],
+            ],
+        )
+        portal_connector_paths = corridor_network["connector_paths"][portal_id]
+        self.assertEqual(len(portal_connector_paths), 2)
+        self.assertNotEqual(
+            *[path[-1] for path in portal_connector_paths.values()]
+        )
+        self.assertEqual(
+            list(corridor_network["junctions"].values()).count(portal_waypoint), 1
+        )
+        portal_crossing_segment = next(
+            item
+            for item in routing_graph["segments"]["E.flur-tr1-3"]
+            if portal_waypoint in item["geometry"]
+        )
+        self.assertEqual(
+            portal_crossing_segment["geometry"].count(portal_waypoint), 1
+        )
+
         e58_portals = ["E.58_E.58a", "E.58_E.flur-tr9-1"]
         e58_segment = next(
             item
