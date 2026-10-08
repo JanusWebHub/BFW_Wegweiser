@@ -25,6 +25,9 @@ CENTERLINE_PORTAL_WAYPOINTS = {
         "E.flur-tr1-3_E.flur-tr2-3": (520.5, 528.5),
     },
 }
+MAX_CENTERLINE_SEGMENT_LENGTH = {
+    "E.flur-tr3-1": 8.0,
+}
 
 
 def _simplify_polygon(points: list[Point]) -> list[Point]:
@@ -308,6 +311,22 @@ def _simplify_path(
     return [path[index] for index in sorted(keep)]
 
 
+def _densify_path(path: list[Point], max_segment_length: float) -> list[Point]:
+    dense_path = [path[0]]
+    for first, second in zip(path, path[1:]):
+        segment_count = max(
+            1, math.ceil(math.dist(first, second) / max_segment_length)
+        )
+        dense_path.extend(
+            (
+                first[0] + (second[0] - first[0]) * index / segment_count,
+                first[1] + (second[1] - first[1]) * index / segment_count,
+            )
+            for index in range(1, segment_count + 1)
+        )
+    return dense_path
+
+
 def build_movement_network(
     zone_id: str,
     polygon_points: list[Point],
@@ -403,6 +422,8 @@ def build_movement_network(
         ):
             raise ValueError(f"Direct corridor centerline leaves zone {zone_id}")
         path = [centerline_start, centerline_end]
+    if zone_id in MAX_CENTERLINE_SEGMENT_LENGTH:
+        path = _densify_path(path, MAX_CENTERLINE_SEGMENT_LENGTH[zone_id])
     start_portal = ordered_portals[start_index][0]
     end_portal = ordered_portals[end_index][0]
 
@@ -553,6 +574,7 @@ def build_missing_corridor_networks(
             zone.get("movement_network") is None
             or centerline_portals is not None
             or centerline_waypoints
+            or zone_id in MAX_CENTERLINE_SEGMENT_LENGTH
         ):
             zone["movement_network"] = build_movement_network(
                 zone_id,

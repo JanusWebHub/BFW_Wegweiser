@@ -1,5 +1,6 @@
 import copy
 import json
+import math
 from pathlib import Path
 import unittest
 
@@ -242,6 +243,29 @@ class RoutingGraphBuilderTests(unittest.TestCase):
             self.assertIn(direct_door_portal, route["portal_chain"])
             self.assertNotIn("E.flur-tr7-1_E.flur-tr7-5", route["portal_chain"])
             self.assertNotIn("E.flur-tr7-5_E.flur-tr9-3", route["portal_chain"])
+
+        diagonal_corridor = source["zones"]["E.flur-tr3-1"]["movement_network"]
+        diagonal_points = [
+            source["portals"].get(node_id, {}).get(
+                "point", diagonal_corridor["junctions"].get(node_id)
+            )
+            for node_id in diagonal_corridor["backbone"]
+        ]
+        self.assertTrue(
+            all(
+                math.dist(first, second) <= 8.001
+                for first, second in zip(diagonal_points, diagonal_points[1:])
+            )
+        )
+        for start_zone, target_zone in (("E.27", "E.28"), ("E.28", "E.27")):
+            route = shortest_route(routing_database, start_zone, target_zone)
+            self.assertEqual(
+                route["portal_chain"],
+                ["E.27_E.flur-tr3-1", "E.28_E.flur-tr3-1"]
+                if start_zone == "E.27"
+                else ["E.28_E.flur-tr3-1", "E.27_E.flur-tr3-1"],
+            )
+            self.assertLess(route["distance"], 3.0)
 
         portal_waypoint = [520.5, 528.5]
         portal_id = "E.flur-tr1-3_E.flur-tr2-3"
