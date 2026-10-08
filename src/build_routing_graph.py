@@ -128,6 +128,7 @@ def _movement_segments(
 ) -> list[dict[str, Any]]:
     junctions = movement_network.get("junctions", {})
     connectors = movement_network.get("connectors", {})
+    connector_paths = movement_network.get("connector_paths")
     backbone = movement_network.get("backbone", [])
     if len(backbone) < 2 or len(backbone) != len(set(backbone)):
         raise ValueError(f"Invalid backbone node sequence in zone {zone_id}")
@@ -142,6 +143,9 @@ def _movement_segments(
         missing = sorted(expected_connectors - set(connectors))
         extra = sorted(set(connectors) - expected_connectors)
         raise ValueError(f"Connector coverage mismatch in {zone_id}: missing={missing}, extra={extra}")
+    if connector_paths is not None:
+        if not isinstance(connector_paths, dict) or set(connector_paths) != expected_connectors:
+            raise ValueError(f"Connector path coverage mismatch in {zone_id}")
 
     if set(junctions) & set(portals):
         raise ValueError(f"Movement junction ID collides with a portal ID in zone {zone_id}")
@@ -165,11 +169,27 @@ def _movement_segments(
     adjacency: dict[str, list[tuple[str, str]]] = {node_id: [] for node_id in node_points}
     edge_points: dict[str, tuple[str, str, list[Point]]] = {}
 
-    def add_edge(edge_id: str, first: str, second: str) -> None:
+    def add_edge(
+        edge_id: str,
+        first: str,
+        second: str,
+        geometry: list[Point] | None = None,
+    ) -> None:
         if first == second or first not in node_points or second not in node_points:
             raise ValueError(f"Invalid movement edge {edge_id} in zone {zone_id}")
-        geometry = [node_points[first], node_points[second]]
-        if point_distance(*geometry) <= 0:
+        if geometry is None:
+            geometry = [node_points[first], node_points[second]]
+        if len(geometry) < 2:
+            raise ValueError(f"Movement edge has invalid geometry: {edge_id}")
+        if (
+            point_distance(geometry[0], node_points[first]) > 0.001
+            or point_distance(geometry[-1], node_points[second]) > 0.001
+        ):
+            raise ValueError(f"Movement edge geometry endpoints do not match: {edge_id}")
+        if sum(
+            point_distance(start, end)
+            for start, end in zip(geometry, geometry[1:])
+        ) <= 0:
             raise ValueError(f"Movement edge has zero length: {edge_id}")
         edge_points[edge_id] = (first, second, geometry)
         adjacency[first].append((second, edge_id))
@@ -184,8 +204,33 @@ def _movement_segments(
             raise ValueError(f"Portal connector must name two distinct backbone nodes: {portal_id}")
         if any(node_id not in backbone for node_id in targets):
             raise ValueError(f"Portal connector references a node outside the backbone: {portal_id}")
+        portal_paths = None
+        if connector_paths is not None:
+            portal_paths = connector_paths[portal_id]
+            if not isinstance(portal_paths, dict) or set(portal_paths) != set(targets):
+                raise ValueError(f"Connector target coverage mismatch: {portal_id}")
         for direction, target_node in enumerate(targets):
-            add_edge(f"connector:{portal_id}:{direction}", portal_id, target_node)
+            geometry = None
+            if portal_paths is not None:
+                raw_geometry = portal_paths[target_node]
+                if not isinstance(raw_geometry, list) or len(raw_geometry) < 2:
+                    raise ValueError(f"Invalid connector path: {portal_id}")
+                geometry = [
+                    (
+                        finite_number(point[0], f"Connector {portal_id} x coordinate"),
+                        finite_number(point[1], f"Connector {portal_id} y coordinate"),
+                    )
+                    for point in raw_geometry
+                    if isinstance(point, list) and len(point) == 2
+                ]
+                if len(geometry) != len(raw_geometry):
+                    raise ValueError(f"Invalid connector path point: {portal_id}")
+            add_edge(
+                f"connector:{portal_id}:{direction}",
+                portal_id,
+                target_node,
+                geometry,
+            )
 
     for neighbors in adjacency.values():
         neighbors.sort()

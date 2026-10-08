@@ -58,7 +58,10 @@ The movement zone is the circulation space within the walkable part.
 
 ### 2.4
 
-A movement line is a designer-drawn representation of the path people actually take through a movement zone.
+A movement line is a designer-drawn representation of the path people actually
+take through a movement zone. In corridors, it follows the corridor centerline.
+Portal connectors join portals to the movement line while staying within the
+walkable part of the zone.
 
 ## 3. Zoning and graph construction
 

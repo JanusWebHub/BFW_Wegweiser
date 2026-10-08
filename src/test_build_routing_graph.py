@@ -64,6 +64,31 @@ class RoutingGraphBuilderTests(unittest.TestCase):
         self.assertEqual(forward["portal_chain"], ["B_H", "C_H"])
         self.assertEqual(reverse["portal_chain"], ["C_H", "B_H"])
 
+    def test_compiles_curved_portal_connector_geometry(self):
+        connectivity = copy.deepcopy(self.connectivity)
+        network = connectivity["zones"]["H"]["movement_network"]
+        network["connector_paths"] = {
+            "B_H": {
+                "j-b-left": [[8, 4], [7, 1], [6, 0]],
+                "j-between": [[8, 4], [9, 1], [10, 0]],
+            },
+            "C_H": {
+                "j-between": [[12, 4], [11, 1], [10, 0]],
+                "j-c-right": [[12, 4], [13, 1], [14, 0]],
+            },
+        }
+
+        routing_graph = compile_routing_graph(connectivity)
+        segment = next(
+            item
+            for item in routing_graph["segments"]["H"]
+            if item["portals"] == ["B_H", "C_H"]
+        )
+        self.assertEqual(
+            segment["geometry"],
+            [[8.0, 4.0], [9.0, 1.0], [10.0, 0.0], [11.0, 1.0], [12.0, 4.0]],
+        )
+
     def test_uses_euclidean_segments_for_zones_without_authored_network(self):
         routing_graph = compile_routing_graph(self.connectivity)
         segment = routing_graph["segments"]["J"][0]
@@ -134,6 +159,31 @@ class RoutingGraphBuilderTests(unittest.TestCase):
         )
         routing_graph = compile_routing_graph(source)
         self.assertNotIn("exterior", routing_graph["segments"])
+        corridor_ids = {
+            zone_id
+            for zone_id in source["zones"]
+            if zone_id.startswith("E.flur-") or zone_id == "E.durchgang"
+        }
+        self.assertEqual(len(corridor_ids), 37)
+        for zone_id in corridor_ids:
+            network = source["zones"][zone_id]["movement_network"]
+            self.assertEqual(
+                set(network["connector_paths"]), set(network["connectors"])
+            )
+            for portal_id, targets in network["connectors"].items():
+                self.assertEqual(
+                    set(network["connector_paths"][portal_id]), set(targets)
+                )
+                for target in targets:
+                    path = network["connector_paths"][portal_id][target]
+                    self.assertEqual(path[0], source["portals"][portal_id]["point"])
+                    target_point = network["junctions"].get(
+                        target, source["portals"].get(target, {})
+                    )
+                    if isinstance(target_point, dict):
+                        target_point = target_point.get("point")
+                    self.assertEqual(path[-1], target_point)
+
         segments = routing_graph["segments"]["E.flur-tr1-1"]
         self.assertEqual(len(segments), 300)
 
@@ -147,8 +197,27 @@ class RoutingGraphBuilderTests(unittest.TestCase):
             segment["geometry"][-1],
             source["portals"][portal_pair[1]]["point"],
         )
-        self.assertEqual(len(segment["geometry"]), 22)
-        self.assertEqual(segment["distance_m"], 20.23)
+        centerline = source["zones"]["E.flur-tr1-1"]["movement_network"][
+            "junctions"
+        ]
+        self.assertEqual(centerline["j.E.02.center"], [293.527, 116.723])
+        expected_centerline = [
+            centerline[f"j.E.{room_id}.center"]
+            for room_id in (
+                "10", "11a", "12", "11", "14", "13",
+                "16", "15", "18", "17", "20",
+            )
+        ]
+        self.assertEqual(
+            [
+                point
+                for point in segment["geometry"]
+                if point in expected_centerline
+            ],
+            expected_centerline,
+        )
+        self.assertEqual(len(segment["geometry"]), 16)
+        self.assertEqual(segment["distance_m"], 20.92)
 
         e58_portals = ["E.58_E.58a", "E.58_E.flur-tr9-1"]
         e58_segment = next(
@@ -192,7 +261,9 @@ class RoutingGraphBuilderTests(unittest.TestCase):
         expected_fallback_geometry = [
             source["portals"][portal_id]["point"] for portal_id in fallback_pair
         ]
-        self.assertEqual(fallback_segment["geometry"], expected_fallback_geometry)
+        self.assertEqual(fallback_segment["geometry"][0], expected_fallback_geometry[0])
+        self.assertEqual(fallback_segment["geometry"][-1], expected_fallback_geometry[-1])
+        self.assertGreater(len(fallback_segment["geometry"]), 2)
 
 
 if __name__ == "__main__":
