@@ -770,7 +770,19 @@
   },
   "E.58": {
    "floor": "E",
-   "crossable": true
+    "crossable": true,
+    "movement_network": {
+     "backbone": [
+      "E.58_E.flur-tr9-1",
+      "j.E.58.route-west",
+      "j.E.58.route-east",
+      "E.58_E.58a"
+     ],
+     "junctions": {
+      "j.E.58.route-west": [1384.9, 450.0],
+      "j.E.58.route-east": [1466.5, 450.0]
+     }
+    }
   },
   "E.flur-tr8-1": {
    "floor": "E",

@@ -150,11 +150,34 @@ class RoutingGraphBuilderTests(unittest.TestCase):
         self.assertEqual(len(segment["geometry"]), 22)
         self.assertEqual(segment["distance_m"], 20.23)
 
+        e58_portals = ["E.58_E.58a", "E.58_E.flur-tr9-1"]
+        e58_segment = next(
+            item
+            for item in routing_graph["segments"]["E.58"]
+            if item["portals"] == e58_portals
+        )
+        self.assertEqual(
+            e58_segment["geometry"],
+            [
+                source["portals"]["E.58_E.58a"]["point"],
+                [1466.5, 450.0],
+                [1384.9, 450.0],
+                source["portals"]["E.58_E.flur-tr9-1"]["point"],
+            ],
+        )
+
         route = shortest_route(
             normalize_routing_graph(routing_graph), "E.09", "E.20"
         )
         self.assertEqual(route["portal_chain"], portal_pair)
         self.assertAlmostEqual(route["distance"], segment["distance_m"], places=3)
+
+        e58_route = shortest_route(
+            normalize_routing_graph(routing_graph), "E.flur-tr9-1", "E.58a"
+        )
+        self.assertEqual(
+            e58_route["zone_sequence"], ["E.flur-tr9-1", "E.58", "E.58a"]
+        )
 
         fallback_pair = sorted(
             portal_id
