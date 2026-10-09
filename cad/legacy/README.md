@@ -18,6 +18,18 @@ The zoning author sets the scale by marking two points on the reference underlay
 
 The zoning author picks two zones and sees the resulting route, as a check on the model.
 
+## Live Validation
+
+A panel lists problems in the model (gaps, overlaps, portals off their boundary, unreachable zones) and jumps to each one when clicked.
+
+## Open Existing Outputs
+
+The editor can load an existing connectivity graph and its zone SVG, which is the path from the BFW review into the module.
+
+## Automatic Changes Shown First
+
+Any automatic tidy-up shows what it would change before applying it.
+
 ## BFW EG Underlay Registration
 
 The 2018 Lageplan PDF is stored rotated by 180 degrees. On the half-size render, SVG coordinates equal scan pixels minus (40, 77); the full-size render is 3507 x 2480.

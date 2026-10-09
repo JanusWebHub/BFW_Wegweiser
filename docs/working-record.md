@@ -1,55 +1,39 @@
 # Working Record: Decisions And Agreements
 
 Started: 2026-10-03
-Last updated: 2026-10-05
+Last updated: 2026-10-09
 Human participant: Deniz
 AI assistants: GitHub Copilot, Claude Code
 
 ## Purpose
 
-This is a provisional and amendable record of decisions, agreements, qualifications, insights, ideas, and understanding confirmed by the human participant. It provides a persistent reference point within and across sessions with AI assistants. It does not replace authoritative project documents.
+This is a provisional and amendable record of decisions, agreements, qualifications, insights, ideas, and understanding confirmed by the human participant. It provides a persistent reference point within and across sessions with AI assistants. Confirmed agreements, conditional agreements, provisional terms and recommendations are distinguished explicitly. Changes to recorded agreements require the human participant's explicit confirmation.
 
-Confirmed agreements, conditional agreements, provisional terms and recommendations are distinguished explicitly. Changes to recorded agreements require the human participant's explicit confirmation.
-
-## Project design and documentation
-
-Pipeline reformulation and documentation simplification are distinct from the local BFW review and zoning work. They inform one another without either effort being a prerequisite for the other.
-
-### Confirmed direction
-
-Development lifecycle belongs in the implementation plan. The levels direction is suspended. Building the implementation plan from scratch is being considered, with a gap analysis tentatively planned. Decluttering the worktree is prioritized, before any plan can be done properly.
-
-The system is organized into independent Zoning, Routing and Navigation modules. This permits different buildings to supply compatible authored inputs without changing the Routing module, and route-search algorithms to change without changing their routing-graph input.
-
-The zoning module produces Zoned SVG, connectivity JSON and Navigation SVG. Movement geometry, including designer-authored movement lines, is intended to be part of the connectivity graph. The exact movement-geometry encoding and Routing module input requirements remain unspecified. Navigation SVG passes from the Zoning module to the Navigation module.
-
-The Routing module contains a graph compiler, routing computer and tuning editor. Connectivity graph and routing configuration feed the graph compiler, which produces a routing graph. The routing computer consumes that graph and produces the precomputed routes dataset. The dataset and Zoned SVG feed the tuning editor, which uses a repurposed version of the zoning interface to inspect calculated routes on Zoned SVG and updates routing configuration for the next iteration. The optimized and finalized version of the precomputed routes dataset passes from the Routing module to the Navigation module.
+Currently it is also the most up to date and the most reflective of the intended direction, because it is where thinking is gathered until it is mature enough for the rulebook and system design. This is a transitional and provisional status, not a higher authority than those documents. The project README, system design and rulebook are updated from this record regularly, and the implementation plan is revised in line with them.
 
 ## Historical review and existing work
 
-Zoning is the authoring stage of Wegweiser, separate from its navigation client.
+The work began as a reformulation of the pipeline. Working on it brought up the need to simplify the documentation, and that in turn brought up the revision of the implementation plan. The plan needed a complete overhaul, and a gap analysis for it was tentatively planned. That required identifying what is present in the workspace and what is to become of it. This proved near impossible due to the high amount of noise, largely caused by the mess of files from claude review and zoning work, which also confused AI assistants. Decluttering therefore became prioritized.
 
-The cloud review was directed by the zoning author, with AI assistance in interpreting, applying and checking changes.
+Current focus and active work have been the sifting through the claude review remains for relevant content to preserve, and their need for a more permanent place has helped the zoning module take concrete shape.
 
-The redline artifact originated as a visual communication tool, avoiding the need to express every spatial correction in text. Initially, the zoning author communicates intent through marks; the AI assistant interprets and applies changes, saves model data as JSON, runs checks, regenerates the view, and returns it for further human review.
+Revising the zoning module README is an instance of the larger effort of cleaning up the remains of the Claude review. `local/simpler` carries this work and will become the cleaned `main` by a method not yet decided. The zoning module is developed on a separate feature branch based on that cleaned `main`.
 
-The review scripts were written by Claude Code during the cloud review, in a session without a browser. They applied the marks to the graph, checked it with shapely, and rendered images with Pillow and cairosvg so that the assistant could inspect the geometry and the zoning author could see results in chat.
+The BFW zoning work is on hold until the zoning module is functional, which awaits the part of the decluttering concerning the Claude review files and folders. The review itself is discontinued as an attempt to make it work locally. Its results, namely the generated graphs, will be absorbed by the zoning module once functional.
 
-Certain ideas and decisions arose during that review that necessitated modifying existing rules and methods, for example blocks outside navigable zones, distinct from obstacles within zones. These are now reflected in the rulebook.
+The redline artifact originated as a visual communication tool, avoiding the need to express every spatial correction in text. The zoning author communicated intent through marks, and the AI assistant interpreted and applied the changes, ran checks, regenerated the view and returned it for further human review. To that end, the review scripts were written by Claude Code in a cloud session without a browser, so they depend on that environment's paths, imports, packages and programs and are not suited to run locally as they are.
 
-Source photographs, the older whole-building plan, composites, overlays and simplified models have different evidential roles.
+## Project design and direction
 
-For the initial BFW EG model, the 2018 Lageplan supplied outline, geometry and scale; the May 2026 emergency-plan photos supplied room divisions, doors, labels and exits. Discrepancies required the zoning author's judgment.
+The system is organized into independent zoning, routing and navigation modules. This permits different buildings to supply compatible authored inputs without changing the routing module, and route-search algorithms to change without changing their routing-graph input.
 
-The middle area was initially modeled from the Lageplan without corresponding emergency-plan photos. Its room numbers and doors included unverified readings or assumptions; this records the evidence gap at that stage, not the current availability of photographs.
+The zoning module produces zone SVG, connectivity JSON and navigation SVG. Movement geometry, including designer-authored movement lines, is intended to be part of the connectivity graph. The exact movement-geometry encoding and routing module input requirements remain unspecified. Navigation SVG passes from the zoning module to the navigation module.
 
-The 2026-09-29 handoff recorded approval through step 3.2, but no approval of the parallel wing outputs or step-8 merge. This is the original approval boundary, distinct from subsequent human-led review and approvals.
-
-Proposed observation by Copilot: the existing materials also serve different working purposes. Marks communicate intent; scripts apply and check changes; generated artifacts represent results; accounts and plans written by AI describe or propose work. Their presence does not make every statement in them a confirmed decision.
+The routing module contains a graph compiler, routing computer and tuning editor. Connectivity graph and routing configuration feed the graph compiler, which produces a routing graph. The routing computer consumes that graph and produces the precomputed routes dataset. The dataset and zone SVG feed the tuning editor, which uses a repurposed version of the zoning editor to inspect calculated routes on zone SVG and updates routing configuration for the next iteration. The optimized and finalized version of the precomputed routes dataset passes from the routing module to the navigation module.
 
 ## Authoring Concepts
 
-The following sections on layers and on intent, application and approval record agreed authoring concepts. They do not establish that corresponding app capabilities exist in the transferred cloud files. Human decision authority applies regardless of software implementation.
+The following sections on layers and on intent, application and approval record agreed authoring concepts for the zoning editor. Human decision authority applies regardless of software implementation.
 
 ### Layers and independent dimensions
 
@@ -64,11 +48,11 @@ Provisional idea: a zone category "mass", particularly for wall masses. Its defi
 
 | Working Arrangement | Meaning |
 | --- | --- |
-| Reference underlay | Source PDF or image |
+| Reference underlay | Plan SVG |
 | Approved baseline | Model state at latest checkpoint |
 | Working overlay | Current markup and model changes |
 
-Within the working overlay, candidate geometry shows proposed changes and applied edits, including edits already approved during the session. Separately toggleable revision markup shows drawn requests, notes and remarks communicating intent. Approved edits remain in the overlay until a checkpoint updates the baseline.
+Within the working overlay, candidate geometry shows proposed changes and applied edits, including edits already approved during the session. Separately toggleable revision markup shows drawn requests, notes and remarks communicating intent.
 
 Four independent dimensions distinguish the work:
 
@@ -77,7 +61,7 @@ Four independent dimensions distinguish the work:
 - Origin: zoning author, AI assistant or script.
 - Edit protection: editable or locked, with explicit unlocking. Approval does not automatically lock geometry.
 
-Editing shared boundaries across content layers requires coordination; the mechanism is not yet decided.
+Editing shared boundaries across content layers requires coordination. Each shared boundary is stored once in the project file; any further coordination mechanism is not yet decided.
 
 ### Intent, application and approval
 
@@ -87,28 +71,41 @@ A drawn request may resemble geometry but remains markup until explicitly applie
 
 Approved edits remain in the working overlay until the zoning author explicitly establishes a new revision checkpoint and updates the baseline. Not every editing batch creates a checkpoint. The baseline remains inspectable during review; approval does not guarantee absolute correctness.
 
-Checkpoints need not be retained as separate revisions within the app. Regular Git commits at checkpoints are a best practice for preserving history, not a requirement.
+Checkpoints need not be retained as separate revisions within the zoning editor. Regular Git commits at checkpoints are a best practice for preserving history, not a requirement.
 
 AI assistants and scripts may propose changes or apply authorized changes; only the zoning author grants approval. Passing checks does not constitute approval. Existing geometry is not to be silently replaced, explicit removals are not to be reversed to satisfy connectivity, and approval is not to be inferred.
 
-## Local continuation
-
-The cloud review scripts are not made runnable locally; the zoning editor is the next focus. The corrected graphs, marks and correction log remain in `claude/review`. Remaining review corrections are expected to wait for the editor. `graph_format.md` and `zoning_guidelines.md` remain to be reconciled.
-
 ## Historical EG demo
 
-The following work was a one-off demo, not part of or connected to project development on any other branch. Ignore its outputs, implementation choices, and commit history when working on the current project unless explicitly instructed. It establishes no model verification, design approval, or implementation requirement.
+On 2026-10-07, the EG navigation prototype was added on branch `feature/eg-prototype`. It is to be completely ignored and excluded from any work or consideration as far as this document is concerned.
 
-On 2026-10-07, the EG navigation prototype was added on Janus branch `feature/eg-prototype` in commit `f66181a`. Its process record, `docs/eg-prototype-process-record.md`, documents its creation, implementation choices, checks, and limitations. The source graph remains `unverified`; its SVG is prototype output, not the finalized Navigation SVG.
+## Zoning module development
 
-The Python build adapts `claude/review/data/routing-graph-fixed.json` and precomputes route pairs into a compact portal-index table. A separate SVG builder uses the underlay and geometry embedded in `claude/tools/eg-redline.html`; the browser combines those assets to reconstruct and display the selected route. The build scripts and tests remain on `feature/eg-prototype`, not `local/simpler`.
+Bring the operations of the historical review workflow into the zoning editor incrementally: persist and communicate intent, support applying changes directly, then support checking and regenerating the model and views. The end goal is a self-sufficient zoning editor that generates semantic SVG and graph outputs, usable without AI assistance. Optional assistance may remain, but must not be necessary to remember or execute decisions.
 
-## Standalone app development
+The zoning editor's document is to be a custom-designed JSON project file. It stores each shared boundary once, stores portals by position along a boundary, and keeps unresolved interpretations as records. The zoning editor is intended to be able to import other formats (SVG underlay or geometry, connectivity or routing graphs) as sources of information.
 
-Standalone zoning app: develop an uncomplicated authoring tool on a separate feature branch, independently of the local review but sharing its concepts and compatible outputs, without requiring reuse of its scripts.
+### Artifacts and the zoning module's parts
 
-Bring the operations of the historical review workflow into the app incrementally: persist and communicate intent, support applying changes directly, then support checking and regenerating the model and views. The end goal is a self-sufficient semantic SVG authoring app usable without AI assistance. Optional assistance may remain, but must not be necessary to remember or execute decisions.
+Confirmed 2026-10-09:
 
-Recommendation by Copilot: content, review state, origin and edit protection could be implemented through SVG layers, filters or a combination.
+- The chain of artifacts is: source material, plan SVG, zone SVG, navigation SVG. It is a supply chain, not a derivation.
+- The zoning module's directory is `cad/`. Its two main parts are the plan tracer and the zoning editor.
+- The plan SVG is a vectorized equivalent of the architectural plans, generated by the plan tracer and used in place of the plans as the underlay.
+  - **Why:** the sources (the PDF, the emergency-plan photos) are messy and large. None contains all the relevant information, and most contain information that shouldn't be carried over.
+  - **How it is made:** the sources need combining and cleaning, and how this works is to be worked out later.
+- The original sources are kept in `cad/source material/`.
+- The reference underlay is now the plan SVG. The exact input and loading of the underlay into the zoning editor is to be worked out later.
+- Zone SVG is the new name for "Zoned SVG".
+- Zone SVG is generated by the zoning editor from the project file.
+- The project file is the zoning editor's own working document, which it saves and loads. It is separate from the zoning editor's inputs and outputs, as a native file format is from the files a program imports and exports.
+- The zoning editor is a visual, domain-aware modeling application: a specialized 2D CAD editor for indoor-navigation models, with a floor plan as its main working surface.
+- The navigation SVG is an output generated by the zoning editor.
+- `graph_format.md` and `zoning_guidelines.md` describe older formats and are to be harvested for ideas, which are to be integrated into the guiding documents for the zoning editor and the plan tracer.
 
-Recommendation by Copilot: potential feature for the app; linking each request or proposal to the resulting edits and approval decision, provided this adds little complexity.
+Terms in the zoning module description that still need definition, to be placed in the rulebook or system design once their level is clear:
+
+- Movement geometry: authored movement paths within zones, replacing the straight-segment assumption of the older graph format. Its encoding is not specified.
+- Unresolved interpretation: a stated relationship, such as "these are separate spaces", whose geometry is not yet drawn. Its representation is not decided.
+- Plan SVG: the vectorized equivalent of the architectural plans, used as the underlay. Its exact content is open.
+- Zone SVG: the SVG generated from the project file. Its exact content is open.

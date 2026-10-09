@@ -1,6 +1,6 @@
 .venv/
 __pycache__
 docs/ignore
-claude/images
-sources/*
-!sources/README.md
+cad/source material/*
+!cad/source material/README.md
+notes.md
