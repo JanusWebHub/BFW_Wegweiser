@@ -11,17 +11,17 @@ This is a provisional and amendable record of decisions, agreements, qualificati
 
 Currently it is also the most up to date and the most reflective of the intended direction, because it is where thinking is gathered until it is mature enough for the rulebook and system design. This is a transitional and provisional status, not a higher authority than those documents. The project README, system design and rulebook are updated from this record regularly, and the implementation plan is revised in line with them.
 
-## Historical review and existing work
+## The BFW zoning work, historical collaboration with Claude, and existing work
 
-The work began as a reformulation of the pipeline. Working on it brought up the need to simplify the documentation, and that in turn brought up the revision of the implementation plan. The plan needed a complete overhaul, and a gap analysis for it was tentatively planned. That required identifying what is present in the workspace and what is to become of it. This proved near impossible due to the high amount of noise, largely caused by the mess of files from claude review and zoning work, which also confused AI assistants. Decluttering therefore became prioritized.
+The work began as a reformulation of the pipeline. Working on it brought up the need to simplify the documentation, and that in turn brought up the revision of the implementation plan. The plan needed a complete overhaul, and a gap analysis for it was tentatively planned. That required identifying what is present in the workspace and what is to become of it. This proved near impossible due to the high amount of noise, largely caused by the mess of files from the BFW EG zoning review and the BFW zoning work, which also confused AI assistants. Decluttering therefore became prioritized.
 
-Current focus and active work have been the sifting through the claude review remains for relevant content to preserve, and their need for a more permanent place has helped the zoning module take concrete shape.
+Current focus and active work have been the sifting through the remains of the BFW EG zoning review for relevant content to preserve, and their need for a more permanent place has helped the zoning module take concrete shape.
 
-Revising the zoning module README is an instance of the larger effort of cleaning up the remains of the Claude review. `local/simpler` carries this work and will become the cleaned `main` by a method not yet decided. The zoning module is developed on a separate feature branch based on that cleaned `main`.
+Revising the zoning module README is an instance of the larger effort of cleaning up the remains of the BFW EG zoning review. `local/simpler` carries this work and will become the cleaned `main` by a method not yet decided. The zoning module is developed on a separate feature branch based on that cleaned `main`.
 
-The BFW zoning work is on hold until the zoning module is functional, which awaits the part of the decluttering concerning the Claude review files and folders. The review itself is discontinued as an attempt to make it work locally. Its results, namely the generated graphs, will be absorbed by the zoning module once functional.
+The BFW zoning work is on hold until the zoning module is functional, which awaits the part of the decluttering concerning the files and folders of the BFW EG zoning review. The BFW EG zoning review itself is discontinued as an attempt to make it work locally. Its results, namely the generated graphs, will be absorbed by the zoning module once functional.
 
-The redline artifact originated as a visual communication tool, avoiding the need to express every spatial correction in text. The zoning author communicated intent through marks, and the AI assistant interpreted and applied the changes, ran checks, regenerated the view and returned it for further human review. To that end, the review scripts were written by Claude Code in a cloud session without a browser, so they depend on that environment's paths, imports, packages and programs and are not suited to run locally as they are.
+The redline artifact originated as a visual communication tool, avoiding the need to express every spatial correction in text. The zoning author communicated intent through marks, and the AI assistant interpreted and applied the changes, ran checks, regenerated the view and returned it for further human review. To that end, the BFW EG zoning review scripts were written by Claude Code in a cloud session without a browser, so they depend on that environment's paths, imports, packages and programs and are not suited to run locally as they are.
 
 ## Project design and direction
 
@@ -81,7 +81,7 @@ On 2026-10-07, the EG navigation prototype was added on branch `feature/eg-proto
 
 ## Zoning module development
 
-Bring the operations of the historical review workflow into the zoning editor incrementally: persist and communicate intent, support applying changes directly, then support checking and regenerating the model and views. The end goal is a self-sufficient zoning editor that generates semantic SVG and graph outputs, usable without AI assistance. Optional assistance may remain, but must not be necessary to remember or execute decisions.
+Bring the operations of the redline workflow into the zoning editor incrementally: persist and communicate intent, support applying changes directly, then support checking and regenerating the model and views. The end goal is a self-sufficient zoning editor that generates semantic SVG and graph outputs, usable without AI assistance. Optional assistance may remain, but must not be necessary to remember or execute decisions.
 
 The zoning editor's document is to be a custom-designed JSON project file. It stores each shared boundary once, stores portals by position along a boundary, and keeps unresolved interpretations as records. The zoning editor is intended to be able to import other formats (SVG underlay or geometry, connectivity or routing graphs) as sources of information.
 
