@@ -21,7 +21,7 @@ The architecture separates Zoning, Routing and Navigation modules. The compiler 
 
 - [src/](src/): Python compiler that builds the routing graph from the modeled floor plans, computes the routes, and serializes the routing data.
 - [web/](web/): Browser client that takes the navi-user's request and renders the route on the floor plan alongside navigation instructions.
-
+- [web/eg.html](web/eg.html): eg prototype
 ## EG corridor movement networks
 
 Generate centerlines and portal connectors for corridor zones from their
