@@ -7,19 +7,19 @@ let's start with "Gap analysis (as-is, to-be, delta)", "as is". ist-wert in germ
 decluttering:
 
 - various archived no-code non-doc files docs/ignore/archive/other/* [done]
-- calude design reports docs/data/step*
-- claude design prompts claude/claude design/parallel-message*
-- conversation material
-- review scripts
-- legacy scripts
-- Review reports and plans
-- Package READMEs
-- Built tool page
+- calude design reports docs/data/step* [done]
+- claude design prompts claude/claude design/parallel-message* [done]
+- conversation material [done]
+- review scripts [done]
+- legacy scripts [done]
+- Review reports and plans [done]
+- Package READMEs [done]
+- Built tool page [done]
 
 sequence:
 
 docs\ignore\archive\other\eg [done]
-claude\claude design
-claude\transcripts
-claude\review (only files there, no subfolders)
-docs\ignore\texts
+claude\claude design [done]
+claude\transcripts [done]
+claude\review (only files there, no subfolders) [done]
+docs\ignore\texts [done]
