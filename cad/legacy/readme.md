@@ -6,7 +6,7 @@ The essence of the earlier standalone-app plan, kept as direction and potential.
 
 A recommendation and a potential, not a requirement: a static, client-only web application with no server and no accounts. All project data stays in the browser, projects are imported and exported as files, and the application works offline after its first load.
 
-## Portable Project File
+## Portable Project (new name: Zoning) File
 
 A project can embed its reference underlay, so one file carries both the model and the plan it was drawn over. Embedding can be declined for large underlays, in which case the underlay is referenced by file name.
 

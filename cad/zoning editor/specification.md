@@ -9,11 +9,11 @@ This specification is provisional and amendable, and the specification is author
 
 ## model
 
-### model and project file
+### model and zoning file
 
 - The model is the zoning editor's data about the building, held in memory while the program runs. The model builds on the concepts defined in the rulebook.
-- The project file holds the model on disk. Saving writes the model to the project file and loading reads the project file back into the model.
-- The project file uses a custom format designed for the zoning editor, JSON text in a stable order, so changes show up as small readable diffs.
+- The zoning file holds the model on disk. Saving writes the model to the zoning file and loading reads the zoning file back into the model.
+- The zoning file uses a custom format designed for the zoning editor, JSON text in a stable order, so changes show up as small readable diffs.
 
 ### model elements
 
@@ -73,7 +73,7 @@ This specification is provisional and amendable, and the specification is author
 
 ## architecture
 
-- The zoning editor's components include the edit operations, the viewer, the import code, the generate code, and the code that loads and saves the project file.
+- The zoning editor's components include the edit operations, the viewer, the import code, the generate code, and the code that loads and saves the zoning file.
 - Pan and zoom change which rectangle of the drawing is visible.
 
 ## technology
