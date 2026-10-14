@@ -64,7 +64,7 @@ The system is organized into independent zoning, routing and navigation modules.
 
 The zoning module produces zone SVG, connectivity JSON and navigation SVG. Movement geometry, including designer-authored movement lines, is intended to be part of the connectivity graph. The exact movement-geometry encoding and routing module input requirements remain unspecified. Navigation SVG passes from the zoning module to the navigation module.
 
-The routing module contains a graph compiler, routing computer and tuning editor. Connectivity graph and routing configuration feed the graph compiler, which produces a routing graph. The routing computer consumes that graph and produces the precomputed routes dataset. The dataset and zone SVG feed the tuning editor, which uses a repurposed version of the zoning editor to inspect calculated routes on zone SVG and updates routing configuration for the next iteration. The connectivity graph persists across tuning iterations. Its geometry, including movement geometry, is editable in the zoning editor and fixed in the tuning editor. Tuning changes only the routing configuration, which holds costs and variant restrictions. The optimized and finalized version of the precomputed routes dataset passes from the routing module to the navigation module.
+The routing module contains a graph compiler, routing computer and tuning editor. The tuning editor, a repurposed version of the zoning editor, takes the connectivity graph and zone SVG and contains the graph compiler and the routing computer. The graph compiler produces a routing graph from the connectivity graph and the routing configuration, which starts empty. The routing computer consumes that graph and produces the precomputed routes dataset. The tuning editor is used to inspect calculated routes on zone SVG, and it updates routing configuration for the next iteration. The connectivity graph persists across tuning iterations. Its geometry, including movement geometry, is editable in the zoning editor and fixed in the tuning editor. Tuning changes only the routing configuration, which holds costs and variant restrictions. The tuning editor saves the routing configuration, the routing graph and the precomputed routes dataset. The optimized and finalized version of the precomputed routes dataset passes from the routing module to the navigation module.
 
 ## Authoring Concepts
 
@@ -142,25 +142,53 @@ Terms in the zoning module description that still need definition, to be placed 
 
 - Movement geometry: authored movement paths within zones, replacing the straight-segment assumption of the older graph format. Its encoding is not specified.
 - Plan SVG: the vectorized equivalent of the architectural plans, used as the underlay. Its exact content is open.
-- Zone SVG: the SVG generated from the zoning file. Its content is specified provisionally in `cad/file_format_template.md`, a work in progress.
+- Zone SVG: the SVG generated from the zoning file. Its content is specified provisionally in `cad/file_format_specification.md`, a work in progress.
 
-Confirmed 2026-10-14 (id notation, drafted in `cad/file_format_template.md`):
+Confirmed 2026-10-14 (id notation, drafted in `cad/file_format_specification.md`):
 
-- SVG element ids are the zone and portal ids themselves, without a prefix.
+- SVG element ids are the zone and portal ids themselves, without a prefix, because they start with a letter and are valid XML ids as they are.
 - The underscore stays as the separator in portal ids.
-- A portal id lists its two zone ids sorted, by character code.
+- A portal id lists its two zone ids sorted, by character code: code point order, which the default sort of Python and JavaScript gives for ASCII. `localeCompare` does not.
 - Ids keep mixed case: floor codes and printed room numbers in uppercase as printed, names in lowercase.
 - Ids are ASCII only. Umlauts and ß are transliterated (`ae`, `oe`, `ue`, `ss`), as far upstream as possible.
 - Field names are snake case (`view_box`, `units_per_meter`).
 - Every file carries two timestamps in ISO 8601 UTC with milliseconds: `zoning_file_version`, the version of the zoning file it derives from, set when a version is finalized in the editor, and `saved_at`, when the file itself was saved. They replace the integer `version`.
 - The `format` value of any file that has one is its file name without the extension, in kebab case (`connectivity-graph`, `routing-graph`, `routing-config`), without a project prefix.
+- The base elements are the zone id, the portal id, the floor id, the frame (`view_box`) and the scale (`units_per_meter`). The floor holds the frame and the scale.
+- Everything else (states, segments, routes, costs, variants, movement lines, boundaries, the navigable and crossable properties) is attached to, or derived from, zones and portals. Spaces, separators and the adjacency graph are sidelined.
+- The base elements originate in the zoning file. Every other file is a view of it and takes what its module needs. A contract between two modules names the base elements the passed file guarantees and keeps their meaning unchanged.
+- Floor ids are `UG2`, `UG1`, `EG`, `OG1`, `OG2`, with levels -2, -1, 0, 1, 2.
+- A zone id starts with its floor id and a dot.
+- Each floor has its own exterior zone, `<floor id>.exterior`, which is navigable and not crossable. This does not conflict with the rulebook.
+- A further portal between the same two zones appends `_2`, `_3`.
+- Segments are stored per direction, two per pair of portals in a zone. A segment lists `[entry_portal ; exit_portal]` and its key is `entry_portal | zone | exit_portal`. The state key is `zone_from | portal | zone_to`.
+- `provenance` is removed from the files.
+- Each file type has a fixed file name, listed in the specification (`zoning.json` for the zoning file).
+- The file format specification is notation only: field name, value shape, short note. It contains no prose and no rules.
+- A portal has `line` (the start and end of the crossable section of the boundary between its two zones) and `midpoint` (the midpoint of `line`). A vertical portal has `points` instead, one position per joined floor.
+- The base variant is named `standard`: the variant with nothing restricted, and a key in `variants`. A variant's value lists the zones it makes non-crossable and the zones it makes non-navigable, only the exceptions.
+- The format specification carries one inline example, with invented ids that follow the notation and none of the building's own, in the section of each element whose value nests or is not obvious from the field list: portal, state, segment and variant.
 
-To be worked out later (stated 2026-10-14 while drafting `cad/file_format_template.md`):
+Confirmed 2026-10-15 (routing):
+
+- The tuning editor takes the connectivity graph and the zone SVG as input. It contains the graph compiler and the route computer, so no separate run of either is needed.
+- The first routing config is created inside the tuning editor and is empty: no costs, and `standard` with empty lists. The first routing graph then has distance as its only cost. It exists as data inside the tuning editor, the route computer runs on it directly, and the routes are shown on the zone SVG.
+- The zoning author tunes costs and creates variants in the tuning editor and sees the changed routes there. When finished, the editor saves the routing config, the routing graph and the precomputed routes dataset.
+- The zoning file stays private to the zoning editor. The connectivity graph is the interface between the zoning module and the routing module.
+- The zoning editor generates the connectivity graph, the zone SVG and the navigation SVG only when the zoning author selects a finalized zoning file version and commands it. All three carry that `zoning_file_version`.
+
+To be worked out later (stated 2026-10-14 while drafting `cad/file_format_specification.md`):
 
 - The exterior zone carries a floor code in its id, so each floor has its own exterior zone. The routing logic has to accommodate this exception.
 - The names of the plan SVG files, one per floor, such as `EG-plan.svg`.
 - Whether the pipes in state, segment and route notation have spaces around them in files. The specification writes them with spaces as a depiction.
-- The notation of a variant's value.
 - How the state and segment keys are written in files: as strings with a separator, as structured entries, or as a new composite key. Pipes and spaces in a string key are unsafe in file names, URLs and Markdown tables.
-- The characters and separators of ids: the dot between floor code and name and the underscore between zones. Few characters are valid in every technology used.
+- The characters and separators of ids: the dot between floor code and name and the underscore between zones. Few characters are valid in every technology used. The dot needs `CSS.escape` in selectors and bracket access in JavaScript.
 - Keeping the deployed generated files, and the routing config keyed by their ids, in step with a changed zoning file. This belongs to operations. The zoning editor's edit operations change only the zoning file.
+- The encodings of movement geometry, movement lines and boundaries.
+- The technology of the tuning editor, its graph compiler and its route computer: probably plain JavaScript in a browser, as for the zoning editor. The existing compiler and computer are Python scripts for the old data format. The choice is between a Python runtime inside the page and a JavaScript rewrite.
+- Which files carry a portal's `line`.
+- Validation of the files, for example that a zone's `floor` field equals the floor id its id starts with. The files are not required to state such rules.
+- The structures of the zoning file, the adjacency graph, the precomputed routes dataset and the SVG files in the format specification.
+- The naming of corridor zones. Names such as `flur-tr9-1` (and the portal ids built from them, such as `EG.E.62_EG.flur-tr9-1_2`) are long and convoluted. Shorter names such as `flur-1`, `flur1` or `f1` are being considered.
+- Whether costs differ per variant. If they do, the cost fields move into the variant, which complicates the nested notation of `variants`. For now the costs are top-level fields common to all variants.

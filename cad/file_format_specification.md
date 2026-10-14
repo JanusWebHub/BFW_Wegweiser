@@ -45,7 +45,7 @@ JSON, top level:
 - `zoning_file_version`, `saved_at`: as in the connectivity graph
 - `state_costs`: `{ <state key>: <number> }`, extra cost of the state, in the unit of `distance_m`
 - `segment_costs`: `{ <segment key>: <number> }`, extra cost of the segment, in the unit of `distance_m`
-- `variants`: `{ <variant id>: <value> }`
+- `variants`: `{ <variant id>: <variant> }`
 
 ## Model elements, ids and fields
 
@@ -90,15 +90,18 @@ JSON:
 - Id: string; the key in `portals`; `<zone id>_<zone id>`, the two zone ids sorted by character code, e.g. `EG.E.62_EG.flur-tr9-1`
 - Id, further portal between the same zones: `_2`, `_3`, ... appended, e.g. `EG.E.62_EG.flur-tr9-1_2`
 - `virtual`: boolean; `true` on a virtual boundary, `false` for a door or opening
-- `point`: `[x, y]`, the midpoint in the frame of the portal's floor; for a portal to the exterior, the floor of the other zone
 - `vertical`: `true`; only on a portal between zones on two floors
-- `points`: `{ <floor id>: [x, y] }`, one per joined floor; replaces `point` on a vertical portal
+- `line`: `[[x, y], [x, y]]`, start and end of the crossable section of the boundary between the two zones
+- `midpoint`: `[x, y]`, the midpoint of `line`
+- `points`: `{ <floor id>: [x, y] }`, one per joined floor; replaces `midpoint` and `line` on a vertical portal
 - `emergency_exit`: `true`; only on portals to the exterior
 - `main_entrance`: `true`; only on portals to the exterior
+- Example: `"EG.hall_EG.office": { "virtual": false, "line": [[10, 20], [10, 30]], "midpoint": [10, 25] }`
+- Example, vertical: `"EG.stair_OG1.stair": { "virtual": true, "vertical": true, "points": { "EG": [50, 60], "OG1": [50, 60] } }`
 
 SVG:
 
-- One `g`, `id="<portal id>"`, containing a `line` along the crossable section of the boundary and a `circle` at the midpoint
+- One `g`, `id="<portal id>"`, containing a `line` along the crossable section of the boundary and a `circle` at the midpoint of the `line`
 - `class="portal virtual"` on a virtual portal
 
 ### State
@@ -106,22 +109,27 @@ SVG:
 JSON:
 
 - Key: `zone_from | portal | zone_to`
+- Example, in `state_costs`: `"EG.office|EG.hall_EG.office|EG.hall": 12.0`
 
 ### Segment
 
 JSON, an entry in the list under its zone in `segments`:
 
-- Key: a string of the form `entry_portal | zone | exit_portal`.
+- Key: a string of the form `entry_portal | zone | exit_portal`
 - `portals`: `[entry_portal ; exit_portal]`
 - `geometry`: `[[x, y], ...]`, from `entry_portal` to `exit_portal`
 - `distance_m`: number; length of `geometry` divided by `units_per_meter`
+- Example: `"segments": { "EG.hall": [ { "portals": ["EG.hall_EG.office", "EG.hall_EG.store"], "geometry": [[10, 25], [40, 25]], "distance_m": 1.5 } ] }`
+- Example, in `segment_costs`: `"EG.hall_EG.office|EG.hall|EG.hall_EG.store": 5.0`
 
 ### Variant
 
 JSON:
 
-- Id: string, the variant name, e.g. `standard`; the key in `variants`
-- The value is not yet specified.
+- Id: string, the variant name; the key in `variants`; `standard` is the variant with nothing restricted
+- `non_crossable`: `[<zone id>, ...]`, zones the variant makes non-crossable; only the exceptions
+- `non_navigable`: `[<zone id>, ...]`, zones the variant makes non-navigable; only the exceptions
+- Example: `"variants": { "standard": { "non_crossable": [], "non_navigable": [] } }`
 
 ### Query
 
@@ -166,12 +174,12 @@ JSON:
     "OG1.flur-tr9":    { "floor": "OG1", "crossable": true,  "navigable": true }
   },
   "portals": {
-    "EG.E.62_EG.flur-tr9-1":        { "virtual": false, "point": [453, 234] },
-    "EG.TR9_EG.flur-tr9-1":         { "virtual": false, "point": [625, 234] },
-    "EG.flur-tr9-1_EG.flur-tr9-2":  { "virtual": true, "point": [677, 202] },
-    "EG.exterior_EG.flur-tr9-2":    { "virtual": false, "point": [1206, 180], "main_entrance": true },
+    "EG.E.62_EG.flur-tr9-1":        { "virtual": false, "midpoint": [453, 234] },
+    "EG.TR9_EG.flur-tr9-1":         { "virtual": false, "midpoint": [625, 234] },
+    "EG.flur-tr9-1_EG.flur-tr9-2":  { "virtual": true, "midpoint": [677, 202] },
+    "EG.exterior_EG.flur-tr9-2":    { "virtual": false, "midpoint": [1206, 180], "main_entrance": true },
     "EG.TR9_OG1.TR9":               { "virtual": true, "vertical": true, "points": {"EG": [650, 330], "OG1": [650, 330]} },
-    "OG1.TR9_OG1.flur-tr9":         { "virtual": false, "point": [625, 234] }
+    "OG1.TR9_OG1.flur-tr9":         { "virtual": false, "midpoint": [625, 234] }
   }
 }
 ```
@@ -191,7 +199,7 @@ JSON:
   "segment_costs": {
     "EG.E.62_EG.flur-tr9-1|EG.flur-tr9-1|EG.flur-tr9-1_EG.flur-tr9-2": 5.0
   },
-  "variants": {}
+  "variants": { "standard": { "non_crossable": [], "non_navigable": [] } }
 }
 ```
 
@@ -216,12 +224,12 @@ JSON:
     "OG1.flur-tr9":    { "floor": "OG1", "crossable": true,  "navigable": true }
   },
   "portals": {
-    "EG.E.62_EG.flur-tr9-1":        { "virtual": false, "point": [453, 234] },
-    "EG.TR9_EG.flur-tr9-1":         { "virtual": false, "point": [625, 234] },
-    "EG.flur-tr9-1_EG.flur-tr9-2":  { "virtual": true, "point": [677, 202] },
-    "EG.exterior_EG.flur-tr9-2":    { "virtual": false, "point": [1206, 180], "main_entrance": true },
+    "EG.E.62_EG.flur-tr9-1":        { "virtual": false, "midpoint": [453, 234] },
+    "EG.TR9_EG.flur-tr9-1":         { "virtual": false, "midpoint": [625, 234] },
+    "EG.flur-tr9-1_EG.flur-tr9-2":  { "virtual": true, "midpoint": [677, 202] },
+    "EG.exterior_EG.flur-tr9-2":    { "virtual": false, "midpoint": [1206, 180], "main_entrance": true },
     "EG.TR9_OG1.TR9":               { "virtual": true, "vertical": true, "points": {"EG": [650, 330], "OG1": [650, 330]} },
-    "OG1.TR9_OG1.flur-tr9":         { "virtual": false, "point": [625, 234] }
+    "OG1.TR9_OG1.flur-tr9":         { "virtual": false, "midpoint": [625, 234] }
   },
   "segments": {
     "EG.flur-tr9-1": [
@@ -254,6 +262,6 @@ JSON:
   "segment_costs": {
     "EG.E.62_EG.flur-tr9-1|EG.flur-tr9-1|EG.flur-tr9-1_EG.flur-tr9-2": 5.0
   },
-  "variants": {}
+  "variants": { "standard": { "non_crossable": [], "non_navigable": [] } }
 }
 ```
