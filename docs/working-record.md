@@ -194,6 +194,18 @@ Confirmed 2026-10-15 (plan tracer):
 - An SVG image element cannot display a PDF, so a PDF source has to be converted to an image before it can be loaded as an underlay.
 - The first version is a working module with manual tracing. Automating it is later work.
 
+Confirmed 2026-10-15 (plan tracer first version):
+
+- The plan tracer is a single HTML file in plain JavaScript that runs in a desktop browser: `cad/plan tracer/plan-tracer.html`.
+- It loads image files (JPG or PNG) as underlays. A PDF source is converted to an image beforehand.
+- The floor id, level, frame and units per meter are typed in on the drawing surface.
+- The zoning author saves the plan SVG through a file dialog and can leave the underlay references out of it. Opening a plan SVG reads it back; the underlay images are picked again.
+- The plan tracer is no longer limited to lines and text. It also draws polylines, circles and paths, gives every traced element an id, attaches text to an element by its id, and offers a warehouse symbol library and named layers. This replaces "as lines and text" and "traces only what the plans show" in the plan tracer list above, and "The zoning editor draws only the traced lines and text". These parts come last in the build, and the plan SVG format for them is not defined yet.
+
+Provisional (plan SVG written by `plan-tracer.html` so far): the frame as `viewBox`; `data-floor-id`, `data-level` and `data-units-per-meter` on the root element; a group `underlays` with one `image` per underlay (file name as `href`, transform, opacity, and `data-` attributes for position, rotation, scale, flips, lock and crop, a crop as a `clipPath`); a group `trace` with the lines and text. The file name offered on saving is `<floor id>-plan.svg`.
+
+Confirmed 2026-10-15 (language): all development modules (plan tracer, zoning editor, tuning editor) use English for identifiers, documentation, interface text and code comments. German is for the navigation client's user-facing text only.
+
 Tentatively approved 2026-10-15 (zoning editor start):
 
 - On starting, the zoning author either initializes a new zoning file or loads an existing one. Either way the data is held in memory only, and the zoning file comes first, before the plan SVG.
@@ -205,7 +217,7 @@ Tentatively approved 2026-10-15 (zoning editor start):
 To be worked out later (stated 2026-10-14 while drafting `cad/file_format_specification.md`):
 
 - The exterior zone carries a floor code in its id, so each floor has its own exterior zone. The routing logic has to accommodate this exception.
-- The names of the plan SVG files, one per floor, such as `EG-plan.svg`.
+- The names of the plan SVG files, one per floor, such as `EG-plan.svg`. The plan tracer offers `<floor id>-plan.svg` for now.
 - Whether the pipes in state, segment and route notation have spaces around them in files. The specification writes them with spaces as a depiction.
 - How the state and segment keys are written in files: as strings with a separator, as structured entries, or as a new composite key. Pipes and spaces in a string key are unsafe in file names, URLs and Markdown tables.
 - The characters and separators of ids: the dot between floor code and name and the underscore between zones. Few characters are valid in every technology used. The dot needs `CSS.escape` in selectors and bracket access in JavaScript.
@@ -221,7 +233,8 @@ To be worked out later (stated 2026-10-14 while drafting `cad/file_format_specif
 - How applied edits and proposed edits are serialized: as operations with arguments, or as resulting elements.
 - Recovery of the working state: one temp file while the program runs, overwritten on every change, holding the last checkpoint and the edits since. It would live in the browser's own storage. Whether it has the structure of the zoning file is open.
 - Snapping drawn elements to lines of the plan SVG. The snap item in the zoning editor specification covers only drawn elements snapping to each other.
-- How a PDF source is converted to an image for use as an underlay in the plan tracer, and how the loading of underlays works.
-- Where the plan SVG records the floor id, the level and the scale.
+- How a PDF source is converted to an image for use as an underlay in the plan tracer. The first version loads image files through a file picker, and the zoning author converts a PDF beforehand.
+- Where the plan SVG records the floor id, the level and the scale. The plan tracer provisionally writes them as attributes of the root element.
+- The plan SVG format of the polylines, circles, paths, ids, attached text, symbols and layers of the last build batch.
 - The contract between two modules: what the file passed from one module to the next guarantees, and how its meaning is kept unchanged.
 - What the zoning editor does when the check of a floor against its plan SVG fails or the plan SVG cannot be found, including whether drawing is enabled only after the check succeeds.
