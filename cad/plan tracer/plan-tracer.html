@@ -1,0 +1,954 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Plan Tracer</title>
+<style>
+  html, body { height: 100%; }
+  body { margin: 0; font: 14px sans-serif; display: flex; background: #fff; color: #222; }
+  #panel { width: 260px; padding: 8px; overflow-y: auto; border-right: 1px solid #aaa; box-sizing: border-box; }
+  @media (max-width: 700px) {
+    body { flex-direction: column; }
+    #panel { width: 100%; max-height: 40%; border-right: 0; border-bottom: 1px solid #aaa; }
+  }
+  #resizer { flex: 0 0 6px; background: #ddd; cursor: col-resize; touch-action: none; }
+  #resizer:hover { background: #bbb; }
+  @media (max-width: 700px) { #resizer { cursor: row-resize; } }
+  #panel fieldset { margin: 0 0 8px; padding: 6px; }
+  #panel label { display: flex; justify-content: space-between; align-items: center; margin: 2px 0; }
+  #panel input[type=number], #panel input[type=text] { width: 90px; }
+  #panel select { width: 100%; }
+  #panel button { margin: 2px 2px 2px 0; }
+  #panel button.active { background: #cde; }
+  #view { flex: 1; background: #fff; touch-action: none; }
+  #status { position: fixed; left: 268px; bottom: 8px; background: rgba(255,255,255,.85); padding: 2px 6px; border: 1px solid #ccc; border-radius: 3px; font-size: 12px; pointer-events: none; }
+  @media (max-width: 700px) { #status { left: 8px; } }
+  #help { position: fixed; right: 8px; bottom: 8px; max-width: 290px; max-height: 60%; overflow-y: auto; background: #fff; color: #222; border: 1px solid #888; border-radius: 4px; padding: 4px 8px; box-shadow: 0 2px 6px rgba(0,0,0,.25); }
+  #help summary { cursor: pointer; font-weight: bold; }
+  #help ol { margin: 6px 0 2px; padding-left: 18px; }
+</style>
+</head>
+<body>
+<div id="panel">
+  <fieldset>
+    <legend>Floor</legend>
+    <label>Floor ID <input type="text" id="floorId" value="EG"></label>
+    <label>Level <input type="number" id="level" value="0" step="1"></label>
+    <label>Frame x <input type="number" id="fx" value="0"></label>
+    <label>Frame y <input type="number" id="fy" value="0"></label>
+    <label>Frame width <input type="number" id="fw" value="1000"></label>
+    <label>Frame height <input type="number" id="fh" value="700"></label>
+    <label>Units per meter <input type="number" id="upm" value="10" step="any"></label>
+  </fieldset>
+  <fieldset>
+    <legend>Underlays</legend>
+    <select id="underSel"></select>
+    <input type="file" id="imgFile" accept="image/*" multiple>
+    <button id="underRemove">Remove</button>
+    <button id="underFit">Fit to frame</button>
+    <button id="cropClear">Clear crop</button>
+    <label>x <input type="number" id="ux" value="0" step="any"></label>
+    <label>y <input type="number" id="uy" value="0" step="any"></label>
+    <label>Rotation (°) <input type="number" id="urot" value="0" step="any"></label>
+    <label>Scale <input type="number" id="uscale" value="1" step="any"></label>
+    <label>Opacity <input type="range" id="uopacity" min="0.05" max="1" step="0.05" value="0.6"></label>
+    <label>Visible <input type="checkbox" id="uvis" checked></label>
+    <label>Locked <input type="checkbox" id="ulock"></label>
+    <label>Flip horizontal <input type="checkbox" id="uflipx"></label>
+    <label>Flip vertical <input type="checkbox" id="uflipy"></label>
+  </fieldset>
+  <fieldset>
+    <legend>Tools</legend>
+    <button data-tool="pan">Pan</button>
+    <button data-tool="underlay">Underlay</button>
+    <button data-tool="crop">Crop</button>
+    <button data-tool="calibrate">Calibrate</button>
+    <button data-tool="line">Line</button>
+    <button data-tool="rect">Rectangle</button>
+    <button data-tool="text">Text</button>
+    <button data-tool="measure">Measure</button>
+    <button data-tool="select">Select</button>
+    <label>Text <input type="text" id="textValue"></label>
+    <label>Font size <input type="number" id="fontSize" value="12" step="any"></label>
+    <button id="applyText">Apply to selected text</button>
+    <label>Real distance (m) <input type="number" id="calDist" value="" step="any"></label>
+  </fieldset>
+  <fieldset>
+    <legend>Edit</legend>
+    <button id="undo">Undo</button>
+    <button id="redo">Redo</button>
+    <button id="del">Delete</button>
+    <button id="dup">Duplicate</button>
+  </fieldset>
+  <fieldset>
+    <legend>View and aids</legend>
+    <button id="zoomIn">Zoom in</button>
+    <button id="zoomOut">Zoom out</button>
+    <button id="zoomFrame">Zoom to frame</button>
+    <button id="zoomDraw">Zoom to drawing</button>
+    <label>Show grid <input type="checkbox" id="showGrid"></label>
+    <label>Grid spacing <input type="number" id="gridSize" value="10" step="any"></label>
+    <label>Snap to grid <input type="checkbox" id="snapGrid"></label>
+    <label>Ortho (45°) <input type="checkbox" id="ortho"></label>
+    <label>Chain lines <input type="checkbox" id="chain"></label>
+  </fieldset>
+  <fieldset>
+    <legend>File</legend>
+    <label>Include underlay reference <input type="checkbox" id="includeUnder" checked></label>
+    <button id="open">Open</button>
+    <button id="save">Save</button>
+    <button id="newDoc">New</button>
+    <input type="file" id="openFile" accept=".svg" hidden>
+  </fieldset>
+  <div id="msg"></div>
+</div>
+<div id="resizer" title="Drag to resize the panel"></div>
+<svg id="view" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="gridPat" patternUnits="userSpaceOnUse" width="10" height="10"><path id="gridPath" d="M 10 0 L 0 0 L 0 10" fill="none" stroke="#999"/></pattern>
+  </defs>
+  <g id="underlays"></g>
+  <g id="trace"></g>
+  <g id="ui" pointer-events="none">
+    <rect id="grid" fill="url(#gridPat)" visibility="hidden"/>
+    <rect id="frame" fill="none" stroke="#c00" stroke-dasharray="6 4" vector-effect="non-scaling-stroke"/>
+    <line id="preview" stroke="#0a0" stroke-width="1.5" vector-effect="non-scaling-stroke" visibility="hidden"/>
+    <rect id="rubber" fill="rgba(0,100,255,.1)" stroke="#06c" stroke-dasharray="4 3" vector-effect="non-scaling-stroke" visibility="hidden"/>
+    <g id="handles"></g>
+  </g>
+</svg>
+<div id="status"></div>
+<details id="help" open>
+  <summary>Help</summary>
+  <ol>
+    <li>Floor: set the floor ID, level, frame and units per meter.</li>
+    <li>Underlays: pick one or more images. Choose one in the list, then drag it with the Underlay tool or type x, y, rotation and scale. Flip, opacity, Visible and Locked apply to the chosen one. Crop: drag a rectangle on it with the Crop tool.</li>
+    <li>Calibrate: enter the real distance in meters, then click two points a known distance apart on the underlay. The underlay is rescaled to match.</li>
+    <li>Line: click the start, then the end. Ends snap to line ends, midpoints, intersections and the grid. Ortho (or Shift) locks 45° steps. Chain lines continues from the last end. Esc cancels.</li>
+    <li>Rectangle: click two opposite corners. Measure: click two points to read the distance.</li>
+    <li>Text: type it in the Text field, choose the Text tool, click where it goes.</li>
+    <li>Select: click an element, Shift-click to add, drag on empty space to select a box, drag to move, drag a line end to reshape. Select one text to edit it and use Apply to selected text. Delete, Duplicate, Undo and Redo work on the selection.</li>
+    <li>Pan: Pan tool, middle mouse button, or two fingers. Zoom: wheel, pinch or the Zoom buttons.</li>
+    <li>Work is autosaved in this browser. Save writes the plan SVG; untick "Include underlay reference" to leave the images out. Open reads a plan SVG; pick the underlay images again to see them.</li>
+  </ol>
+</details>
+<script>
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+const view = $('view'), gUnder = $('underlays'), gTrace = $('trace');
+const frameRect = $('frame'), preview = $('preview'), rubber = $('rubber'), gHandles = $('handles');
+const gridRect = $('grid');
+
+// State
+let unders = [], activeU = -1, uidCounter = 0;
+let tool = 'line', startPt = null, calib = null, hover = null;
+let sel = new Set(), undoS = [], redoS = [];
+let drag = null, tap = null, gesture = null, shiftDown = false;
+const ptrs = new Map();
+
+const num = id => parseFloat($(id).value) || 0;
+const msg = t => { $('msg').textContent = t; };
+const scale = () => view.getScreenCTM().a;
+
+function frame() { return { x: num('fx'), y: num('fy'), w: num('fw'), h: num('fh') }; }
+function curU() { return unders[activeU] || null; }
+
+// Viewport
+function setView(x, y, w, h) {
+  view.setAttribute('viewBox', `${x} ${y} ${w} ${h}`);
+  updateGrid(); drawHandles();
+}
+function vb() { return view.viewBox.baseVal; }
+function fitBox(x, y, w, h) {
+  const m = Math.max(w, h) * 0.05;
+  setView(x - m, y - m, w + 2 * m, h + 2 * m);
+}
+function fitCamera() { const f = frame(); fitBox(f.x, f.y, f.w, f.h); }
+function zoomAt(p, f) {
+  const v = vb();
+  setView(p.x - (p.x - v.x) * f, p.y - (p.y - v.y) * f, v.width * f, v.height * f);
+}
+function zoomCenter(f) { const v = vb(); zoomAt({ x: v.x + v.width / 2, y: v.y + v.height / 2 }, f); }
+function zoomDrawing() {
+  if (!gTrace.children.length) { fitCamera(); return; }
+  const b = gTrace.getBBox();
+  fitBox(b.x, b.y, Math.max(b.width, 1), Math.max(b.height, 1));
+}
+
+function applyFrame() {
+  const f = frame();
+  for (const [k, v] of [['x', f.x], ['y', f.y], ['width', f.w], ['height', f.h]]) {
+    frameRect.setAttribute(k, v); gridRect.setAttribute(k, v);
+  }
+  updateGrid();
+}
+
+function updateGrid() {
+  const s = num('gridSize');
+  const on = $('showGrid').checked && s > 0;
+  gridRect.setAttribute('visibility', on ? 'visible' : 'hidden');
+  if (!on) return;
+  const f = frame();
+  const pat = $('gridPat');
+  pat.setAttribute('width', s); pat.setAttribute('height', s);
+  pat.setAttribute('x', f.x); pat.setAttribute('y', f.y);
+  $('gridPath').setAttribute('d', `M ${s} 0 L 0 0 L 0 ${s}`);
+  $('gridPath').setAttribute('stroke-width', 1 / scale());
+}
+
+function toPt(cx, cy) {
+  const p = view.createSVGPoint();
+  p.x = cx; p.y = cy;
+  return p.matrixTransform(view.getScreenCTM().inverse());
+}
+const toSvg = ev => toPt(ev.clientX, ev.clientY);
+
+// Underlays
+function uTransform(u) {
+  const sx = (u.flipX ? -1 : 1) * u.scale, sy = (u.flipY ? -1 : 1) * u.scale;
+  return `translate(${u.x} ${u.y}) rotate(${u.rot}) scale(${sx} ${sy}) translate(${u.flipX ? -u.w : 0} ${u.flipY ? -u.h : 0})`;
+}
+
+function renderU(u) {
+  if (!u.el) return;
+  u.el.setAttribute('transform', uTransform(u));
+  u.el.setAttribute('opacity', u.opacity);
+  u.el.setAttribute('display', u.vis ? 'inline' : 'none');
+  if (u.crop) {
+    u.clipRect.setAttribute('x', u.crop.x); u.clipRect.setAttribute('y', u.crop.y);
+    u.clipRect.setAttribute('width', u.crop.w); u.clipRect.setAttribute('height', u.crop.h);
+    u.el.setAttribute('clip-path', `url(#clip${u.id})`);
+  } else u.el.removeAttribute('clip-path');
+}
+
+function rebuildUnderDom() {
+  gUnder.textContent = '';
+  const defs = document.createElementNS(NS, 'defs');
+  gUnder.appendChild(defs);
+  for (const u of unders) {
+    u.el = null; u.clipRect = null;
+    if (!u.url) continue;
+    const cp = document.createElementNS(NS, 'clipPath');
+    cp.setAttribute('id', 'clip' + u.id);
+    u.clipRect = document.createElementNS(NS, 'rect');
+    cp.appendChild(u.clipRect); defs.appendChild(cp);
+    u.el = document.createElementNS(NS, 'image');
+    u.el.setAttribute('href', u.url);
+    u.el.setAttribute('width', u.w); u.el.setAttribute('height', u.h);
+    gUnder.appendChild(u.el);
+    renderU(u);
+  }
+}
+
+function syncControls() {
+  const s = $('underSel');
+  s.textContent = '';
+  unders.forEach((u, i) => {
+    const o = document.createElement('option');
+    o.value = i; o.textContent = u.name + (u.url ? '' : ' (image missing)');
+    s.appendChild(o);
+  });
+  const u = curU();
+  if (!u) return;
+  s.value = activeU;
+  $('ux').value = u.x; $('uy').value = u.y; $('urot').value = u.rot; $('uscale').value = u.scale;
+  $('uopacity').value = u.opacity; $('uvis').checked = u.vis; $('ulock').checked = u.locked;
+  $('uflipx').checked = u.flipX; $('uflipy').checked = u.flipY;
+}
+
+function readControls() {
+  const u = curU();
+  if (!u) return;
+  u.x = num('ux'); u.y = num('uy'); u.rot = num('urot');
+  u.scale = num('uscale') || 1; u.opacity = num('uopacity') || 0.6;
+  u.vis = $('uvis').checked; u.locked = $('ulock').checked;
+  u.flipX = $('uflipx').checked; u.flipY = $('uflipy').checked;
+  renderU(u); changed();
+}
+
+function newUnder(name, url, w, h) {
+  return { id: ++uidCounter, name, url, w, h, x: 0, y: 0, rot: 0, scale: w ? frame().w / w : 1,
+    vis: true, opacity: 0.6, flipX: false, flipY: false, locked: false, crop: null, el: null, clipRect: null };
+}
+
+function addUnderlayFile(file) {
+  const url = URL.createObjectURL(file);
+  const probe = new Image();
+  probe.onload = () => {
+    let u = unders.find(q => q.name === file.name && !q.url);
+    if (u) u.url = url;
+    else { u = newUnder(file.name, url, probe.naturalWidth, probe.naturalHeight); unders.push(u); }
+    u.w = probe.naturalWidth; u.h = probe.naturalHeight;
+    activeU = unders.indexOf(u);
+    rebuildUnderDom(); syncControls(); changed();
+    msg('Underlay loaded: ' + u.name);
+  };
+  probe.onerror = () => msg('Could not load image: ' + file.name);
+  probe.src = url;
+}
+
+// Geometry helpers
+const segOf = l => ({ x1: +l.getAttribute('x1'), y1: +l.getAttribute('y1'), x2: +l.getAttribute('x2'), y2: +l.getAttribute('y2') });
+function distSeg(p, s) {
+  const dx = s.x2 - s.x1, dy = s.y2 - s.y1, L = dx * dx + dy * dy;
+  let t = L ? ((p.x - s.x1) * dx + (p.y - s.y1) * dy) / L : 0;
+  t = Math.max(0, Math.min(1, t));
+  return Math.hypot(p.x - (s.x1 + t * dx), p.y - (s.y1 + t * dy));
+}
+function intersect(a, b) {
+  const d = (a.x2 - a.x1) * (b.y2 - b.y1) - (a.y2 - a.y1) * (b.x2 - b.x1);
+  if (Math.abs(d) < 1e-9) return null;
+  const t = ((b.x1 - a.x1) * (b.y2 - b.y1) - (b.y1 - a.y1) * (b.x2 - b.x1)) / d;
+  const u = ((b.x1 - a.x1) * (a.y2 - a.y1) - (b.y1 - a.y1) * (a.x2 - a.x1)) / d;
+  if (t < 0 || t > 1 || u < 0 || u > 1) return null;
+  return { x: a.x1 + t * (a.x2 - a.x1), y: a.y1 + t * (a.y2 - a.y1) };
+}
+
+// Snap to line ends, midpoints, intersections, then the grid
+function snapPoint(p) {
+  const tol = 8 / scale();
+  const segs = [...gTrace.querySelectorAll('line')].map(segOf);
+  let best = null, bd = tol;
+  const cand = (x, y) => { const d = Math.hypot(x - p.x, y - p.y); if (d < bd) { bd = d; best = { x, y }; } };
+  for (const s of segs) { cand(s.x1, s.y1); cand(s.x2, s.y2); cand((s.x1 + s.x2) / 2, (s.y1 + s.y2) / 2); }
+  const near = segs.filter(s => distSeg(p, s) < tol);
+  for (let i = 0; i < near.length; i++) for (let j = i + 1; j < near.length; j++) {
+    const ip = intersect(near[i], near[j]);
+    if (ip) cand(ip.x, ip.y);
+  }
+  if (best) return best;
+  const g = num('gridSize');
+  if ($('snapGrid').checked && g > 0) {
+    const f = frame();
+    return { x: f.x + Math.round((p.x - f.x) / g) * g, y: f.y + Math.round((p.y - f.y) / g) * g };
+  }
+  return p;
+}
+
+function orthoPoint(a, p) {
+  const ang = Math.round(Math.atan2(p.y - a.y, p.x - a.x) / (Math.PI / 4)) * (Math.PI / 4);
+  const dx = Math.cos(ang), dy = Math.sin(ang);
+  const d = (p.x - a.x) * dx + (p.y - a.y) * dy;
+  return { x: a.x + dx * d, y: a.y + dy * d };
+}
+
+function drawPoint(raw) {
+  let p = snapPoint(raw);
+  if (startPt && ['line', 'measure', 'calibrate'].includes(tool) && ($('ortho').checked || shiftDown)) p = orthoPoint(startPt, p);
+  return p;
+}
+
+// Trace elements, selection and history
+function mkLine(x1, y1, x2, y2) {
+  const l = document.createElementNS(NS, 'line');
+  l.setAttribute('x1', x1); l.setAttribute('y1', y1); l.setAttribute('x2', x2); l.setAttribute('y2', y2);
+  l.setAttribute('stroke', '#000'); l.setAttribute('stroke-width', '1.5');
+  l.setAttribute('vector-effect', 'non-scaling-stroke');
+  return l;
+}
+function mkText(x, y, s, size) {
+  const t = document.createElementNS(NS, 'text');
+  t.setAttribute('x', x); t.setAttribute('y', y);
+  t.setAttribute('font-size', size); t.setAttribute('fill', '#000');
+  t.textContent = s;
+  return t;
+}
+
+function paint() {
+  for (const e of gTrace.children) {
+    const c = sel.has(e) ? '#e60' : e === hover ? '#06c' : '#000';
+    e.setAttribute(e.tagName === 'line' ? 'stroke' : 'fill', c);
+  }
+  drawHandles();
+}
+
+function drawHandles() {
+  gHandles.textContent = '';
+  const r = 5 / scale();
+  for (const e of sel) {
+    if (e.tagName !== 'line') continue;
+    const s = segOf(e);
+    for (const [x, y] of [[s.x1, s.y1], [s.x2, s.y2]]) {
+      const c = document.createElementNS(NS, 'circle');
+      c.setAttribute('cx', x); c.setAttribute('cy', y); c.setAttribute('r', r);
+      c.setAttribute('fill', '#fff'); c.setAttribute('stroke', '#e60');
+      gHandles.appendChild(c);
+    }
+  }
+}
+
+function selChanged() {
+  if (sel.size === 1) {
+    const e = [...sel][0];
+    if (e.tagName === 'text') { $('textValue').value = e.textContent; $('fontSize').value = e.getAttribute('font-size'); }
+  }
+  paint();
+}
+
+const snapshot = e => e.tagName === 'line'
+  ? { x1: e.getAttribute('x1'), y1: e.getAttribute('y1'), x2: e.getAttribute('x2'), y2: e.getAttribute('y2') }
+  : { x: e.getAttribute('x'), y: e.getAttribute('y') };
+
+function setAttrs(e, a) { for (const k in a) e.setAttribute(k, a[k]); }
+
+function runOp(op, dir) {
+  if (op.type === 'add') {
+    if (dir === 'undo') op.els.forEach(e => { sel.delete(e); e.remove(); });
+    else op.els.forEach(e => gTrace.appendChild(e));
+  } else if (op.type === 'del') {
+    if (dir === 'undo') op.items.forEach(it => gTrace.insertBefore(it.el, gTrace.children[it.idx] || null));
+    else op.items.forEach(it => { sel.delete(it.el); it.el.remove(); });
+  } else {
+    for (const it of op.items) {
+      setAttrs(it.el, dir === 'undo' ? it.before : it.after);
+      const t = dir === 'undo' ? it.beforeText : it.afterText;
+      if (t !== undefined) it.el.textContent = t;
+    }
+  }
+  paint();
+}
+function push(op) { undoS.push(op); redoS.length = 0; changed(); paint(); }
+function undo() { const op = undoS.pop(); if (!op) return; runOp(op, 'undo'); redoS.push(op); changed(); }
+function redo() { const op = redoS.pop(); if (!op) return; runOp(op, 'redo'); undoS.push(op); changed(); }
+
+function addEls(els) { els.forEach(e => gTrace.appendChild(e)); push({ type: 'add', els }); }
+
+function deleteSelected() {
+  if (!sel.size) return;
+  const all = [...gTrace.children];
+  const items = [...sel].map(el => ({ el, idx: all.indexOf(el) })).sort((a, b) => a.idx - b.idx);
+  items.forEach(it => it.el.remove());
+  sel.clear();
+  push({ type: 'del', items });
+}
+
+function duplicateSelected() {
+  if (!sel.size) return;
+  const off = frame().w * 0.01;
+  const clones = [...sel].map(e => {
+    const c = e.cloneNode(true);
+    if (c.tagName === 'line') {
+      c.setAttribute('x1', +c.getAttribute('x1') + off); c.setAttribute('x2', +c.getAttribute('x2') + off);
+      c.setAttribute('y1', +c.getAttribute('y1') + off); c.setAttribute('y2', +c.getAttribute('y2') + off);
+    } else { c.setAttribute('x', +c.getAttribute('x') + off); c.setAttribute('y', +c.getAttribute('y') + off); }
+    return c;
+  });
+  clones.forEach(c => gTrace.appendChild(c));
+  sel = new Set(clones);
+  push({ type: 'add', els: clones });
+  selChanged();
+}
+
+function applyToSelectedText() {
+  const items = [];
+  for (const e of sel) {
+    if (e.tagName !== 'text') continue;
+    const s = $('textValue').value || e.textContent;
+    items.push({ el: e, before: { 'font-size': e.getAttribute('font-size') }, after: { 'font-size': num('fontSize') },
+      beforeText: e.textContent, afterText: s });
+  }
+  if (!items.length) { msg('Select a text element first.'); return; }
+  const op = { type: 'attrs', items };
+  runOp(op, 'redo'); push(op);
+}
+
+function hitTest(p) {
+  const tol = 8 / scale();
+  let best = null, bd = tol;
+  for (const e of gTrace.children) {
+    let d;
+    if (e.tagName === 'line') d = distSeg(p, segOf(e));
+    else {
+      const b = e.getBBox();
+      d = (p.x >= b.x - tol && p.x <= b.x + b.width + tol && p.y >= b.y - tol && p.y <= b.y + b.height + tol) ? 0 : Infinity;
+    }
+    if (d <= bd) { bd = d; best = e; }
+  }
+  return best;
+}
+
+// Tools
+function setTool(t) {
+  tool = t; startPt = null; calib = null;
+  preview.setAttribute('visibility', 'hidden'); rubber.setAttribute('visibility', 'hidden');
+  document.querySelectorAll('[data-tool]').forEach(b => b.classList.toggle('active', b.dataset.tool === t));
+  view.style.cursor = { pan: 'grab', underlay: 'move', crop: 'crosshair', calibrate: 'crosshair', line: 'crosshair',
+    rect: 'crosshair', text: 'text', measure: 'crosshair', select: 'default' }[t];
+}
+
+function setPreview(a, b) {
+  preview.setAttribute('x1', a.x); preview.setAttribute('y1', a.y);
+  preview.setAttribute('x2', b.x); preview.setAttribute('y2', b.y);
+  preview.setAttribute('visibility', 'visible');
+}
+function setRubber(a, b) {
+  rubber.setAttribute('x', Math.min(a.x, b.x)); rubber.setAttribute('y', Math.min(a.y, b.y));
+  rubber.setAttribute('width', Math.abs(a.x - b.x)); rubber.setAttribute('height', Math.abs(a.y - b.y));
+  rubber.setAttribute('visibility', 'visible');
+}
+function endDraw() {
+  startPt = null;
+  preview.setAttribute('visibility', 'hidden'); rubber.setAttribute('visibility', 'hidden');
+}
+
+function lengthText(a, b) {
+  const d = Math.hypot(b.x - a.x, b.y - a.y), upm = num('upm');
+  return d.toFixed(1) + ' units' + (upm > 0 ? ' = ' + (d / upm).toFixed(2) + ' m' : '');
+}
+
+function updateStatus(p) {
+  let t = `${p.x.toFixed(1)}, ${p.y.toFixed(1)}`;
+  if (startPt && ['line', 'measure', 'calibrate'].includes(tool)) t += '  length ' + lengthText(startPt, drawPoint(p));
+  $('status').textContent = t;
+}
+
+// Clicks of the drawing tools run on pointer release, so a pinch never places a point
+function clickAction(raw) {
+  if (tool === 'line') {
+    const p = drawPoint(raw);
+    if (!startPt) { startPt = p; setPreview(p, p); return; }
+    addEls([mkLine(startPt.x, startPt.y, p.x, p.y)]);
+    if ($('chain').checked) { startPt = p; setPreview(p, p); } else endDraw();
+  } else if (tool === 'rect') {
+    const p = snapPoint(raw);
+    if (!startPt) { startPt = p; setRubber(p, p); return; }
+    const a = startPt;
+    addEls([mkLine(a.x, a.y, p.x, a.y), mkLine(p.x, a.y, p.x, p.y), mkLine(p.x, p.y, a.x, p.y), mkLine(a.x, p.y, a.x, a.y)]);
+    endDraw();
+  } else if (tool === 'text') {
+    const s = $('textValue').value;
+    if (!s) { msg('Enter the text in the Text field first.'); return; }
+    const p = snapPoint(raw);
+    addEls([mkText(p.x, p.y, s, num('fontSize'))]);
+  } else if (tool === 'measure') {
+    const p = drawPoint(raw);
+    if (!startPt) { startPt = p; setPreview(p, p); return; }
+    msg('Distance: ' + lengthText(startPt, p));
+    setPreview(startPt, p);
+    startPt = null;
+  } else if (tool === 'calibrate') {
+    const u = curU();
+    if (!u || !u.el) { msg('Pick an underlay image first.'); return; }
+    if (!(num('calDist') > 0)) { msg('Enter the real distance in meters first.'); return; }
+    const p = drawPoint(raw);
+    if (!startPt) { startPt = p; setPreview(p, p); return; }
+    const d = Math.hypot(p.x - startPt.x, p.y - startPt.y);
+    if (d > 0) {
+      u.scale *= num('calDist') * num('upm') / d;
+      renderU(u); syncControls(); changed();
+      msg('Underlay scale set to ' + u.scale.toFixed(5));
+    }
+    endDraw();
+  }
+}
+
+// Pointer handling
+function selectDown(ev, p) {
+  const tol = 8 / scale();
+  if (sel.size === 1) {
+    const l = [...sel][0];
+    if (l.tagName === 'line') {
+      const s = segOf(l);
+      for (const end of [1, 2]) {
+        if (Math.hypot(s['x' + end] - p.x, s['y' + end] - p.y) < tol) {
+          drag = { kind: 'handle', el: l, end, orig: snapshot(l) };
+          return;
+        }
+      }
+    }
+  }
+  const hit = hitTest(p);
+  if (hit) {
+    if (ev.shiftKey) { if (sel.has(hit)) sel.delete(hit); else sel.add(hit); }
+    else if (!sel.has(hit)) { sel.clear(); sel.add(hit); }
+    drag = { kind: 'move', start: p, items: [...sel].map(e => ({ el: e, orig: snapshot(e) })) };
+  } else {
+    if (!ev.shiftKey) sel.clear();
+    drag = { kind: 'rubber', start: p, additive: ev.shiftKey };
+  }
+  selChanged();
+}
+
+function cancelDrag() {
+  if (!drag) return;
+  if (drag.kind === 'move') drag.items.forEach(it => setAttrs(it.el, it.orig));
+  else if (drag.kind === 'handle') setAttrs(drag.el, drag.orig);
+  else if (drag.kind === 'crop') { drag.u.crop = drag.prev; renderU(drag.u); }
+  else if (drag.kind === 'underlay') { drag.u.x = drag.ux; drag.u.y = drag.uy; renderU(drag.u); syncControls(); }
+  rubber.setAttribute('visibility', 'hidden');
+  drag = null; paint();
+}
+
+function localPt(u, cx, cy) {
+  const p = view.createSVGPoint();
+  p.x = cx; p.y = cy;
+  return p.matrixTransform(u.el.getScreenCTM().inverse());
+}
+
+function dragMove(ev, p) {
+  if (drag.kind === 'pan') {
+    const k = 1 / scale(), v = vb();
+    setView(v.x - (ev.clientX - drag.x) * k, v.y - (ev.clientY - drag.y) * k, v.width, v.height);
+    drag.x = ev.clientX; drag.y = ev.clientY;
+  } else if (drag.kind === 'underlay') {
+    drag.u.x = +(drag.ux + p.x - drag.px).toFixed(3);
+    drag.u.y = +(drag.uy + p.y - drag.py).toFixed(3);
+    renderU(drag.u); syncControls();
+  } else if (drag.kind === 'crop') {
+    const q = localPt(drag.u, ev.clientX, ev.clientY), a = drag.start;
+    const cl = (v, m) => Math.max(0, Math.min(m, v));
+    const x1 = cl(Math.min(a.x, q.x), drag.u.w), x2 = cl(Math.max(a.x, q.x), drag.u.w);
+    const y1 = cl(Math.min(a.y, q.y), drag.u.h), y2 = cl(Math.max(a.y, q.y), drag.u.h);
+    drag.u.crop = { x: x1, y: y1, w: x2 - x1, h: y2 - y1 };
+    renderU(drag.u);
+  } else if (drag.kind === 'move') {
+    const dx = p.x - drag.start.x, dy = p.y - drag.start.y;
+    for (const it of drag.items) {
+      if (it.el.tagName === 'line') {
+        it.el.setAttribute('x1', +it.orig.x1 + dx); it.el.setAttribute('x2', +it.orig.x2 + dx);
+        it.el.setAttribute('y1', +it.orig.y1 + dy); it.el.setAttribute('y2', +it.orig.y2 + dy);
+      } else { it.el.setAttribute('x', +it.orig.x + dx); it.el.setAttribute('y', +it.orig.y + dy); }
+    }
+    drawHandles();
+  } else if (drag.kind === 'handle') {
+    const q = snapPoint(p);
+    drag.el.setAttribute('x' + drag.end, q.x); drag.el.setAttribute('y' + drag.end, q.y);
+    drawHandles();
+  } else if (drag.kind === 'rubber') {
+    setRubber(drag.start, p);
+  }
+}
+
+function endDrag(p) {
+  const d = drag; drag = null;
+  if (d.kind === 'move' || d.kind === 'handle') {
+    const items = (d.kind === 'move' ? d.items : [{ el: d.el, orig: d.orig }])
+      .map(it => ({ el: it.el, before: it.orig, after: snapshot(it.el) }))
+      .filter(it => JSON.stringify(it.before) !== JSON.stringify(it.after));
+    if (items.length) push({ type: 'attrs', items });
+  } else if (d.kind === 'rubber') {
+    rubber.setAttribute('visibility', 'hidden');
+    const x1 = Math.min(d.start.x, p.x), x2 = Math.max(d.start.x, p.x), y1 = Math.min(d.start.y, p.y), y2 = Math.max(d.start.y, p.y);
+    if (x2 - x1 > 2 / scale() || y2 - y1 > 2 / scale()) {
+      const inside = (x, y) => x >= x1 && x <= x2 && y >= y1 && y <= y2;
+      for (const e of gTrace.children) {
+        let ok;
+        if (e.tagName === 'line') { const s = segOf(e); ok = inside(s.x1, s.y1) && inside(s.x2, s.y2); }
+        else { const b = e.getBBox(); ok = inside(b.x, b.y) && inside(b.x + b.width, b.y + b.height); }
+        if (ok) sel.add(e);
+      }
+      selChanged();
+    }
+  } else if (d.kind === 'crop') {
+    if (!d.u.crop || d.u.crop.w < 2 || d.u.crop.h < 2) { d.u.crop = d.prev; renderU(d.u); }
+    changed();
+  } else if (d.kind === 'underlay') changed();
+}
+
+function startGesture() {
+  const [a, b] = [...ptrs.values()];
+  gesture = { cx: (a.x + b.x) / 2, cy: (a.y + b.y) / 2, d: Math.hypot(a.x - b.x, a.y - b.y) || 1 };
+}
+function gestureMove() {
+  const [a, b] = [...ptrs.values()];
+  if (!gesture) startGesture();
+  const cx = (a.x + b.x) / 2, cy = (a.y + b.y) / 2, d = Math.hypot(a.x - b.x, a.y - b.y) || 1;
+  const k = 1 / scale(), v = vb();
+  setView(v.x - (cx - gesture.cx) * k, v.y - (cy - gesture.cy) * k, v.width, v.height);
+  zoomAt(toPt(cx, cy), gesture.d / d);
+  gesture = { cx, cy, d };
+}
+
+view.addEventListener('pointerdown', ev => {
+  try { view.setPointerCapture(ev.pointerId); } catch (e) { /* not supported */ }
+  ptrs.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
+  if (ptrs.size >= 2) { cancelDrag(); tap = null; startGesture(); return; }
+  tap = { x: ev.clientX, y: ev.clientY, moved: false };
+  const p = toSvg(ev);
+  if (tool === 'pan' || ev.button === 1) { drag = { kind: 'pan', x: ev.clientX, y: ev.clientY }; tap = null; return; }
+  if (tool === 'underlay') {
+    const u = curU();
+    if (u && !u.locked) drag = { kind: 'underlay', u, px: p.x, py: p.y, ux: u.x, uy: u.y };
+  } else if (tool === 'crop') {
+    const u = curU();
+    if (u && u.el && !u.locked) drag = { kind: 'crop', u, start: localPt(u, ev.clientX, ev.clientY), prev: u.crop };
+  } else if (tool === 'select') selectDown(ev, p);
+});
+
+view.addEventListener('pointermove', ev => {
+  if (ptrs.has(ev.pointerId)) ptrs.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
+  if (ptrs.size >= 2) { gestureMove(); return; }
+  if (tap && Math.hypot(ev.clientX - tap.x, ev.clientY - tap.y) > 6) tap.moved = true;
+  const p = toSvg(ev);
+  updateStatus(p);
+  if (drag) { dragMove(ev, p); return; }
+  if (startPt) {
+    const q = tool === 'rect' ? snapPoint(p) : drawPoint(p);
+    if (tool === 'rect') setRubber(startPt, q); else setPreview(startPt, q);
+  }
+  if (tool === 'select' && ev.pointerType === 'mouse') {
+    const h = hitTest(p);
+    if (h !== hover) { hover = h; paint(); }
+  }
+});
+
+function pointerEnd(ev) {
+  const wasTwo = ptrs.size >= 2;
+  ptrs.delete(ev.pointerId);
+  if (wasTwo) { if (ptrs.size < 2) gesture = null; tap = null; return; }
+  if (drag) { endDrag(toSvg(ev)); tap = null; return; }
+  if (tap && !tap.moved && ev.type === 'pointerup') clickAction(toPt(tap.x, tap.y));
+  tap = null;
+}
+view.addEventListener('pointerup', pointerEnd);
+view.addEventListener('pointercancel', pointerEnd);
+
+view.addEventListener('wheel', ev => {
+  ev.preventDefault();
+  zoomAt(toSvg(ev), ev.deltaY < 0 ? 0.85 : 1 / 0.85);
+}, { passive: false });
+
+window.addEventListener('keydown', ev => {
+  if (ev.key === 'Shift') shiftDown = true;
+  if (ev.target.tagName === 'INPUT') return;
+  if (ev.key === 'Delete') deleteSelected();
+  if (ev.key === 'Escape') { endDraw(); sel.clear(); selChanged(); }
+  if (ev.key === 'z' && ev.ctrlKey && !ev.shiftKey) undo();
+  if ((ev.key === 'y' && ev.ctrlKey) || (ev.key === 'Z' && ev.ctrlKey && ev.shiftKey)) redo();
+});
+window.addEventListener('keyup', ev => { if (ev.key === 'Shift') shiftDown = false; });
+
+// Controls
+document.querySelectorAll('[data-tool]').forEach(b => b.addEventListener('click', () => setTool(b.dataset.tool)));
+$('undo').addEventListener('click', undo);
+$('redo').addEventListener('click', redo);
+$('del').addEventListener('click', deleteSelected);
+$('dup').addEventListener('click', duplicateSelected);
+$('applyText').addEventListener('click', applyToSelectedText);
+$('zoomIn').addEventListener('click', () => zoomCenter(0.7));
+$('zoomOut').addEventListener('click', () => zoomCenter(1 / 0.7));
+$('zoomFrame').addEventListener('click', fitCamera);
+$('zoomDraw').addEventListener('click', zoomDrawing);
+$('imgFile').addEventListener('change', e => { [...e.target.files].forEach(addUnderlayFile); e.target.value = ''; });
+['ux', 'uy', 'urot', 'uscale', 'uopacity', 'uvis', 'ulock', 'uflipx', 'uflipy'].forEach(id => $(id).addEventListener('input', readControls));
+$('underSel').addEventListener('change', e => { activeU = +e.target.value; syncControls(); });
+$('underRemove').addEventListener('click', () => {
+  const u = curU();
+  if (!u) return;
+  if (u.url) URL.revokeObjectURL(u.url);
+  unders.splice(activeU, 1);
+  activeU = unders.length ? Math.min(activeU, unders.length - 1) : -1;
+  rebuildUnderDom(); syncControls(); changed();
+});
+$('underFit').addEventListener('click', () => {
+  const u = curU();
+  if (!u) return;
+  // Fit the cropped part (the whole image when not cropped) to the frame width, its corner on the frame corner
+  const c = u.crop || { x: 0, y: 0, w: u.w, h: u.h };
+  if (!(c.w > 0)) return;
+  u.rot = 0; u.scale = frame().w / c.w;
+  const sx = u.flipX ? -1 : 1, sy = u.flipY ? -1 : 1;
+  const tx = u.flipX ? -u.w : 0, ty = u.flipY ? -u.h : 0;
+  const ax = [sx * (c.x + tx), sx * (c.x + c.w + tx)], ay = [sy * (c.y + ty), sy * (c.y + c.h + ty)];
+  u.x = frame().x - Math.min(...ax) * u.scale;
+  u.y = frame().y - Math.min(...ay) * u.scale;
+  renderU(u); syncControls(); changed();
+});
+
+// Resizable panel: drag the bar between the panel and the drawing
+const narrow = () => window.matchMedia('(max-width: 700px)').matches;
+let resizing = false;
+$('resizer').addEventListener('pointerdown', ev => { resizing = true; $('resizer').setPointerCapture(ev.pointerId); });
+$('resizer').addEventListener('pointermove', ev => {
+  if (!resizing) return;
+  const panel = $('panel');
+  if (narrow()) {
+    const h = Math.max(80, Math.min(window.innerHeight - 120, ev.clientY - panel.getBoundingClientRect().top));
+    panel.style.height = h + 'px'; panel.style.maxHeight = h + 'px';
+  } else {
+    const w = Math.max(180, Math.min(window.innerWidth - 200, ev.clientX));
+    panel.style.width = w + 'px';
+    $('status').style.left = (w + 14) + 'px';
+  }
+});
+$('resizer').addEventListener('pointerup', () => { resizing = false; });
+$('resizer').addEventListener('pointercancel', () => { resizing = false; });
+$('cropClear').addEventListener('click', () => { const u = curU(); if (u) { u.crop = null; renderU(u); changed(); } });
+['fx', 'fy', 'fw', 'fh', 'floorId', 'level', 'upm'].forEach(id => $(id).addEventListener('input', () => { applyFrame(); changed(); }));
+['showGrid', 'gridSize'].forEach(id => $(id).addEventListener('input', updateGrid));
+
+// Serialization: frame as viewBox, underlays as references in their own group, traced elements in their own group
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+
+function traceMarkup() {
+  const out = [];
+  for (const e of gTrace.children) {
+    if (e.tagName === 'line') {
+      out.push(`    <line x1="${e.getAttribute('x1')}" y1="${e.getAttribute('y1')}" x2="${e.getAttribute('x2')}" y2="${e.getAttribute('y2')}" stroke="#000" stroke-width="1.5" vector-effect="non-scaling-stroke"/>`);
+    } else {
+      out.push(`    <text x="${e.getAttribute('x')}" y="${e.getAttribute('y')}" font-size="${e.getAttribute('font-size')}" fill="#000">${esc(e.textContent)}</text>`);
+    }
+  }
+  return out;
+}
+
+function underMarkup(withClips) {
+  const out = [];
+  if (withClips) {
+    const cropped = unders.map((u, i) => [u, i]).filter(([u]) => u.crop);
+    if (cropped.length) {
+      out.push('    <defs>');
+      for (const [u, i] of cropped) out.push(`      <clipPath id="clip-${i}"><rect x="${u.crop.x}" y="${u.crop.y}" width="${u.crop.w}" height="${u.crop.h}"/></clipPath>`);
+      out.push('    </defs>');
+    }
+  }
+  unders.forEach((u, i) => {
+    const a = [`href="${esc(u.name)}"`, `width="${u.w}"`, `height="${u.h}"`, `transform="${uTransform(u)}"`, `opacity="${u.opacity}"`];
+    if (!u.vis) a.push('display="none"');
+    if (u.crop) a.push(`clip-path="url(#clip-${i})"`);
+    a.push(`data-x="${u.x}"`, `data-y="${u.y}"`, `data-rotation="${u.rot}"`, `data-scale="${u.scale}"`);
+    if (u.flipX) a.push('data-flip-x="true"');
+    if (u.flipY) a.push('data-flip-y="true"');
+    if (u.locked) a.push('data-locked="true"');
+    if (u.crop) a.push(`data-crop="${u.crop.x} ${u.crop.y} ${u.crop.w} ${u.crop.h}"`);
+    out.push(`    <image ${a.join(' ')}/>`);
+  });
+  return out;
+}
+
+function buildSvg() {
+  const f = frame();
+  const out = [];
+  out.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${f.x} ${f.y} ${f.w} ${f.h}" data-floor-id="${esc($('floorId').value)}" data-level="${num('level')}" data-units-per-meter="${num('upm')}">`);
+  out.push('  <g id="underlays">');
+  if ($('includeUnder').checked) out.push(...underMarkup(true));
+  out.push('  </g>');
+  out.push('  <g id="trace">');
+  out.push(...traceMarkup());
+  out.push('  </g>');
+  out.push('</svg>');
+  return out.join('\n') + '\n';
+}
+
+$('save').addEventListener('click', async () => {
+  const text = buildSvg();
+  const name = ($('floorId').value || 'plan') + '-plan.svg';
+  try {
+    // Inside an Artifact the page cannot download by itself; the downloads capability does it
+    const dl = window.claude && window.claude.use ? await window.claude.use('downloads') : null;
+    if (dl) {
+      await dl.save({ filename: name, data: text });
+    } else if (window.showSaveFilePicker) {
+      const h = await showSaveFilePicker({ suggestedName: name, types: [{ description: 'SVG', accept: { 'image/svg+xml': ['.svg'] } }] });
+      const w = await h.createWritable();
+      await w.write(text); await w.close();
+    } else {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([text], { type: 'image/svg+xml' }));
+      a.download = name; a.click();
+    }
+    msg('Saved.');
+  } catch (e) { if (e.name !== 'AbortError' && e.code !== 'declined') msg('Error: ' + e.message); }
+});
+
+// Loading: traced elements from SVG markup (a list of element nodes)
+function importTrace(nodes) {
+  gTrace.textContent = '';
+  for (const el of nodes) {
+    if (el.tagName !== 'line' && el.tagName !== 'text') continue;
+    const n = document.createElementNS(NS, el.tagName);
+    for (const a of el.attributes) n.setAttribute(a.name, a.value);
+    if (el.tagName === 'text') n.textContent = el.textContent;
+    gTrace.appendChild(n);
+  }
+  sel.clear(); hover = null; undoS = []; redoS = [];
+  paint();
+}
+
+function underFromImage(img) {
+  const u = newUnder(img.getAttribute('href') || 'image', '', +img.getAttribute('width'), +img.getAttribute('height'));
+  const g = (k, d) => img.hasAttribute(k) ? parseFloat(img.getAttribute(k)) : d;
+  u.x = g('data-x', 0); u.y = g('data-y', 0); u.rot = g('data-rotation', 0); u.scale = g('data-scale', 1);
+  u.opacity = g('opacity', 0.6);
+  u.vis = img.getAttribute('display') !== 'none';
+  u.flipX = img.getAttribute('data-flip-x') === 'true'; u.flipY = img.getAttribute('data-flip-y') === 'true';
+  u.locked = img.getAttribute('data-locked') === 'true';
+  if (img.hasAttribute('data-crop')) { const c = img.getAttribute('data-crop').split(/\s+/).map(Number); u.crop = { x: c[0], y: c[1], w: c[2], h: c[3] }; }
+  return u;
+}
+
+$('open').addEventListener('click', () => $('openFile').click());
+$('openFile').addEventListener('change', async e => {
+  const file = e.target.files[0];
+  e.target.value = '';
+  if (!file) return;
+  const doc = new DOMParser().parseFromString(await file.text(), 'image/svg+xml');
+  const root = doc.documentElement;
+  if (root.tagName !== 'svg') { msg('Not an SVG file.'); return; }
+  const v = (root.getAttribute('viewBox') || '0 0 1000 700').split(/[\s,]+/).map(Number);
+  ['fx', 'fy', 'fw', 'fh'].forEach((id, i) => { $(id).value = v[i]; });
+  $('floorId').value = root.getAttribute('data-floor-id') || '';
+  $('level').value = root.getAttribute('data-level') || 0;
+  $('upm').value = root.getAttribute('data-units-per-meter') || 10;
+  importTrace(doc.querySelectorAll('#trace > *'));
+  unders.forEach(u => { if (u.url) URL.revokeObjectURL(u.url); });
+  unders = [...doc.querySelectorAll('#underlays image')].map(underFromImage);
+  activeU = unders.length ? 0 : -1;
+  rebuildUnderDom(); syncControls();
+  applyFrame(); fitCamera(); changed();
+  msg(unders.length ? 'Opened. Pick the underlay images again: ' + unders.map(u => u.name).join(', ') : 'Opened.');
+});
+
+// New document: needs a second click within three seconds
+let newArmed = null;
+$('newDoc').addEventListener('click', () => {
+  if (!newArmed) {
+    $('newDoc').textContent = 'Really clear?';
+    newArmed = setTimeout(() => { newArmed = null; $('newDoc').textContent = 'New'; }, 3000);
+    return;
+  }
+  clearTimeout(newArmed); newArmed = null; $('newDoc').textContent = 'New';
+  gTrace.textContent = ''; sel.clear(); undoS = []; redoS = [];
+  unders.forEach(u => { if (u.url) URL.revokeObjectURL(u.url); });
+  unders = []; activeU = -1; rebuildUnderDom(); syncControls(); paint(); changed();
+  msg('Cleared.');
+});
+
+// Autosave in the browser's storage; underlay images are not stored, only their placement
+const KEY = 'planTracer.autosave';
+let saveTimer = null;
+function changed() { clearTimeout(saveTimer); saveTimer = setTimeout(autosave, 500); }
+function autosave() {
+  try {
+    const data = {
+      fields: Object.fromEntries(['floorId', 'level', 'fx', 'fy', 'fw', 'fh', 'upm'].map(id => [id, $(id).value])),
+      trace: traceMarkup().join('\n'),
+      unders: underMarkup(false).join('\n'),
+      saved: new Date().toISOString()
+    };
+    localStorage.setItem(KEY, JSON.stringify(data));
+  } catch (e) { /* storage unavailable */ }
+}
+function restore() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    for (const id in data.fields) $(id).value = data.fields[id];
+    const doc = new DOMParser().parseFromString(`<svg xmlns="${NS}"><g id="trace">${data.trace}</g><g id="underlays">${data.unders}</g></svg>`, 'image/svg+xml');
+    importTrace(doc.querySelectorAll('#trace > *'));
+    unders = [...doc.querySelectorAll('#underlays image')].map(underFromImage);
+    activeU = unders.length ? 0 : -1;
+    if (gTrace.children.length || unders.length) {
+      msg('Restored the autosave from ' + data.saved.slice(0, 16).replace('T', ' ') + (unders.length ? '. Pick the underlay images again.' : '.'));
+    }
+  } catch (e) { /* ignore a broken autosave */ }
+}
+
+restore();
+rebuildUnderDom(); syncControls();
+applyFrame(); fitCamera(); setTool('line');
+</script>
+</body>
+</html>
