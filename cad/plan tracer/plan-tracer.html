@@ -42,8 +42,12 @@
   #help summary { cursor: pointer; font-weight: bold; }
   #help ol { margin: 6px 0 2px; padding-left: 18px; }
   #panel input[type=color] { width: 50px; padding: 0; }
-  #orthoBtn { position: fixed; top: 8px; left: 334px; background: var(--box); color: var(--fg); border: 1px solid var(--border); border-radius: 4px; padding: 3px 8px; font-size: 12px; cursor: pointer; }
-  #orthoBtn.on { background: var(--btn-active); }
+  #orthoBtn, #mapBtn { position: fixed; top: 8px; left: 334px; background: var(--box); color: var(--fg); border: 1px solid var(--border); border-radius: 4px; padding: 3px 8px; font-size: 12px; cursor: pointer; }
+  #orthoBtn.on, #mapBtn.on { background: var(--btn-active); }
+  #rulerH, #rulerV { position: fixed; pointer-events: none; }
+  #minimap { position: fixed; display: none; width: 180px; height: 130px; background: var(--box); border: 1px solid var(--border); touch-action: none; cursor: pointer; }
+  #scaleBar { position: fixed; display: none; height: 6px; border: 2px solid #000; border-top: none; pointer-events: none; }
+  #scaleBar span { position: absolute; top: -16px; left: 0; font-size: 11px; color: #000; white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -66,21 +70,33 @@
     <button id="underRemove">Remove</button>
     <button id="underFit">Fit to frame</button>
     <button id="cropClear">Clear crop</button>
+    <button id="underUp" title="Draw this underlay above the next one">Raise</button>
+    <button id="underDown" title="Draw this underlay below the previous one">Lower</button>
+    <label>Name <input type="text" id="ulabel"></label>
     <label>x <input type="number" id="ux" value="0" step="any"></label>
     <label>y <input type="number" id="uy" value="0" step="any"></label>
     <label>Rotation (°) <input type="number" id="urot" value="0" step="any"></label>
     <label>Scale <input type="number" id="uscale" value="1" step="any"></label>
     <label>Opacity <input type="range" id="uopacity" min="0.05" max="1" step="0.05" value="0.6"></label>
+    <label>Brightness <input type="range" id="ubright" min="0.2" max="2" step="0.05" value="1"></label>
+    <label>Contrast <input type="range" id="ucontrast" min="0.2" max="2" step="0.05" value="1"></label>
     <label>Visible <input type="checkbox" id="uvis" checked></label>
     <label>Locked <input type="checkbox" id="ulock"></label>
     <label>Flip horizontal <input type="checkbox" id="uflipx"></label>
     <label>Flip vertical <input type="checkbox" id="uflipy"></label>
+    <label>Nudge step <input type="number" id="nudgeStep" value="1" step="any"></label>
+    <button id="nudgeL" title="Move the underlay left">&larr;</button>
+    <button id="nudgeR" title="Move the underlay right">&rarr;</button>
+    <button id="nudgeU" title="Move the underlay up">&uarr;</button>
+    <button id="nudgeD" title="Move the underlay down">&darr;</button>
   </fieldset>
   <fieldset>
     <legend>Tools</legend>
     <button data-tool="pan">Pan</button>
     <button data-tool="underlay">Underlay</button>
     <button data-tool="crop">Crop</button>
+    <button data-tool="rotate">Rotate</button>
+    <button data-tool="horizontal">Make horizontal</button>
     <button data-tool="calibrate">Calibrate</button>
     <button data-tool="line">Line</button>
     <button data-tool="rect">Rectangle</button>
@@ -90,6 +106,7 @@
     <button data-tool="offset">Offset</button>
     <button data-tool="trim">Trim</button>
     <button data-tool="extend">Extend</button>
+    <button data-tool="zoomwin">Zoom window</button>
     <button data-tool="select">Select</button>
     <label>Text <input type="text" id="textValue"></label>
     <label>Font size <input type="number" id="fontSize" value="12" step="any"></label>
@@ -131,6 +148,7 @@
     <label>Snap to grid <input type="checkbox" id="snapGrid"></label>
     <label>Ortho (45°) <input type="checkbox" id="ortho"></label>
     <label>Tracking guides <input type="checkbox" id="tracking" checked></label>
+    <label>Rulers and scale bar <input type="checkbox" id="rulers" checked></label>
     <label>Chain lines <input type="checkbox" id="chain"></label>
   </fieldset>
   <fieldset>
@@ -164,12 +182,19 @@
 <div id="status"></div>
 <div id="info"></div>
 <div id="toast"></div>
+<canvas id="rulerH"></canvas>
+<canvas id="rulerV"></canvas>
 <button id="orthoBtn" title="Orthogonal drawing and moving (also while Shift is held)">Ortho: off</button>
+<button id="mapBtn" title="Show or hide the overview map">Map: off</button>
+<canvas id="minimap" width="180" height="130"></canvas>
+<div id="scaleBar"><span id="scaleTxt"></span></div>
 <details id="help" open>
   <summary>Help</summary>
   <ol>
     <li>Floor: set the floor ID, level, frame and units per meter.</li>
     <li>Underlays: pick one or more images. Choose one in the list, then drag it with the Underlay tool or type x, y, rotation and scale. Flip, opacity, Visible and Locked apply to the chosen one. Crop: drag a rectangle on it with the Crop tool.</li>
+    <li>Underlay tools: Rotate turns the chosen underlay about the center of its visible part as you drag (Shift: 15° steps). Make horizontal: click two points that should be level and the underlay turns about the first. The arrow buttons nudge it by the step. Raise and Lower change which underlay is drawn on top, Name sets a label, Brightness and Contrast adjust the picture. All are saved with the underlay.</li>
+    <li>View: Zoom window zooms to a dragged rectangle. Map shows an overview, and clicking or dragging in it moves the view. The rulers read meters from the frame's top-left corner, and the scale bar shows a round length.</li>
     <li>Calibrate: enter the real distance in meters, then click two points a known distance apart on the underlay. The underlay is rescaled to match.</li>
     <li>Line: click the start, then the end, or drag from the start to the end. Ends snap to line ends, midpoints, intersections and the grid. After the start you can type a length in meters and press Enter. Ortho (the button on the drawing, the checkbox, or Shift) locks 45° steps; it makes rectangles square and keeps moves and line-end drags on one axis. Chain lines continues from the last end. Esc cancels.</li>
     <li>Rectangle: click two opposite corners. Measure: click two points to read the distance. Dimension: click two points, then where the dimension line goes.</li>
@@ -199,7 +224,7 @@ let drag = null, tap = null, gesture = null, shiftDown = false;
 const ptrs = new Map();
 let snapKind = null, lastP = null, dirty = false;
 let dimB = null, typed = '';
-let guides = [], trackSkip = null, parRef = null;
+let guides = [], trackSkip = null, parRef = null, prevTool = 'line', curClient = null;
 
 const num = id => parseFloat($(id).value) || 0;
 
@@ -223,6 +248,7 @@ function setView(x, y, w, h) {
   view.setAttribute('viewBox', `${x} ${y} ${w} ${h}`);
   updateGrid(); drawHandles();
   ui.view = [x, y, w, h]; uiSaveSoon();
+  drawRulers(); schedMap();
 }
 function vb() { return view.viewBox.baseVal; }
 function fitBox(x, y, w, h) {
@@ -246,7 +272,7 @@ function applyFrame() {
   for (const [k, v] of [['x', f.x], ['y', f.y], ['width', f.w], ['height', f.h]]) {
     frameRect.setAttribute(k, v); gridRect.setAttribute(k, v);
   }
-  updateGrid();
+  updateGrid(); drawRulers(); schedMap();
 }
 
 function updateGrid() {
@@ -280,6 +306,8 @@ function renderU(u) {
   u.el.setAttribute('transform', uTransform(u));
   u.el.setAttribute('opacity', u.opacity);
   u.el.setAttribute('display', u.vis ? 'inline' : 'none');
+  u.el.style.filter = u.bright !== 1 || u.contrast !== 1 ? `brightness(${u.bright}) contrast(${u.contrast})` : '';
+  schedMap();
   if (u.crop) {
     u.clipRect.setAttribute('x', u.crop.x); u.clipRect.setAttribute('y', u.crop.y);
     u.clipRect.setAttribute('width', u.crop.w); u.clipRect.setAttribute('height', u.crop.h);
@@ -306,17 +334,20 @@ function rebuildUnderDom() {
   }
 }
 
+const underName = u => (u.label || u.name) + (u.url ? '' : ' (image missing)');
+
 function syncControls() {
   const s = $('underSel');
   s.textContent = '';
   unders.forEach((u, i) => {
     const o = document.createElement('option');
-    o.value = i; o.textContent = u.name + (u.url ? '' : ' (image missing)');
+    o.value = i; o.textContent = underName(u);
     s.appendChild(o);
   });
   const u = curU();
   if (!u) return;
   s.value = activeU;
+  $('ulabel').value = u.label; $('ubright').value = u.bright; $('ucontrast').value = u.contrast;
   $('ux').value = u.x; $('uy').value = u.y; $('urot').value = u.rot; $('uscale').value = u.scale;
   $('uopacity').value = u.opacity; $('uvis').checked = u.vis; $('ulock').checked = u.locked;
   $('uflipx').checked = u.flipX; $('uflipy').checked = u.flipY;
@@ -327,6 +358,7 @@ function readControls() {
   if (!u) return;
   u.x = num('ux'); u.y = num('uy'); u.rot = num('urot');
   u.scale = num('uscale') || 1; u.opacity = num('uopacity') || 0.6;
+  u.bright = num('ubright') || 1; u.contrast = num('ucontrast') || 1;
   u.vis = $('uvis').checked; u.locked = $('ulock').checked;
   u.flipX = $('uflipx').checked; u.flipY = $('uflipy').checked;
   renderU(u); changed();
@@ -334,7 +366,31 @@ function readControls() {
 
 function newUnder(name, url, w, h) {
   return { id: ++uidCounter, name, url, w, h, x: 0, y: 0, rot: 0, scale: w ? frame().w / w : 1,
-    vis: true, opacity: 0.6, flipX: false, flipY: false, locked: false, crop: null, el: null, clipRect: null };
+    vis: true, opacity: 0.6, flipX: false, flipY: false, locked: false, crop: null, el: null, clipRect: null,
+    label: '', bright: 1, contrast: 1 };
+}
+
+// Underlay geometry: a point of the image in the drawing, the center of its visible part, angles
+function uWorld(u, lx, ly) {
+  const sx = (u.flipX ? -1 : 1) * u.scale, sy = (u.flipY ? -1 : 1) * u.scale;
+  const px = (lx + (u.flipX ? -u.w : 0)) * sx, py = (ly + (u.flipY ? -u.h : 0)) * sy;
+  const r = u.rot * Math.PI / 180, c = Math.cos(r), s = Math.sin(r);
+  return { x: u.x + px * c - py * s, y: u.y + px * s + py * c };
+}
+const localCenter = u => u.crop ? { x: u.crop.x + u.crop.w / 2, y: u.crop.y + u.crop.h / 2 } : { x: u.w / 2, y: u.h / 2 };
+const normDeg = d => ((d + 180) % 360 + 360) % 360 - 180;
+const r3 = v => +v.toFixed(3);
+
+// Turn the underlay about the point a so that the line a-b becomes horizontal (the smaller turn)
+function makeHorizontal(u, a, b) {
+  if (Math.hypot(b.x - a.x, b.y - a.y) < 1e-9) return;
+  const ang = Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI;
+  const delta = ang > 90 ? 180 - ang : ang < -90 ? -180 - ang : -ang;
+  const r = delta * Math.PI / 180, c = Math.cos(r), s = Math.sin(r), dx = u.x - a.x, dy = u.y - a.y;
+  u.x = r3(a.x + dx * c - dy * s); u.y = r3(a.y + dx * s + dy * c);
+  u.rot = r3(normDeg(u.rot + delta));
+  renderU(u); syncControls(); changed();
+  msg('Underlay turned by ' + delta.toFixed(2) + '°.');
 }
 
 function addUnderlayFile(file) {
@@ -555,6 +611,7 @@ function paint() {
   }
   drawHandles();
   updateStatus();
+  schedMap();
 }
 
 function drawHandles() {
@@ -857,12 +914,13 @@ function hitTest(p) {
 
 // Tools
 function setTool(t) {
+  if (t === 'zoomwin' && tool !== 'zoomwin') prevTool = tool;
   tool = t; startPt = null; calib = null; dimB = null; typed = ''; parRef = null;
   preview.setAttribute('visibility', 'hidden'); rubber.setAttribute('visibility', 'hidden');
   document.querySelectorAll('[data-tool]').forEach(b => b.classList.toggle('active', b.dataset.tool === t));
   view.style.cursor = { pan: 'grab', underlay: 'move', crop: 'crosshair', calibrate: 'crosshair', line: 'crosshair',
     rect: 'crosshair', text: 'text', measure: 'crosshair', dimension: 'crosshair', offset: 'crosshair', trim: 'crosshair',
-    extend: 'crosshair', select: 'default' }[t];
+    extend: 'crosshair', rotate: 'crosshair', horizontal: 'crosshair', zoomwin: 'crosshair', select: 'default' }[t];
   hideAids(); updateStatus();
 }
 
@@ -879,6 +937,7 @@ function setRubber(a, b) {
 function updatePreview(p) {
   if (!startPt) return;
   if (tool === 'rect') setRubber(startPt, rectPoint(p));
+  else if (tool === 'horizontal') setPreview(startPt, p);
   else if (tool === 'dimension') {
     const q = snapPoint(p);
     if (!dimB) setPreview(startPt, q);
@@ -902,7 +961,7 @@ function lengthText(a, b) { return fmtLen(Math.hypot(b.x - a.x, b.y - a.y)); }
 
 const TOOL_NAMES = { pan: 'Pan', underlay: 'Underlay', crop: 'Crop', calibrate: 'Calibrate', line: 'Line',
   rect: 'Rectangle', text: 'Text', measure: 'Measure', dimension: 'Dimension', offset: 'Offset', trim: 'Trim',
-  extend: 'Extend', select: 'Select' };
+  extend: 'Extend', rotate: 'Rotate', horizontal: 'Make horizontal', zoomwin: 'Zoom window', select: 'Select' };
 
 function hint() {
   switch (tool) {
@@ -912,6 +971,9 @@ function hint() {
     case 'calibrate': return startPt ? 'click the second point' : 'click the first point';
     case 'line': return startPt ? 'click the end point or type a length, right-click to finish' : 'click or drag from the start point';
     case 'dimension': return !startPt ? 'click the first point' : !dimB ? 'click the second point' : 'click where the dimension line goes';
+    case 'rotate': return 'drag around the chosen underlay to turn it, Shift for 15° steps';
+    case 'horizontal': return startPt ? 'click the second point' : 'click the first of two points that should be level';
+    case 'zoomwin': return 'drag a rectangle to zoom to';
     case 'offset': return 'select lines, then click the side to offset them';
     case 'trim': return 'click the part of a line to remove';
     case 'extend': return 'click a line near the end to extend';
@@ -1040,6 +1102,13 @@ function doClick(raw) {
     if (!d) { msg('Click to one side of the measured line.'); return; }
     addEls(dimensionEls(startPt, dimB, d));
     endDraw();
+  } else if (tool === 'horizontal') {
+    const u = curU();
+    if (!u || !u.el) { msg('Pick an underlay image first.'); return; }
+    if (u.locked) { msg('The underlay is locked.'); return; }
+    if (!startPt) { startPt = { x: raw.x, y: raw.y }; setPreview(startPt, startPt); return; }
+    makeHorizontal(u, startPt, raw);
+    endDraw();
   } else if (tool === 'offset') doOffset(raw);
   else if (tool === 'trim') doTrim(raw);
   else if (tool === 'extend') doExtend(raw);
@@ -1092,6 +1161,7 @@ function cancelDrag() {
   else if (drag.kind === 'handle') setAttrs(drag.el, drag.orig);
   else if (drag.kind === 'crop') { drag.u.crop = drag.prev; renderU(drag.u); }
   else if (drag.kind === 'underlay') { drag.u.x = drag.ux; drag.u.y = drag.uy; renderU(drag.u); syncControls(); }
+  else if (drag.kind === 'rotate') { drag.u.rot = drag.rot0; drag.u.x = drag.x0; drag.u.y = drag.y0; renderU(drag.u); syncControls(); }
   rubber.setAttribute('visibility', 'hidden'); gGuides.textContent = '';
   drag = null; paint();
 }
@@ -1138,8 +1208,16 @@ function dragMove(ev, p) {
     }
     drag.el.setAttribute('x' + drag.end, q.x); drag.el.setAttribute('y' + drag.end, q.y);
     drawHandles();
-  } else if (drag.kind === 'rubber') {
+  } else if (drag.kind === 'rubber' || drag.kind === 'zoomwin') {
     setRubber(drag.start, p);
+  } else if (drag.kind === 'rotate') {
+    const u = drag.u;
+    let rot = drag.rot0 + (Math.atan2(p.y - drag.C.y, p.x - drag.C.x) - drag.a0) * 180 / Math.PI;
+    if (shiftDown) rot = Math.round(rot / 15) * 15;
+    u.rot = normDeg(rot); u.x = drag.x0; u.y = drag.y0;
+    const lc = localCenter(u), W = uWorld(u, lc.x, lc.y);
+    u.x = r3(drag.x0 + drag.C.x - W.x); u.y = r3(drag.y0 + drag.C.y - W.y); u.rot = r3(u.rot);
+    renderU(u); syncControls();
   }
 }
 
@@ -1167,7 +1245,13 @@ function endDrag(p) {
   } else if (d.kind === 'crop') {
     if (!d.u.crop || d.u.crop.w < 2 || d.u.crop.h < 2) { d.u.crop = d.prev; renderU(d.u); }
     changed();
-  } else if (d.kind === 'underlay') changed();
+  } else if (d.kind === 'underlay' || d.kind === 'rotate') changed();
+  else if (d.kind === 'zoomwin') {
+    rubber.setAttribute('visibility', 'hidden');
+    const x = Math.min(d.start.x, p.x), y = Math.min(d.start.y, p.y), w = Math.abs(p.x - d.start.x), h = Math.abs(p.y - d.start.y);
+    if (w > 3 / scale() && h > 3 / scale()) setView(x, y, w, h);
+    setTool(prevTool);
+  }
 }
 
 function startGesture() {
@@ -1204,7 +1288,14 @@ view.addEventListener('pointerdown', ev => {
   } else if (tool === 'crop') {
     const u = curU();
     if (u && u.el && !u.locked) drag = { kind: 'crop', u, start: localPt(u, ev.clientX, ev.clientY), prev: u.crop };
-  } else if (tool === 'select') selectDown(ev, p);
+  } else if (tool === 'rotate') {
+    const u = curU();
+    if (u && u.el && !u.locked) {
+      const lc = localCenter(u), C = uWorld(u, lc.x, lc.y);
+      drag = { kind: 'rotate', u, C, a0: Math.atan2(p.y - C.y, p.x - C.x), rot0: u.rot, x0: u.x, y0: u.y };
+    } else msg(u && u.locked ? 'The underlay is locked.' : 'Pick an underlay image first.');
+  } else if (tool === 'zoomwin') drag = { kind: 'zoomwin', start: p };
+  else if (tool === 'select') selectDown(ev, p);
 });
 
 view.addEventListener('pointermove', ev => {
@@ -1212,6 +1303,7 @@ view.addEventListener('pointermove', ev => {
   if (ptrs.size >= 2) { gestureMove(); return; }
   if (tap && Math.hypot(ev.clientX - tap.x, ev.clientY - tap.y) > 6) tap.moved = true;
   const p = toSvg(ev);
+  curClient = { x: ev.clientX, y: ev.clientY }; drawRulers();
   updateStatus(p);
   if (drag) { dragMove(ev, p); return; }
   if (tap && tap.moved && tap.drawFrom && !startPt && tool === 'line') startPt = tap.drawFrom;
@@ -1243,7 +1335,7 @@ function finishDragLine(raw) {
 }
 view.addEventListener('pointerup', pointerEnd);
 view.addEventListener('pointercancel', pointerEnd);
-view.addEventListener('pointerleave', hideAids);
+view.addEventListener('pointerleave', () => { hideAids(); curClient = null; drawRulers(); });
 // Right-click ends a chain or cancels a pending point
 view.addEventListener('contextmenu', ev => { ev.preventDefault(); tap = null; endDraw(); updateStatus(); });
 
@@ -1265,7 +1357,10 @@ window.addEventListener('keydown', ev => {
   }
   if (ev.key === 'a' && ev.ctrlKey) { ev.preventDefault(); selectAll(); }
   if (ev.key === 'Delete') deleteSelected();
-  if (ev.key === 'Escape') { endDraw(); sel.clear(); selChanged(); }
+  if (ev.key === 'Escape') {
+    if (tool === 'zoomwin') { cancelDrag(); setTool(prevTool); }
+    endDraw(); sel.clear(); selChanged();
+  }
   if (ev.key === 'z' && ev.ctrlKey && !ev.shiftKey) undo();
   if ((ev.key === 'y' && ev.ctrlKey) || (ev.key === 'Z' && ev.ctrlKey && ev.shiftKey)) redo();
 });
@@ -1298,6 +1393,7 @@ function syncOrtho() {
   const on = $('ortho').checked;
   $('orthoBtn').textContent = 'Ortho: ' + (on ? 'on' : 'off');
   $('orthoBtn').classList.toggle('on', on);
+  layoutOverlays();
 }
 $('orthoBtn').addEventListener('click', () => { $('ortho').checked = !$('ortho').checked; syncOrtho(); });
 $('ortho').addEventListener('change', syncOrtho);
@@ -1306,7 +1402,7 @@ $('zoomOut').addEventListener('click', () => zoomCenter(1 / 0.7));
 $('zoomFrame').addEventListener('click', fitCamera);
 $('zoomDraw').addEventListener('click', zoomDrawing);
 $('imgFile').addEventListener('change', e => { [...e.target.files].forEach(addUnderlayFile); e.target.value = ''; });
-['ux', 'uy', 'urot', 'uscale', 'uopacity', 'uvis', 'ulock', 'uflipx', 'uflipy'].forEach(id => $(id).addEventListener('input', readControls));
+['ux', 'uy', 'urot', 'uscale', 'uopacity', 'ubright', 'ucontrast', 'uvis', 'ulock', 'uflipx', 'uflipy'].forEach(id => $(id).addEventListener('input', readControls));
 $('underSel').addEventListener('change', e => { activeU = +e.target.value; syncControls(); });
 $('underRemove').addEventListener('click', () => {
   const u = curU();
@@ -1333,7 +1429,7 @@ $('underFit').addEventListener('click', () => {
 
 // Resizable panel: drag the bar between the panel and the drawing
 const narrow = () => window.matchMedia('(max-width: 700px)').matches;
-function placeOverlays(w) { $('status').style.left = (w + 14) + 'px'; $('orthoBtn').style.left = (w + 14) + 'px'; }
+function placeOverlays(w) { $('status').style.left = (w + 14) + 'px'; layoutOverlays(); }
 let resizing = false;
 $('resizer').addEventListener('pointerdown', ev => { resizing = true; $('resizer').setPointerCapture(ev.pointerId); });
 $('resizer').addEventListener('pointermove', ev => {
@@ -1356,6 +1452,167 @@ $('resizer').addEventListener('pointercancel', () => { resizing = false; });
 $('cropClear').addEventListener('click', () => { const u = curU(); if (u) { u.crop = null; renderU(u); changed(); } });
 ['fx', 'fy', 'fw', 'fh', 'floorId', 'level', 'upm'].forEach(id => $(id).addEventListener('input', () => { applyFrame(); changed(); }));
 ['showGrid', 'gridSize'].forEach(id => $(id).addEventListener('input', updateGrid));
+
+// Underlay name, order and nudging
+$('ulabel').addEventListener('input', () => {
+  const u = curU();
+  if (!u) return;
+  u.label = $('ulabel').value;
+  $('underSel').options[activeU].textContent = underName(u);
+  changed();
+});
+function moveUnder(d) {
+  const j = activeU + d;
+  if (activeU < 0 || j < 0 || j >= unders.length) return;
+  [unders[activeU], unders[j]] = [unders[j], unders[activeU]];
+  activeU = j;
+  rebuildUnderDom(); syncControls(); changed();
+}
+$('underUp').addEventListener('click', () => moveUnder(1));
+$('underDown').addEventListener('click', () => moveUnder(-1));
+function nudge(dx, dy) {
+  const u = curU();
+  if (!u) return;
+  if (u.locked) { msg('The underlay is locked.'); return; }
+  const s = num('nudgeStep') || 1;
+  u.x = r3(u.x + dx * s); u.y = r3(u.y + dy * s);
+  renderU(u); syncControls(); changed();
+}
+$('nudgeL').addEventListener('click', () => nudge(-1, 0));
+$('nudgeR').addEventListener('click', () => nudge(1, 0));
+$('nudgeU').addEventListener('click', () => nudge(0, -1));
+$('nudgeD').addEventListener('click', () => nudge(0, 1));
+
+// Overlays on the drawing: rulers in meters from the frame corner, scale bar, overview map
+const RULER = 20;
+function niceStep(min) {
+  const p = Math.pow(10, Math.floor(Math.log10(min)));
+  for (const m of [1, 2, 5, 10]) if (p * m >= min) return p * m;
+  return p * 10;
+}
+
+function layoutOverlays() {
+  const r = view.getBoundingClientRect(), off = $('rulers').checked ? RULER + 6 : 8;
+  const place = (el, l, t) => { el.style.left = l + 'px'; el.style.top = t + 'px'; };
+  place($('rulerH'), r.left, r.top); place($('rulerV'), r.left, r.top + RULER);
+  place($('orthoBtn'), r.left + off, r.top + off);
+  place($('mapBtn'), r.left + off + $('orthoBtn').offsetWidth + 6, r.top + off);
+  place($('minimap'), r.left + off, r.top + off + 30);
+  $('info').style.top = (r.top + off) + 'px';
+  $('scaleBar').style.left = (r.left + off) + 'px';
+  $('scaleBar').style.bottom = (window.innerHeight - r.bottom + 36) + 'px';
+  drawRulers(); schedMap();
+}
+
+function drawRulers() {
+  const on = $('rulers').checked, H = $('rulerH'), V = $('rulerV'), sb = $('scaleBar');
+  H.style.display = V.style.display = on ? 'block' : 'none';
+  sb.style.display = 'none';
+  if (!on) return;
+  const m = view.getScreenCTM(), r = view.getBoundingClientRect();
+  if (!m) return;
+  if (!m || !(r.width > RULER * 2) || !(r.height > RULER * 2)) return;
+  const f = frame(), upm = num('upm') > 0 ? num('upm') : 1, ppm = m.a * upm;
+  if (!(ppm > 0)) return;
+  const cs = getComputedStyle(document.documentElement), bg = cs.getPropertyValue('--box').trim(), fg = cs.getPropertyValue('--fg').trim();
+  const dpr = window.devicePixelRatio || 1;
+  const setup = (cv, w, h) => {
+    const cw = Math.round(w * dpr), ch = Math.round(h * dpr);
+    if (cv.width !== cw || cv.height !== ch) { cv.width = cw; cv.height = ch; }
+    cv.style.width = w + 'px'; cv.style.height = h + 'px';
+    const c = cv.getContext('2d');
+    c.setTransform(dpr, 0, 0, dpr, 0, 0);
+    c.clearRect(0, 0, w, h); c.fillStyle = bg; c.fillRect(0, 0, w, h);
+    c.strokeStyle = fg; c.fillStyle = fg; c.font = '10px sans-serif'; c.lineWidth = 1;
+    return c;
+  };
+  const major = niceStep(70 / ppm), mant = Math.round(major / Math.pow(10, Math.floor(Math.log10(major))));
+  const minor = major / (mant === 2 ? 2 : 5), label = M => +M.toFixed(4) + ' m';
+  const isMajor = M => Math.abs(M / major - Math.round(M / major)) < 1e-6;
+  const cH = setup(H, r.width, RULER);
+  const mx0 = ((r.left - m.e) / m.a - f.x) / upm, mx1 = ((r.right - m.e) / m.a - f.x) / upm;
+  for (let k = Math.ceil(mx0 / minor), n = 0; k * minor <= mx1 && n < 2000; k++, n++) {
+    const M = k * minor, x = m.a * (f.x + M * upm) + m.e - r.left;
+    cH.beginPath(); cH.moveTo(x + 0.5, RULER); cH.lineTo(x + 0.5, isMajor(M) ? 2 : 14); cH.stroke();
+    if (isMajor(M)) cH.fillText(label(M), x + 3, 11);
+  }
+  const cV = setup(V, RULER, r.height - RULER);
+  const my0 = ((r.top - m.f) / m.d - f.y) / upm, my1 = ((r.bottom - m.f) / m.d - f.y) / upm;
+  for (let k = Math.ceil(my0 / minor), n = 0; k * minor <= my1 && n < 2000; k++, n++) {
+    const M = k * minor, y = m.d * (f.y + M * upm) + m.f - r.top - RULER;
+    if (y < 0) continue;
+    cV.beginPath(); cV.moveTo(RULER, y + 0.5); cV.lineTo(isMajor(M) ? 2 : 14, y + 0.5); cV.stroke();
+    if (isMajor(M)) { cV.save(); cV.translate(11, y - 3); cV.rotate(-Math.PI / 2); cV.fillText(label(M), 0, 0); cV.restore(); }
+  }
+  if (curClient) {
+    cH.strokeStyle = cV.strokeStyle = '#d00';
+    const x = curClient.x - r.left, y = curClient.y - r.top - RULER;
+    cH.beginPath(); cH.moveTo(x + 0.5, 0); cH.lineTo(x + 0.5, RULER); cH.stroke();
+    cV.beginPath(); cV.moveTo(0, y + 0.5); cV.lineTo(RULER, y + 0.5); cV.stroke();
+  }
+  if (num('upm') > 0) {
+    const L = niceStep(60 / ppm);
+    sb.style.display = 'block'; sb.style.width = (L * ppm) + 'px'; $('scaleTxt').textContent = label(L);
+  }
+}
+
+const mm = $('minimap');
+let mapT = null, mapQueued = false, mapDrag = false;
+function schedMap() {
+  if (!ui.map || mapQueued) return;
+  mapQueued = true;
+  requestAnimationFrame(() => { mapQueued = false; drawMinimap(); });
+}
+function drawMinimap() {
+  mm.style.display = ui.map ? 'block' : 'none';
+  if (!ui.map) return;
+  const W = 180, H = 130, dpr = window.devicePixelRatio || 1;
+  if (mm.width !== Math.round(W * dpr)) { mm.width = Math.round(W * dpr); mm.height = Math.round(H * dpr); }
+  const c = mm.getContext('2d'), f = frame(), v = vb();
+  let x1 = f.x, y1 = f.y, x2 = f.x + f.w, y2 = f.y + f.h;
+  const grow = (x, y) => { x1 = Math.min(x1, x); y1 = Math.min(y1, y); x2 = Math.max(x2, x); y2 = Math.max(y2, y); };
+  if (gTrace.children.length) { const b = gTrace.getBBox(); grow(b.x, b.y); grow(b.x + b.width, b.y + b.height); }
+  const boxes = unders.filter(u => u.vis && u.el).map(u => {
+    const b = u.crop || { x: 0, y: 0, w: u.w, h: u.h };
+    return [[b.x, b.y], [b.x + b.w, b.y], [b.x + b.w, b.y + b.h], [b.x, b.y + b.h]].map(([lx, ly]) => uWorld(u, lx, ly));
+  });
+  boxes.forEach(b => b.forEach(q => grow(q.x, q.y)));
+  const pad = Math.max(x2 - x1, y2 - y1) * 0.1;
+  x1 -= pad; y1 -= pad; x2 += pad; y2 += pad;
+  const bw = Math.max(x2 - x1, 1), bh = Math.max(y2 - y1, 1), s = Math.min((W - 8) / bw, (H - 8) / bh);
+  const ox = (W - bw * s) / 2, oy = (H - bh * s) / 2;
+  mapT = { x1, y1, s, ox, oy };
+  const X = x => ox + (x - x1) * s, Y = y => oy + (y - y1) * s;
+  c.setTransform(dpr, 0, 0, dpr, 0, 0);
+  c.fillStyle = '#fff'; c.fillRect(0, 0, W, H); c.lineWidth = 1;
+  c.strokeStyle = '#c00'; c.setLineDash([3, 2]); c.strokeRect(X(f.x), Y(f.y), f.w * s, f.h * s); c.setLineDash([]);
+  c.strokeStyle = '#888';
+  for (const b of boxes) { c.beginPath(); b.forEach((q, i) => i ? c.lineTo(X(q.x), Y(q.y)) : c.moveTo(X(q.x), Y(q.y))); c.closePath(); c.stroke(); }
+  for (const e of gTrace.children) {
+    if (e.tagName !== 'line') continue;
+    const g = segOf(e);
+    c.strokeStyle = lineColor(e); c.beginPath(); c.moveTo(X(g.x1), Y(g.y1)); c.lineTo(X(g.x2), Y(g.y2)); c.stroke();
+  }
+  c.strokeStyle = '#06c'; c.lineWidth = 2; c.strokeRect(X(v.x), Y(v.y), v.width * s, v.height * s);
+}
+function mapMove(ev) {
+  if (!mapT) return;
+  const r = mm.getBoundingClientRect(), v = vb();
+  const wx = mapT.x1 + (ev.clientX - r.left - mapT.ox) / mapT.s, wy = mapT.y1 + (ev.clientY - r.top - mapT.oy) / mapT.s;
+  setView(wx - v.width / 2, wy - v.height / 2, v.width, v.height);
+}
+mm.addEventListener('pointerdown', ev => { mapDrag = true; try { mm.setPointerCapture(ev.pointerId); } catch (e) { /* not supported */ } mapMove(ev); });
+mm.addEventListener('pointermove', ev => { if (mapDrag) mapMove(ev); });
+mm.addEventListener('pointerup', () => { mapDrag = false; });
+mm.addEventListener('pointercancel', () => { mapDrag = false; });
+function syncMap() {
+  $('mapBtn').textContent = 'Map: ' + (ui.map ? 'on' : 'off');
+  $('mapBtn').classList.toggle('on', !!ui.map);
+  layoutOverlays(); drawMinimap();
+}
+$('mapBtn').addEventListener('click', () => { ui.map = !ui.map; uiSave(); syncMap(); });
+$('rulers').addEventListener('change', layoutOverlays);
+window.addEventListener('resize', layoutOverlays);
 
 // Serialization: frame as viewBox, underlays as references in their own group, traced elements in their own group
 function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
@@ -1384,6 +1641,9 @@ function underMarkup(withClips) {
   }
   unders.forEach((u, i) => {
     const a = [`href="${esc(u.name)}"`, `width="${u.w}"`, `height="${u.h}"`, `transform="${uTransform(u)}"`, `opacity="${u.opacity}"`];
+    if (u.label) a.push(`data-label="${esc(u.label)}"`);
+    if (u.bright !== 1) a.push(`data-brightness="${u.bright}"`);
+    if (u.contrast !== 1) a.push(`data-contrast="${u.contrast}"`);
     if (!u.vis) a.push('display="none"');
     if (u.crop) a.push(`clip-path="url(#clip-${i})"`);
     a.push(`data-x="${u.x}"`, `data-y="${u.y}"`, `data-rotation="${u.rot}"`, `data-scale="${u.scale}"`);
@@ -1464,6 +1724,7 @@ $('exportPng').addEventListener('click', async () => {
     ctx.scale((u.flipX ? -1 : 1) * u.scale, (u.flipY ? -1 : 1) * u.scale);
     ctx.translate(u.flipX ? -u.w : 0, u.flipY ? -u.h : 0);
     ctx.globalAlpha = u.opacity;
+    if (u.bright !== 1 || u.contrast !== 1) ctx.filter = `brightness(${u.bright}) contrast(${u.contrast})`;
     if (u.crop) { ctx.beginPath(); ctx.rect(u.crop.x, u.crop.y, u.crop.w, u.crop.h); ctx.clip(); }
     ctx.drawImage(u.bitmap, 0, 0);
     ctx.restore();
@@ -1510,6 +1771,8 @@ function underFromImage(img) {
   const g = (k, d) => img.hasAttribute(k) ? parseFloat(img.getAttribute(k)) : d;
   u.x = g('data-x', 0); u.y = g('data-y', 0); u.rot = g('data-rotation', 0); u.scale = g('data-scale', 1);
   u.opacity = g('opacity', 0.6);
+  u.label = img.getAttribute('data-label') || '';
+  u.bright = g('data-brightness', 1) || 1; u.contrast = g('data-contrast', 1) || 1;
   u.vis = img.getAttribute('display') !== 'none';
   u.flipX = img.getAttribute('data-flip-x') === 'true'; u.flipY = img.getAttribute('data-flip-y') === 'true';
   u.locked = img.getAttribute('data-locked') === 'true';
@@ -1630,7 +1893,7 @@ if (gTrace.children.length || unders.length) dirty = true;
 rebuildUnderDom(); syncControls();
 applyFrame();
 if (Array.isArray(ui.view) && ui.view.length === 4 && ui.view.every(Number.isFinite)) setView(...ui.view); else fitCamera();
-setTool('line'); applyTheme(); syncOrtho();
+setTool('line'); applyTheme(); syncOrtho(); syncMap();
 </script>
 </body>
 </html>
