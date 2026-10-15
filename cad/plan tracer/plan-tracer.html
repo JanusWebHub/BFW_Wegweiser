@@ -6,31 +6,46 @@
 <title>Plan Tracer</title>
 <style>
   html, body { height: 100%; }
-  body { margin: 0; font: 14px sans-serif; display: flex; background: #fff; color: #222; }
-  #panel { width: 260px; padding: 8px; overflow-y: auto; border-right: 1px solid #aaa; box-sizing: border-box; }
+  :root { --bg: #fff; --fg: #222; --border: #aaa; --btn: #efefef; --btn-active: #cde; --input: #fff; --bar: #ddd; --bar-hover: #bbb; --box: rgba(255,255,255,.92); color-scheme: light; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #23262b; --fg: #e4e6ea; --border: #555; --btn: #363a41; --btn-active: #47608a; --input: #2d3036; --bar: #3a3d44; --bar-hover: #555a63; --box: rgba(35,38,43,.92); color-scheme: dark; }
+  }
+  :root[data-theme="dark"] { --bg: #23262b; --fg: #e4e6ea; --border: #555; --btn: #363a41; --btn-active: #47608a; --input: #2d3036; --bar: #3a3d44; --bar-hover: #555a63; --box: rgba(35,38,43,.92); color-scheme: dark; }
+  body { margin: 0; font: 14px sans-serif; display: flex; background: var(--bg); color: var(--fg); }
+  #panel { width: 320px; padding: 8px; overflow-y: auto; border-right: 1px solid var(--border); box-sizing: border-box; }
   @media (max-width: 700px) {
     body { flex-direction: column; }
     #panel { width: 100%; max-height: 40%; border-right: 0; border-bottom: 1px solid #aaa; }
   }
-  #resizer { flex: 0 0 6px; background: #ddd; cursor: col-resize; touch-action: none; }
-  #resizer:hover { background: #bbb; }
+  #resizer { flex: 0 0 6px; background: var(--bar); cursor: col-resize; touch-action: none; }
+  #resizer:hover { background: var(--bar-hover); }
   @media (max-width: 700px) { #resizer { cursor: row-resize; } }
   #panel fieldset { margin: 0 0 8px; padding: 6px; }
   #panel label { display: flex; justify-content: space-between; align-items: center; margin: 2px 0; }
   #panel input[type=number], #panel input[type=text] { width: 90px; }
+  #panel input[type=number], #panel input[type=text], #panel select { background: var(--input); color: var(--fg); border: 1px solid var(--border); }
   #panel select { width: 100%; }
-  #panel button { margin: 2px 2px 2px 0; }
-  #panel button.active { background: #cde; }
+  #panel button { margin: 2px 2px 2px 0; background: var(--btn); color: var(--fg); border: 1px solid var(--border); border-radius: 3px; padding: 2px 6px; }
+  #panel button.active { background: var(--btn-active); }
+  #panel legend { cursor: pointer; user-select: none; }
+  #panel legend::before { content: '\25BE  '; }
+  #panel fieldset.collapsed legend::before { content: '\25B8  '; }
+  #panel fieldset.collapsed > :not(legend) { display: none; }
   #view { flex: 1; background: #fff; touch-action: none; }
-  #status { position: fixed; left: 268px; bottom: 8px; background: rgba(255,255,255,.85); padding: 2px 6px; border: 1px solid #ccc; border-radius: 3px; font-size: 12px; pointer-events: none; }
+  #status { position: fixed; left: 328px; bottom: 8px; max-width: calc(100vw - 680px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: var(--box); color: var(--fg); padding: 2px 6px; border: 1px solid var(--border); border-radius: 3px; font-size: 12px; pointer-events: none; }
   @media (max-width: 700px) { #status { left: 8px; } }
-  #help { position: fixed; right: 8px; bottom: 8px; max-width: 290px; max-height: 60%; overflow-y: auto; background: #fff; color: #222; border: 1px solid #888; border-radius: 4px; padding: 4px 8px; box-shadow: 0 2px 6px rgba(0,0,0,.25); }
+  #info { position: fixed; top: 8px; right: 8px; min-width: 150px; background: var(--box); color: var(--fg); padding: 4px 8px; border: 1px solid var(--border); border-radius: 4px; font-size: 12px; pointer-events: none; }
+  #info div:first-child { font-weight: bold; }
+  #toast { position: fixed; bottom: 44px; transform: translateX(-50%); max-width: 60%; background: rgba(30,30,30,.92); color: #fff; padding: 6px 12px; border-radius: 4px; opacity: 0; transition: opacity .3s; pointer-events: none; }
+  #toast.show { opacity: 1; }
+  #help { position: fixed; right: 8px; bottom: 8px; max-width: 290px; max-height: 60%; overflow-y: auto; background: var(--bg); color: var(--fg); border: 1px solid var(--border); border-radius: 4px; padding: 4px 8px; box-shadow: 0 2px 6px rgba(0,0,0,.25); }
   #help summary { cursor: pointer; font-weight: bold; }
   #help ol { margin: 6px 0 2px; padding-left: 18px; }
 </style>
 </head>
 <body>
 <div id="panel">
+  <button id="themeBtn">Theme: system</button>
   <fieldset>
     <legend>Floor</legend>
     <label>Floor ID <input type="text" id="floorId" value="EG"></label>
@@ -98,10 +113,10 @@
     <label>Include underlay reference <input type="checkbox" id="includeUnder" checked></label>
     <button id="open">Open</button>
     <button id="save">Save</button>
+    <button id="exportPng">Export PNG</button>
     <button id="newDoc">New</button>
     <input type="file" id="openFile" accept=".svg" hidden>
   </fieldset>
-  <div id="msg"></div>
 </div>
 <div id="resizer" title="Drag to resize the panel"></div>
 <svg id="view" xmlns="http://www.w3.org/2000/svg">
@@ -116,9 +131,13 @@
     <line id="preview" stroke="#0a0" stroke-width="1.5" vector-effect="non-scaling-stroke" visibility="hidden"/>
     <rect id="rubber" fill="rgba(0,100,255,.1)" stroke="#06c" stroke-dasharray="4 3" vector-effect="non-scaling-stroke" visibility="hidden"/>
     <g id="handles"></g>
+    <path id="snapMark" fill="none" stroke="#e0a000" stroke-width="2" vector-effect="non-scaling-stroke" visibility="hidden"/>
+    <text id="textPreview" fill="#06c" opacity="0.6" visibility="hidden"></text>
   </g>
 </svg>
 <div id="status"></div>
+<div id="info"></div>
+<div id="toast"></div>
 <details id="help" open>
   <summary>Help</summary>
   <ol>
@@ -130,6 +149,8 @@
     <li>Text: type it in the Text field, choose the Text tool, click where it goes.</li>
     <li>Select: click an element, Shift-click to add, drag on empty space to select a box, drag to move, drag a line end to reshape. Select one text to edit it and use Apply to selected text. Delete, Duplicate, Undo and Redo work on the selection.</li>
     <li>Pan: Pan tool, middle mouse button, or two fingers. Zoom: wheel, pinch or the Zoom buttons.</li>
+    <li>Right-click ends a chain or cancels a pending point. The marker at the cursor shows the snap: square = end, triangle = midpoint, cross = intersection, plus = grid.</li>
+    <li>Export PNG saves the frame area as a picture. Theme cycles system, light and dark. Click a section title to collapse it.</li>
     <li>Work is autosaved in this browser. Save writes the plan SVG; untick "Include underlay reference" to leave the images out. Open reads a plan SVG; pick the underlay images again to see them.</li>
   </ol>
 </details>
@@ -138,7 +159,7 @@ const NS = 'http://www.w3.org/2000/svg';
 const $ = id => document.getElementById(id);
 const view = $('view'), gUnder = $('underlays'), gTrace = $('trace');
 const frameRect = $('frame'), preview = $('preview'), rubber = $('rubber'), gHandles = $('handles');
-const gridRect = $('grid');
+const gridRect = $('grid'), snapMark = $('snapMark'), textPrev = $('textPreview');
 
 // State
 let unders = [], activeU = -1, uidCounter = 0;
@@ -146,9 +167,20 @@ let tool = 'line', startPt = null, calib = null, hover = null;
 let sel = new Set(), undoS = [], redoS = [];
 let drag = null, tap = null, gesture = null, shiftDown = false;
 const ptrs = new Map();
+let snapKind = null, lastP = null, dirty = false;
 
 const num = id => parseFloat($(id).value) || 0;
-const msg = t => { $('msg').textContent = t; };
+
+// Toast: a short message at the bottom centre of the drawing
+let toastTimer = null;
+const msg = t => {
+  const el = $('toast'), r = view.getBoundingClientRect();
+  el.style.left = (r.left + r.width / 2) + 'px';
+  el.textContent = t;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
+};
 const scale = () => view.getScreenCTM().a;
 
 function frame() { return { x: num('fx'), y: num('fy'), w: num('fw'), h: num('fh') }; }
@@ -158,6 +190,7 @@ function curU() { return unders[activeU] || null; }
 function setView(x, y, w, h) {
   view.setAttribute('viewBox', `${x} ${y} ${w} ${h}`);
   updateGrid(); drawHandles();
+  ui.view = [x, y, w, h]; uiSaveSoon();
 }
 function vb() { return view.viewBox.baseVal; }
 function fitBox(x, y, w, h) {
@@ -279,7 +312,7 @@ function addUnderlayFile(file) {
     let u = unders.find(q => q.name === file.name && !q.url);
     if (u) u.url = url;
     else { u = newUnder(file.name, url, probe.naturalWidth, probe.naturalHeight); unders.push(u); }
-    u.w = probe.naturalWidth; u.h = probe.naturalHeight;
+    u.w = probe.naturalWidth; u.h = probe.naturalHeight; u.bitmap = probe;
     activeU = unders.indexOf(u);
     rebuildUnderDom(); syncControls(); changed();
     msg('Underlay loaded: ' + u.name);
@@ -310,19 +343,21 @@ function snapPoint(p) {
   const tol = 8 / scale();
   const segs = [...gTrace.querySelectorAll('line')].map(segOf);
   let best = null, bd = tol;
-  const cand = (x, y) => { const d = Math.hypot(x - p.x, y - p.y); if (d < bd) { bd = d; best = { x, y }; } };
-  for (const s of segs) { cand(s.x1, s.y1); cand(s.x2, s.y2); cand((s.x1 + s.x2) / 2, (s.y1 + s.y2) / 2); }
+  const cand = (x, y, kind) => { const d = Math.hypot(x - p.x, y - p.y); if (d < bd) { bd = d; best = { x, y, kind }; } };
+  for (const s of segs) { cand(s.x1, s.y1, 'end'); cand(s.x2, s.y2, 'end'); cand((s.x1 + s.x2) / 2, (s.y1 + s.y2) / 2, 'mid'); }
   const near = segs.filter(s => distSeg(p, s) < tol);
   for (let i = 0; i < near.length; i++) for (let j = i + 1; j < near.length; j++) {
     const ip = intersect(near[i], near[j]);
-    if (ip) cand(ip.x, ip.y);
+    if (ip) cand(ip.x, ip.y, 'int');
   }
-  if (best) return best;
+  if (best) { snapKind = best.kind; return best; }
   const g = num('gridSize');
   if ($('snapGrid').checked && g > 0) {
     const f = frame();
+    snapKind = 'grid';
     return { x: f.x + Math.round((p.x - f.x) / g) * g, y: f.y + Math.round((p.y - f.y) / g) * g };
   }
+  snapKind = null;
   return p;
 }
 
@@ -335,7 +370,7 @@ function orthoPoint(a, p) {
 
 function drawPoint(raw) {
   let p = snapPoint(raw);
-  if (startPt && ['line', 'measure', 'calibrate'].includes(tool) && ($('ortho').checked || shiftDown)) p = orthoPoint(startPt, p);
+  if (startPt && ['line', 'measure', 'calibrate'].includes(tool) && ($('ortho').checked || shiftDown)) { p = orthoPoint(startPt, p); snapKind = null; }
   return p;
 }
 
@@ -361,6 +396,7 @@ function paint() {
     e.setAttribute(e.tagName === 'line' ? 'stroke' : 'fill', c);
   }
   drawHandles();
+  updateStatus();
 }
 
 function drawHandles() {
@@ -475,6 +511,7 @@ function setTool(t) {
   document.querySelectorAll('[data-tool]').forEach(b => b.classList.toggle('active', b.dataset.tool === t));
   view.style.cursor = { pan: 'grab', underlay: 'move', crop: 'crosshair', calibrate: 'crosshair', line: 'crosshair',
     rect: 'crosshair', text: 'text', measure: 'crosshair', select: 'default' }[t];
+  hideAids(); updateStatus();
 }
 
 function setPreview(a, b) {
@@ -492,19 +529,91 @@ function endDraw() {
   preview.setAttribute('visibility', 'hidden'); rubber.setAttribute('visibility', 'hidden');
 }
 
-function lengthText(a, b) {
-  const d = Math.hypot(b.x - a.x, b.y - a.y), upm = num('upm');
+function fmtLen(d) {
+  const upm = num('upm');
   return d.toFixed(1) + ' units' + (upm > 0 ? ' = ' + (d / upm).toFixed(2) + ' m' : '');
+}
+function lengthText(a, b) { return fmtLen(Math.hypot(b.x - a.x, b.y - a.y)); }
+
+const TOOL_NAMES = { pan: 'Pan', underlay: 'Underlay', crop: 'Crop', calibrate: 'Calibrate', line: 'Line',
+  rect: 'Rectangle', text: 'Text', measure: 'Measure', select: 'Select' };
+
+function hint() {
+  switch (tool) {
+    case 'pan': return 'drag to pan';
+    case 'underlay': return 'drag the chosen underlay';
+    case 'crop': return 'drag a rectangle on the underlay';
+    case 'calibrate': return startPt ? 'click the second point' : 'click the first point';
+    case 'line': return startPt ? 'click the end point, right-click to finish' : 'click the start point';
+    case 'rect': return startPt ? 'click the opposite corner' : 'click a corner';
+    case 'text': return 'click where the text goes';
+    case 'measure': return startPt ? 'click the second point' : 'click the first point';
+    default: return 'click or drag to select';
+  }
+}
+
+// Total length of the selected lines, or null when no line is selected
+function selectionLength() {
+  let n = 0, total = 0;
+  for (const e of sel) {
+    if (e.tagName !== 'line') continue;
+    const s = segOf(e);
+    total += Math.hypot(s.x2 - s.x1, s.y2 - s.y1); n++;
+  }
+  return n ? { n, total } : null;
 }
 
 function updateStatus(p) {
-  let t = `${p.x.toFixed(1)}, ${p.y.toFixed(1)}`;
-  if (startPt && ['line', 'measure', 'calibrate'].includes(tool)) t += '  length ' + lengthText(startPt, drawPoint(p));
+  if (p) lastP = p;
+  const live = startPt && lastP && ['line', 'measure', 'calibrate'].includes(tool) ? lengthText(startPt, drawPoint(lastP)) : null;
+  let t = TOOL_NAMES[tool] + ': ' + hint();
+  if (lastP) t += `  |  ${lastP.x.toFixed(1)}, ${lastP.y.toFixed(1)}`;
+  if (live) t += '  |  length ' + live;
+  t += `  |  ${sel.size} selected`;
   $('status').textContent = t;
+
+  const box = $('info'), rows = [TOOL_NAMES[tool], hint()];
+  if (lastP) rows.push(`x ${lastP.x.toFixed(1)}, y ${lastP.y.toFixed(1)}`);
+  rows.push(sel.size + ' selected');
+  const L = selectionLength();
+  if (L) rows.push((L.n > 1 ? 'total length ' : 'length ') + fmtLen(L.total));
+  if (live) rows.push('drawing length ' + live);
+  box.textContent = '';
+  rows.forEach(r => { const d = document.createElement('div'); d.textContent = r; box.appendChild(d); });
+}
+
+// Snap marker and text preview at the cursor
+function hideAids() { snapMark.setAttribute('visibility', 'hidden'); textPrev.setAttribute('visibility', 'hidden'); }
+function showSnapMark(q, kind) {
+  if (!kind) { snapMark.setAttribute('visibility', 'hidden'); return; }
+  const r = 6 / scale(), x = q.x, y = q.y;
+  const d = {
+    end: `M ${x - r} ${y - r} h ${2 * r} v ${2 * r} h ${-2 * r} z`,
+    mid: `M ${x} ${y - r} L ${x + r} ${y + r} L ${x - r} ${y + r} z`,
+    int: `M ${x - r} ${y - r} L ${x + r} ${y + r} M ${x - r} ${y + r} L ${x + r} ${y - r}`,
+    grid: `M ${x - r} ${y} L ${x + r} ${y} M ${x} ${y - r} L ${x} ${y + r}`
+  }[kind];
+  snapMark.setAttribute('d', d); snapMark.setAttribute('visibility', 'visible');
+}
+function updateAids(p) {
+  if (!['line', 'rect', 'text', 'measure', 'calibrate'].includes(tool)) { hideAids(); return; }
+  const q = ['line', 'measure', 'calibrate'].includes(tool) ? drawPoint(p) : snapPoint(p);
+  showSnapMark(q, snapKind);
+  const s = $('textValue').value;
+  if (tool === 'text' && s) {
+    textPrev.setAttribute('x', q.x); textPrev.setAttribute('y', q.y);
+    textPrev.setAttribute('font-size', num('fontSize'));
+    textPrev.textContent = s;
+    textPrev.setAttribute('visibility', 'visible');
+  } else textPrev.setAttribute('visibility', 'hidden');
 }
 
 // Clicks of the drawing tools run on pointer release, so a pinch never places a point
 function clickAction(raw) {
+  doClick(raw);
+  updateStatus();
+}
+function doClick(raw) {
   if (tool === 'line') {
     const p = drawPoint(raw);
     if (!startPt) { startPt = p; setPreview(p, p); return; }
@@ -661,6 +770,7 @@ function gestureMove() {
 }
 
 view.addEventListener('pointerdown', ev => {
+  if (ev.button === 2) return; // right-click is handled by the contextmenu event
   try { view.setPointerCapture(ev.pointerId); } catch (e) { /* not supported */ }
   ptrs.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
   if (ptrs.size >= 2) { cancelDrag(); tap = null; startGesture(); return; }
@@ -687,6 +797,7 @@ view.addEventListener('pointermove', ev => {
     const q = tool === 'rect' ? snapPoint(p) : drawPoint(p);
     if (tool === 'rect') setRubber(startPt, q); else setPreview(startPt, q);
   }
+  updateAids(p);
   if (tool === 'select' && ev.pointerType === 'mouse') {
     const h = hitTest(p);
     if (h !== hover) { hover = h; paint(); }
@@ -703,6 +814,9 @@ function pointerEnd(ev) {
 }
 view.addEventListener('pointerup', pointerEnd);
 view.addEventListener('pointercancel', pointerEnd);
+view.addEventListener('pointerleave', hideAids);
+// Right-click ends a chain or cancels a pending point
+view.addEventListener('contextmenu', ev => { ev.preventDefault(); endDraw(); updateStatus(); });
 
 view.addEventListener('wheel', ev => {
   ev.preventDefault();
@@ -772,7 +886,10 @@ $('resizer').addEventListener('pointermove', ev => {
     $('status').style.left = (w + 14) + 'px';
   }
 });
-$('resizer').addEventListener('pointerup', () => { resizing = false; });
+$('resizer').addEventListener('pointerup', () => {
+  resizing = false;
+  if (!narrow()) { ui.panelWidth = Math.round($('panel').getBoundingClientRect().width); uiSave(); }
+});
 $('resizer').addEventListener('pointercancel', () => { resizing = false; });
 $('cropClear').addEventListener('click', () => { const u = curU(); if (u) { u.crop = null; renderU(u); changed(); } });
 ['fx', 'fy', 'fw', 'fh', 'floorId', 'level', 'upm'].forEach(id => $(id).addEventListener('input', () => { applyFrame(); changed(); }));
@@ -831,25 +948,78 @@ function buildSvg() {
   return out.join('\n') + '\n';
 }
 
-$('save').addEventListener('click', async () => {
-  const text = buildSvg();
-  const name = ($('floorId').value || 'plan') + '-plan.svg';
+// Writes a file: the downloads capability inside an Artifact, else the file dialog, else a download link
+async function saveFile(name, data, mime, ext) {
   try {
-    // Inside an Artifact the page cannot download by itself; the downloads capability does it
     const dl = window.claude && window.claude.use ? await window.claude.use('downloads') : null;
     if (dl) {
-      await dl.save({ filename: name, data: text });
+      await dl.save({ filename: name, data });
     } else if (window.showSaveFilePicker) {
-      const h = await showSaveFilePicker({ suggestedName: name, types: [{ description: 'SVG', accept: { 'image/svg+xml': ['.svg'] } }] });
+      const h = await showSaveFilePicker({ suggestedName: name, types: [{ description: ext.toUpperCase(), accept: { [mime]: ['.' + ext] } }] });
       const w = await h.createWritable();
-      await w.write(text); await w.close();
+      await w.write(data); await w.close();
     } else {
       const a = document.createElement('a');
-      a.href = URL.createObjectURL(new Blob([text], { type: 'image/svg+xml' }));
+      a.href = URL.createObjectURL(data instanceof Blob ? data : new Blob([data], { type: mime }));
       a.download = name; a.click();
     }
-    msg('Saved.');
-  } catch (e) { if (e.name !== 'AbortError' && e.code !== 'declined') msg('Error: ' + e.message); }
+    return true;
+  } catch (e) {
+    if (e.name !== 'AbortError' && e.code !== 'declined') msg('Error: ' + e.message);
+    return false;
+  }
+}
+
+function validate() {
+  const problems = [];
+  if (!(num('fw') > 0) || !(num('fh') > 0)) problems.push('the frame width and height must be above zero');
+  if (!$('floorId').value.trim()) problems.push('the floor ID is empty');
+  if (!(num('upm') > 0)) problems.push('units per meter must be above zero');
+  return problems;
+}
+
+$('save').addEventListener('click', async () => {
+  const problems = validate();
+  if (problems.length) { msg('Cannot save: ' + problems.join('; ') + '.'); return; }
+  const name = $('floorId').value.trim() + '-plan.svg';
+  if (await saveFile(name, buildSvg(), 'image/svg+xml', 'svg')) { dirty = false; msg('Saved.'); }
+});
+
+// PNG preview of the frame area: visible underlays and traced elements, without grid or guides
+$('exportPng').addEventListener('click', async () => {
+  const f = frame();
+  if (!(f.w > 0 && f.h > 0)) { msg('Cannot export: the frame width and height must be above zero.'); return; }
+  const cw = Math.round(f.w >= f.h ? 2000 : 2000 * f.w / f.h), ch = Math.round(cw * f.h / f.w), s = cw / f.w;
+  const cv = document.createElement('canvas');
+  cv.width = cw; cv.height = ch;
+  const ctx = cv.getContext('2d');
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, cw, ch);
+  for (const u of unders) {
+    if (!u.vis || !u.bitmap) continue;
+    ctx.save();
+    ctx.setTransform(s, 0, 0, s, -f.x * s, -f.y * s);
+    ctx.translate(u.x, u.y); ctx.rotate(u.rot * Math.PI / 180);
+    ctx.scale((u.flipX ? -1 : 1) * u.scale, (u.flipY ? -1 : 1) * u.scale);
+    ctx.translate(u.flipX ? -u.w : 0, u.flipY ? -u.h : 0);
+    ctx.globalAlpha = u.opacity;
+    if (u.crop) { ctx.beginPath(); ctx.rect(u.crop.x, u.crop.y, u.crop.w, u.crop.h); ctx.clip(); }
+    ctx.drawImage(u.bitmap, 0, 0);
+    ctx.restore();
+  }
+  ctx.setTransform(s, 0, 0, s, -f.x * s, -f.y * s);
+  ctx.strokeStyle = '#000'; ctx.fillStyle = '#000'; ctx.lineWidth = 2 / s;
+  for (const e of gTrace.children) {
+    if (e.tagName === 'line') {
+      const g = segOf(e);
+      ctx.beginPath(); ctx.moveTo(g.x1, g.y1); ctx.lineTo(g.x2, g.y2); ctx.stroke();
+    } else {
+      ctx.font = `${e.getAttribute('font-size')}px serif`;
+      ctx.fillText(e.textContent, +e.getAttribute('x'), +e.getAttribute('y'));
+    }
+  }
+  const blob = await new Promise(r => cv.toBlob(r, 'image/png'));
+  if (!blob) { msg('Could not create the PNG.'); return; }
+  if (await saveFile(($('floorId').value.trim() || 'plan') + '-preview.png', blob, 'image/png', 'png')) msg('PNG saved.');
 });
 
 // Loading: traced elements from SVG markup (a list of element nodes)
@@ -896,7 +1066,7 @@ $('openFile').addEventListener('change', async e => {
   unders = [...doc.querySelectorAll('#underlays image')].map(underFromImage);
   activeU = unders.length ? 0 : -1;
   rebuildUnderDom(); syncControls();
-  applyFrame(); fitCamera(); changed();
+  applyFrame(); fitCamera(); changed(); dirty = false;
   msg(unders.length ? 'Opened. Pick the underlay images again: ' + unders.map(u => u.name).join(', ') : 'Opened.');
 });
 
@@ -911,14 +1081,15 @@ $('newDoc').addEventListener('click', () => {
   clearTimeout(newArmed); newArmed = null; $('newDoc').textContent = 'New';
   gTrace.textContent = ''; sel.clear(); undoS = []; redoS = [];
   unders.forEach(u => { if (u.url) URL.revokeObjectURL(u.url); });
-  unders = []; activeU = -1; rebuildUnderDom(); syncControls(); paint(); changed();
+  unders = []; activeU = -1; rebuildUnderDom(); syncControls(); endDraw(); hideAids(); paint();
+  clearTimeout(saveTimer); autosave(); dirty = false;
   msg('Cleared.');
 });
 
 // Autosave in the browser's storage; underlay images are not stored, only their placement
 const KEY = 'planTracer.autosave';
 let saveTimer = null;
-function changed() { clearTimeout(saveTimer); saveTimer = setTimeout(autosave, 500); }
+function changed() { dirty = true; clearTimeout(saveTimer); saveTimer = setTimeout(autosave, 500); }
 function autosave() {
   try {
     const data = {
@@ -946,9 +1117,51 @@ function restore() {
   } catch (e) { /* ignore a broken autosave */ }
 }
 
+// Interface state kept in the browser: theme, collapsed sections, panel width, last view
+const UIKEY = 'planTracer.ui';
+let ui = {}, uiTimer = null;
+try { ui = JSON.parse(localStorage.getItem(UIKEY)) || {}; } catch (e) { ui = {}; }
+function uiSave() { try { localStorage.setItem(UIKEY, JSON.stringify(ui)); } catch (e) { /* storage unavailable */ } }
+function uiSaveSoon() { clearTimeout(uiTimer); uiTimer = setTimeout(uiSave, 500); }
+
+function applyTheme() {
+  const t = ui.theme || 'system';
+  if (t === 'system') delete document.documentElement.dataset.theme;
+  else document.documentElement.dataset.theme = t;
+  $('themeBtn').textContent = 'Theme: ' + t;
+}
+$('themeBtn').addEventListener('click', () => {
+  const order = ['system', 'light', 'dark'];
+  ui.theme = order[(order.indexOf(ui.theme || 'system') + 1) % order.length];
+  applyTheme(); uiSave();
+});
+
+ui.collapsed = ui.collapsed || {};
+document.querySelectorAll('#panel fieldset').forEach(fs => {
+  const lg = fs.querySelector('legend'), key = lg.textContent;
+  if (ui.collapsed[key]) fs.classList.add('collapsed');
+  lg.addEventListener('click', () => {
+    fs.classList.toggle('collapsed');
+    ui.collapsed[key] = fs.classList.contains('collapsed');
+    uiSave();
+  });
+});
+
+if (ui.panelWidth && !narrow()) {
+  $('panel').style.width = ui.panelWidth + 'px';
+  $('status').style.left = (ui.panelWidth + 14) + 'px';
+}
+
+window.addEventListener('beforeunload', ev => { if (dirty) { ev.preventDefault(); ev.returnValue = ''; } });
+// Write the autosave at once when the page is closed, so the last half second of edits is kept
+window.addEventListener('pagehide', () => { clearTimeout(saveTimer); autosave(); });
+
 restore();
+if (gTrace.children.length || unders.length) dirty = true;
 rebuildUnderDom(); syncControls();
-applyFrame(); fitCamera(); setTool('line');
+applyFrame();
+if (Array.isArray(ui.view) && ui.view.length === 4 && ui.view.every(Number.isFinite)) setView(...ui.view); else fitCamera();
+setTool('line'); applyTheme();
 </script>
 </body>
 </html>
