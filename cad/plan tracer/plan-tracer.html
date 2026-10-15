@@ -41,6 +41,9 @@
   #help { position: fixed; right: 8px; bottom: 8px; max-width: 290px; max-height: 60%; overflow-y: auto; background: var(--bg); color: var(--fg); border: 1px solid var(--border); border-radius: 4px; padding: 4px 8px; box-shadow: 0 2px 6px rgba(0,0,0,.25); }
   #help summary { cursor: pointer; font-weight: bold; }
   #help ol { margin: 6px 0 2px; padding-left: 18px; }
+  #panel input[type=color] { width: 50px; padding: 0; }
+  #orthoBtn { position: fixed; top: 8px; left: 334px; background: var(--box); color: var(--fg); border: 1px solid var(--border); border-radius: 4px; padding: 3px 8px; font-size: 12px; cursor: pointer; }
+  #orthoBtn.on { background: var(--btn-active); }
 </style>
 </head>
 <body>
@@ -83,11 +86,19 @@
     <button data-tool="rect">Rectangle</button>
     <button data-tool="text">Text</button>
     <button data-tool="measure">Measure</button>
+    <button data-tool="dimension">Dimension</button>
+    <button data-tool="offset">Offset</button>
+    <button data-tool="trim">Trim</button>
+    <button data-tool="extend">Extend</button>
     <button data-tool="select">Select</button>
     <label>Text <input type="text" id="textValue"></label>
     <label>Font size <input type="number" id="fontSize" value="12" step="any"></label>
     <button id="applyText">Apply to selected text</button>
     <label>Real distance (m) <input type="number" id="calDist" value="" step="any"></label>
+    <label>Line thickness <input type="number" id="lineW" value="1.5" min="0.5" step="0.5"></label>
+    <label>Line color <input type="color" id="lineC" value="#000000"></label>
+    <button id="applyLine">Apply to selected lines</button>
+    <label>Offset distance (m) <input type="number" id="offDist" value="1" step="any"></label>
   </fieldset>
   <fieldset>
     <legend>Edit</legend>
@@ -95,6 +106,19 @@
     <button id="redo">Redo</button>
     <button id="del">Delete</button>
     <button id="dup">Duplicate</button>
+    <button id="selAll">Select all</button>
+    <button id="joinCol" title="Join touching or overlapping collinear lines of the same thickness and color">Join collinear</button>
+  </fieldset>
+  <fieldset>
+    <legend>Arrange</legend>
+    <button data-arrange="left">Align left</button>
+    <button data-arrange="right">Align right</button>
+    <button data-arrange="top">Align top</button>
+    <button data-arrange="bottom">Align bottom</button>
+    <button data-arrange="centerx">Center horizontally</button>
+    <button data-arrange="centery">Center vertically</button>
+    <button data-arrange="distx">Distribute horizontally</button>
+    <button data-arrange="disty">Distribute vertically</button>
   </fieldset>
   <fieldset>
     <legend>View and aids</legend>
@@ -138,14 +162,17 @@
 <div id="status"></div>
 <div id="info"></div>
 <div id="toast"></div>
+<button id="orthoBtn" title="Orthogonal drawing and moving (also while Shift is held)">Ortho: off</button>
 <details id="help" open>
   <summary>Help</summary>
   <ol>
     <li>Floor: set the floor ID, level, frame and units per meter.</li>
     <li>Underlays: pick one or more images. Choose one in the list, then drag it with the Underlay tool or type x, y, rotation and scale. Flip, opacity, Visible and Locked apply to the chosen one. Crop: drag a rectangle on it with the Crop tool.</li>
     <li>Calibrate: enter the real distance in meters, then click two points a known distance apart on the underlay. The underlay is rescaled to match.</li>
-    <li>Line: click the start, then the end. Ends snap to line ends, midpoints, intersections and the grid. Ortho (or Shift) locks 45° steps. Chain lines continues from the last end. Esc cancels.</li>
-    <li>Rectangle: click two opposite corners. Measure: click two points to read the distance.</li>
+    <li>Line: click the start, then the end, or drag from the start to the end. Ends snap to line ends, midpoints, intersections and the grid. After the start you can type a length in meters and press Enter. Ortho (the button on the drawing, the checkbox, or Shift) locks 45° steps; it makes rectangles square and keeps moves and line-end drags on one axis. Chain lines continues from the last end. Esc cancels.</li>
+    <li>Rectangle: click two opposite corners. Measure: click two points to read the distance. Dimension: click two points, then where the dimension line goes.</li>
+    <li>Offset: select lines, set the distance in meters, choose Offset and click the side. Trim: click the part of a line to remove between its crossings. Extend: click a line near the end to lengthen it to the next line.</li>
+    <li>Line thickness and color apply to new lines; use Apply to selected lines to change existing ones. Edit has Select all (Ctrl+A) and Join collinear; Arrange aligns and distributes the selection.</li>
     <li>Text: type it in the Text field, choose the Text tool, click where it goes.</li>
     <li>Select: click an element, Shift-click to add, drag on empty space to select a box, drag to move, drag a line end to reshape. Select one text to edit it and use Apply to selected text. Delete, Duplicate, Undo and Redo work on the selection.</li>
     <li>Pan: Pan tool, middle mouse button, or two fingers. Zoom: wheel, pinch or the Zoom buttons.</li>
@@ -168,6 +195,7 @@ let sel = new Set(), undoS = [], redoS = [];
 let drag = null, tap = null, gesture = null, shiftDown = false;
 const ptrs = new Map();
 let snapKind = null, lastP = null, dirty = false;
+let dimB = null, typed = '';
 
 const num = id => parseFloat($(id).value) || 0;
 
@@ -368,17 +396,54 @@ function orthoPoint(a, p) {
   return { x: a.x + dx * d, y: a.y + dy * d };
 }
 
+const orthoOn = () => $('ortho').checked || shiftDown;
+const r6 = v => +v.toFixed(6);
+
 function drawPoint(raw) {
   let p = snapPoint(raw);
-  if (startPt && ['line', 'measure', 'calibrate'].includes(tool) && ($('ortho').checked || shiftDown)) { p = orthoPoint(startPt, p); snapKind = null; }
+  if (startPt && ['line', 'measure', 'calibrate'].includes(tool) && orthoOn()) { p = orthoPoint(startPt, p); snapKind = null; }
   return p;
 }
 
+// Second corner of a rectangle; with ortho on the rectangle is a square
+function rectPoint(raw) {
+  let q = snapPoint(raw);
+  if (startPt && orthoOn()) {
+    const dx = q.x - startPt.x, dy = q.y - startPt.y, s = Math.max(Math.abs(dx), Math.abs(dy));
+    q = { x: startPt.x + (dx < 0 ? -s : s), y: startPt.y + (dy < 0 ? -s : s) };
+    snapKind = null;
+  }
+  return q;
+}
+
+// End of a line whose length was typed (meters), in the direction of the cursor point q
+function typedEnd(q) {
+  const len = parseFloat(typed) * num('upm'), d = Math.hypot(q.x - startPt.x, q.y - startPt.y);
+  if (!(len > 0) || !d) return q;
+  return { x: r6(startPt.x + (q.x - startPt.x) * len / d), y: r6(startPt.y + (q.y - startPt.y) * len / d) };
+}
+
+// Dimension line through p, parallel to a-b; null when p lies on the measured line
+function dimGeom(a, b, p) {
+  const L = Math.hypot(b.x - a.x, b.y - a.y);
+  if (!L) return null;
+  const nx = -(b.y - a.y) / L, ny = (b.x - a.x) / L;
+  const o = (p.x - a.x) * nx + (p.y - a.y) * ny;
+  if (Math.abs(o) < 1e-9) return null;
+  const sg = Math.sign(o);
+  return { a2: { x: r6(a.x + nx * o), y: r6(a.y + ny * o) }, b2: { x: r6(b.x + nx * o), y: r6(b.y + ny * o) }, nx: sg * nx, ny: sg * ny, len: L };
+}
+
 // Trace elements, selection and history
-function mkLine(x1, y1, x2, y2) {
+const curStyle = () => ({ w: num('lineW') > 0 ? num('lineW') : 1.5, c: $('lineC').value || '#000000' });
+const lineColor = e => e.getAttribute('data-color') || '#000';
+const hex6 = c => /^#[0-9a-f]{6}$/i.test(c) ? c : /^#[0-9a-f]{3}$/i.test(c) ? '#' + [...c.slice(1)].map(h => h + h).join('') : '#000000';
+
+// The real color is kept in data-color; stroke is overwritten while a line is selected or hovered
+function mkLine(x1, y1, x2, y2, st = curStyle()) {
   const l = document.createElementNS(NS, 'line');
   l.setAttribute('x1', x1); l.setAttribute('y1', y1); l.setAttribute('x2', x2); l.setAttribute('y2', y2);
-  l.setAttribute('stroke', '#000'); l.setAttribute('stroke-width', '1.5');
+  l.setAttribute('stroke', st.c); l.setAttribute('data-color', st.c); l.setAttribute('stroke-width', st.w);
   l.setAttribute('vector-effect', 'non-scaling-stroke');
   return l;
 }
@@ -392,8 +457,9 @@ function mkText(x, y, s, size) {
 
 function paint() {
   for (const e of gTrace.children) {
-    const c = sel.has(e) ? '#e60' : e === hover ? '#06c' : '#000';
-    e.setAttribute(e.tagName === 'line' ? 'stroke' : 'fill', c);
+    const hl = sel.has(e) ? '#e60' : e === hover ? '#06c' : null;
+    if (e.tagName === 'line') e.setAttribute('stroke', hl || lineColor(e));
+    else e.setAttribute('fill', hl || '#000');
   }
   drawHandles();
   updateStatus();
@@ -418,6 +484,7 @@ function selChanged() {
   if (sel.size === 1) {
     const e = [...sel][0];
     if (e.tagName === 'text') { $('textValue').value = e.textContent; $('fontSize').value = e.getAttribute('font-size'); }
+    else { $('lineW').value = e.getAttribute('stroke-width'); $('lineC').value = hex6(lineColor(e)); }
   }
   paint();
 }
@@ -429,6 +496,10 @@ const snapshot = e => e.tagName === 'line'
 function setAttrs(e, a) { for (const k in a) e.setAttribute(k, a[k]); }
 
 function runOp(op, dir) {
+  if (op.type === 'multi') {
+    (dir === 'undo' ? [...op.ops].reverse() : op.ops).forEach(o => runOp(o, dir));
+    return;
+  }
   if (op.type === 'add') {
     if (dir === 'undo') op.els.forEach(e => { sel.delete(e); e.remove(); });
     else op.els.forEach(e => gTrace.appendChild(e));
@@ -489,6 +560,194 @@ function applyToSelectedText() {
   runOp(op, 'redo'); push(op);
 }
 
+function applyLineStyle() {
+  const st = curStyle(), items = [];
+  for (const e of sel) {
+    if (e.tagName !== 'line') continue;
+    items.push({ el: e, before: { 'stroke-width': e.getAttribute('stroke-width'), 'data-color': lineColor(e) }, after: { 'stroke-width': st.w, 'data-color': st.c } });
+  }
+  if (!items.length) { msg('Select a line first.'); return; }
+  const op = { type: 'attrs', items };
+  runOp(op, 'redo'); push(op);
+}
+
+function selectAll() { sel = new Set(gTrace.children); selChanged(); }
+
+// Align and distribute the selection by bounding boxes
+function bboxOf(e) {
+  if (e.tagName === 'line') {
+    const s = segOf(e);
+    return { x: Math.min(s.x1, s.x2), y: Math.min(s.y1, s.y2), w: Math.abs(s.x2 - s.x1), h: Math.abs(s.y2 - s.y1) };
+  }
+  const b = e.getBBox();
+  return { x: b.x, y: b.y, w: b.width, h: b.height };
+}
+function shiftEl(e, dx, dy) {
+  if (e.tagName === 'line') {
+    const s = segOf(e);
+    setAttrs(e, { x1: r6(s.x1 + dx), x2: r6(s.x2 + dx), y1: r6(s.y1 + dy), y2: r6(s.y2 + dy) });
+  } else setAttrs(e, { x: r6(+e.getAttribute('x') + dx), y: r6(+e.getAttribute('y') + dy) });
+}
+function arrange(kind) {
+  const els = [...sel], dist = kind.startsWith('dist');
+  if (els.length < (dist ? 3 : 2)) { msg(dist ? 'Select at least three elements.' : 'Select at least two elements.'); return; }
+  const bs = els.map(bboxOf), n = els.length;
+  const minX = Math.min(...bs.map(b => b.x)), maxX = Math.max(...bs.map(b => b.x + b.w));
+  const minY = Math.min(...bs.map(b => b.y)), maxY = Math.max(...bs.map(b => b.y + b.h));
+  const mv = els.map(() => [0, 0]);
+  bs.forEach((b, i) => {
+    if (kind === 'left') mv[i][0] = minX - b.x;
+    else if (kind === 'right') mv[i][0] = maxX - (b.x + b.w);
+    else if (kind === 'top') mv[i][1] = minY - b.y;
+    else if (kind === 'bottom') mv[i][1] = maxY - (b.y + b.h);
+    else if (kind === 'centerx') mv[i][0] = (minX + maxX) / 2 - (b.x + b.w / 2);
+    else if (kind === 'centery') mv[i][1] = (minY + maxY) / 2 - (b.y + b.h / 2);
+  });
+  if (dist) {
+    const k = kind === 'distx' ? 0 : 1;
+    const c = bs.map(b => k === 0 ? b.x + b.w / 2 : b.y + b.h / 2);
+    const order = c.map((v, i) => i).sort((a, b) => c[a] - c[b]);
+    const step = (c[order[n - 1]] - c[order[0]]) / (n - 1);
+    order.forEach((i, j) => { mv[i][k] = c[order[0]] + j * step - c[i]; });
+  }
+  const items = els.map((e, i) => {
+    const before = snapshot(e);
+    shiftEl(e, mv[i][0], mv[i][1]);
+    return { el: e, before, after: snapshot(e) };
+  }).filter(it => JSON.stringify(it.before) !== JSON.stringify(it.after));
+  if (!items.length) { msg('Already arranged.'); return; }
+  push({ type: 'attrs', items });
+}
+
+// Join touching or overlapping collinear lines of the same thickness and color (selected lines, or all when none is selected)
+function joinCollinear() {
+  let lines = [...sel].filter(e => e.tagName === 'line');
+  if (!lines.length) lines = [...gTrace.children].filter(e => e.tagName === 'line');
+  const tol = 0.01, all = [...gTrace.children];
+  const orig = new Map(lines.map(l => [l, snapshot(l)]));
+  const alive = new Set(lines), removed = [];
+  const key = l => l.getAttribute('stroke-width') + '|' + lineColor(l);
+  let merged = true;
+  while (merged) {
+    merged = false;
+    const arr = [...alive];
+    outer: for (let i = 0; i < arr.length; i++) for (let j = i + 1; j < arr.length; j++) {
+      const a = arr[i], b = arr[j];
+      if (key(a) !== key(b)) continue;
+      const s = segOf(a), q = segOf(b), L = Math.hypot(s.x2 - s.x1, s.y2 - s.y1);
+      if (!L) continue;
+      const ux = (s.x2 - s.x1) / L, uy = (s.y2 - s.y1) / L;
+      const off = pt => Math.abs((pt.x - s.x1) * uy - (pt.y - s.y1) * ux);
+      const tt = pt => (pt.x - s.x1) * ux + (pt.y - s.y1) * uy;
+      const b1 = { x: q.x1, y: q.y1 }, b2 = { x: q.x2, y: q.y2 };
+      if (off(b1) > tol || off(b2) > tol) continue;
+      const ends = [{ t: 0, p: { x: s.x1, y: s.y1 } }, { t: L, p: { x: s.x2, y: s.y2 } }, { t: tt(b1), p: b1 }, { t: tt(b2), p: b2 }];
+      const bLo = Math.min(ends[2].t, ends[3].t), bHi = Math.max(ends[2].t, ends[3].t);
+      if (Math.max(0, bLo) - Math.min(L, bHi) > tol) continue;
+      ends.sort((u, v) => u.t - v.t);
+      const lo = ends[0].p, hi = ends[3].p;
+      setAttrs(a, { x1: lo.x, y1: lo.y, x2: hi.x, y2: hi.y });
+      alive.delete(b); removed.push(b);
+      merged = true;
+      break outer;
+    }
+  }
+  if (!removed.length) { msg('Nothing to join.'); return; }
+  removed.forEach(r => setAttrs(r, orig.get(r)));
+  const aItems = [...alive].map(el => ({ el, before: orig.get(el), after: snapshot(el) }))
+    .filter(it => JSON.stringify(it.before) !== JSON.stringify(it.after));
+  const dItems = removed.map(el => ({ el, idx: all.indexOf(el) })).sort((a, b) => a.idx - b.idx);
+  const op = { type: 'multi', ops: [{ type: 'attrs', items: aItems }, { type: 'del', items: dItems }] };
+  runOp(op, 'redo'); push(op);
+  msg('Joined ' + lines.length + ' lines into ' + alive.size + '.');
+}
+
+// Offset: parallel copies of the selected lines at the typed distance, on the side of the click
+function doOffset(p) {
+  const d = num('offDist') * num('upm');
+  if (!(d > 0)) { msg('Enter an offset distance above zero.'); return; }
+  const lines = [...sel].filter(e => e.tagName === 'line');
+  if (!lines.length) { msg('Select the lines first, then choose Offset and click the side.'); return; }
+  const els = [];
+  for (const l of lines) {
+    const s = segOf(l), L = Math.hypot(s.x2 - s.x1, s.y2 - s.y1);
+    if (!L) continue;
+    let nx = -(s.y2 - s.y1) / L, ny = (s.x2 - s.x1) / L;
+    if ((p.x - s.x1) * nx + (p.y - s.y1) * ny < 0) { nx = -nx; ny = -ny; }
+    els.push(mkLine(r6(s.x1 + nx * d), r6(s.y1 + ny * d), r6(s.x2 + nx * d), r6(s.y2 + ny * d), { w: l.getAttribute('stroke-width'), c: lineColor(l) }));
+  }
+  if (els.length) addEls(els);
+}
+
+// Trim: remove the clicked part of a line between its nearest crossings with other lines
+function doTrim(p) {
+  const l = hitTest(p);
+  if (!l || l.tagName !== 'line') { msg('Click a line.'); return; }
+  const s = segOf(l), dx = s.x2 - s.x1, dy = s.y2 - s.y1, L2 = dx * dx + dy * dy;
+  if (!L2) return;
+  const tOf = q => ((q.x - s.x1) * dx + (q.y - s.y1) * dy) / L2;
+  const t0 = tOf(p), ts = [];
+  for (const o of gTrace.children) {
+    if (o === l || o.tagName !== 'line') continue;
+    const ip = intersect(s, segOf(o));
+    if (ip) ts.push(tOf(ip));
+  }
+  const lows = ts.filter(t => t <= t0), highs = ts.filter(t => t > t0);
+  const lo = lows.length ? Math.max(...lows) : null, hi = highs.length ? Math.min(...highs) : null;
+  if (lo === null && hi === null) { msg('No crossing line to trim at.'); return; }
+  const pieces = [];
+  if (lo !== null && lo > 1e-6) pieces.push([0, lo]);
+  if (hi !== null && hi < 1 - 1e-6) pieces.push([hi, 1]);
+  const pt = t => t === 0 ? { x: s.x1, y: s.y1 } : t === 1 ? { x: s.x2, y: s.y2 } : { x: r6(s.x1 + t * dx), y: r6(s.y1 + t * dy) };
+  const ops = [];
+  if (!pieces.length) ops.push({ type: 'del', items: [{ el: l, idx: [...gTrace.children].indexOf(l) }] });
+  else {
+    const a = pt(pieces[0][0]), b = pt(pieces[0][1]);
+    ops.push({ type: 'attrs', items: [{ el: l, before: snapshot(l), after: { x1: a.x, y1: a.y, x2: b.x, y2: b.y } }] });
+    if (pieces[1]) {
+      const c = pt(pieces[1][0]), e = pt(pieces[1][1]), n = l.cloneNode(true);
+      setAttrs(n, { x1: c.x, y1: c.y, x2: e.x, y2: e.y });
+      ops.push({ type: 'add', els: [n] });
+    }
+  }
+  const op = { type: 'multi', ops };
+  runOp(op, 'redo'); push(op);
+}
+
+// Extend: lengthen the end of the clicked line nearest the click to the first line it meets
+function doExtend(p) {
+  const l = hitTest(p);
+  if (!l || l.tagName !== 'line') { msg('Click a line near the end to extend.'); return; }
+  const s = segOf(l);
+  const end = Math.hypot(p.x - s.x1, p.y - s.y1) <= Math.hypot(p.x - s.x2, p.y - s.y2) ? 1 : 2;
+  const e = end === 1 ? { x: s.x1, y: s.y1 } : { x: s.x2, y: s.y2 };
+  const o = end === 1 ? { x: s.x2, y: s.y2 } : { x: s.x1, y: s.y1 };
+  const dx = e.x - o.x, dy = e.y - o.y;
+  if (!dx && !dy) return;
+  let best = null;
+  for (const m of gTrace.children) {
+    if (m === l || m.tagName !== 'line') continue;
+    const b = segOf(m), bx = b.x2 - b.x1, by = b.y2 - b.y1, den = dx * by - dy * bx;
+    if (Math.abs(den) < 1e-9) continue;
+    const sT = ((b.x1 - e.x) * by - (b.y1 - e.y) * bx) / den;
+    const uT = ((b.x1 - e.x) * dy - (b.y1 - e.y) * dx) / den;
+    if (sT > 1e-9 && uT >= 0 && uT <= 1 && (!best || sT < best.s)) best = { s: sT, x: r6(e.x + sT * dx), y: r6(e.y + sT * dy) };
+  }
+  if (!best) { msg('No line to extend to.'); return; }
+  const op = { type: 'attrs', items: [{ el: l, before: snapshot(l), after: { ['x' + end]: best.x, ['y' + end]: best.y } }] };
+  runOp(op, 'redo'); push(op);
+}
+
+// Dimension: two extension lines, the dimension line and its length as text, as ordinary lines and a text
+function dimensionEls(a, b, d) {
+  const size = num('fontSize'), st = curStyle(), upm = num('upm');
+  const s = upm > 0 ? (d.len / upm).toFixed(2) + ' m' : d.len.toFixed(1);
+  const w = s.length * size * 0.55;
+  const cx = (d.a2.x + d.b2.x) / 2 + d.nx * size * 0.9, cy = (d.a2.y + d.b2.y) / 2 + d.ny * size * 0.9;
+  return [mkLine(a.x, a.y, d.a2.x, d.a2.y, st), mkLine(b.x, b.y, d.b2.x, d.b2.y, st), mkLine(d.a2.x, d.a2.y, d.b2.x, d.b2.y, st),
+    mkText(r6(cx - w / 2), r6(cy + size * 0.35), s, size)];
+}
+
 function hitTest(p) {
   const tol = 8 / scale();
   let best = null, bd = tol;
@@ -506,11 +765,12 @@ function hitTest(p) {
 
 // Tools
 function setTool(t) {
-  tool = t; startPt = null; calib = null;
+  tool = t; startPt = null; calib = null; dimB = null; typed = '';
   preview.setAttribute('visibility', 'hidden'); rubber.setAttribute('visibility', 'hidden');
   document.querySelectorAll('[data-tool]').forEach(b => b.classList.toggle('active', b.dataset.tool === t));
   view.style.cursor = { pan: 'grab', underlay: 'move', crop: 'crosshair', calibrate: 'crosshair', line: 'crosshair',
-    rect: 'crosshair', text: 'text', measure: 'crosshair', select: 'default' }[t];
+    rect: 'crosshair', text: 'text', measure: 'crosshair', dimension: 'crosshair', offset: 'crosshair', trim: 'crosshair',
+    extend: 'crosshair', select: 'default' }[t];
   hideAids(); updateStatus();
 }
 
@@ -524,8 +784,21 @@ function setRubber(a, b) {
   rubber.setAttribute('width', Math.abs(a.x - b.x)); rubber.setAttribute('height', Math.abs(a.y - b.y));
   rubber.setAttribute('visibility', 'visible');
 }
+function updatePreview(p) {
+  if (!startPt) return;
+  if (tool === 'rect') setRubber(startPt, rectPoint(p));
+  else if (tool === 'dimension') {
+    const q = snapPoint(p);
+    if (!dimB) setPreview(startPt, q);
+    else { const d = dimGeom(startPt, dimB, q); if (d) setPreview(d.a2, d.b2); }
+  } else {
+    let q = drawPoint(p);
+    if (tool === 'line' && typed) q = typedEnd(q);
+    setPreview(startPt, q);
+  }
+}
 function endDraw() {
-  startPt = null;
+  startPt = null; dimB = null; typed = '';
   preview.setAttribute('visibility', 'hidden'); rubber.setAttribute('visibility', 'hidden');
 }
 
@@ -536,7 +809,8 @@ function fmtLen(d) {
 function lengthText(a, b) { return fmtLen(Math.hypot(b.x - a.x, b.y - a.y)); }
 
 const TOOL_NAMES = { pan: 'Pan', underlay: 'Underlay', crop: 'Crop', calibrate: 'Calibrate', line: 'Line',
-  rect: 'Rectangle', text: 'Text', measure: 'Measure', select: 'Select' };
+  rect: 'Rectangle', text: 'Text', measure: 'Measure', dimension: 'Dimension', offset: 'Offset', trim: 'Trim',
+  extend: 'Extend', select: 'Select' };
 
 function hint() {
   switch (tool) {
@@ -544,7 +818,11 @@ function hint() {
     case 'underlay': return 'drag the chosen underlay';
     case 'crop': return 'drag a rectangle on the underlay';
     case 'calibrate': return startPt ? 'click the second point' : 'click the first point';
-    case 'line': return startPt ? 'click the end point, right-click to finish' : 'click the start point';
+    case 'line': return startPt ? 'click the end point or type a length, right-click to finish' : 'click or drag from the start point';
+    case 'dimension': return !startPt ? 'click the first point' : !dimB ? 'click the second point' : 'click where the dimension line goes';
+    case 'offset': return 'select lines, then click the side to offset them';
+    case 'trim': return 'click the part of a line to remove';
+    case 'extend': return 'click a line near the end to extend';
     case 'rect': return startPt ? 'click the opposite corner' : 'click a corner';
     case 'text': return 'click where the text goes';
     case 'measure': return startPt ? 'click the second point' : 'click the first point';
@@ -569,6 +847,7 @@ function updateStatus(p) {
   let t = TOOL_NAMES[tool] + ': ' + hint();
   if (lastP) t += `  |  ${lastP.x.toFixed(1)}, ${lastP.y.toFixed(1)}`;
   if (live) t += '  |  length ' + live;
+  if (typed) t += '  |  typed length ' + typed + ' m, Enter to place';
   t += `  |  ${sel.size} selected`;
   $('status').textContent = t;
 
@@ -578,6 +857,7 @@ function updateStatus(p) {
   const L = selectionLength();
   if (L) rows.push((L.n > 1 ? 'total length ' : 'length ') + fmtLen(L.total));
   if (live) rows.push('drawing length ' + live);
+  if (typed) rows.push('typed length ' + typed + ' m');
   box.textContent = '';
   rows.forEach(r => { const d = document.createElement('div'); d.textContent = r; box.appendChild(d); });
 }
@@ -596,8 +876,8 @@ function showSnapMark(q, kind) {
   snapMark.setAttribute('d', d); snapMark.setAttribute('visibility', 'visible');
 }
 function updateAids(p) {
-  if (!['line', 'rect', 'text', 'measure', 'calibrate'].includes(tool)) { hideAids(); return; }
-  const q = ['line', 'measure', 'calibrate'].includes(tool) ? drawPoint(p) : snapPoint(p);
+  if (!['line', 'rect', 'text', 'measure', 'calibrate', 'dimension'].includes(tool)) { hideAids(); return; }
+  const q = ['line', 'measure', 'calibrate'].includes(tool) ? drawPoint(p) : tool === 'rect' ? rectPoint(p) : snapPoint(p);
   showSnapMark(q, snapKind);
   const s = $('textValue').value;
   if (tool === 'text' && s) {
@@ -618,9 +898,9 @@ function doClick(raw) {
     const p = drawPoint(raw);
     if (!startPt) { startPt = p; setPreview(p, p); return; }
     addEls([mkLine(startPt.x, startPt.y, p.x, p.y)]);
-    if ($('chain').checked) { startPt = p; setPreview(p, p); } else endDraw();
+    if ($('chain').checked) { startPt = p; typed = ''; setPreview(p, p); } else endDraw();
   } else if (tool === 'rect') {
-    const p = snapPoint(raw);
+    const p = rectPoint(raw);
     if (!startPt) { startPt = p; setRubber(p, p); return; }
     const a = startPt;
     addEls([mkLine(a.x, a.y, p.x, a.y), mkLine(p.x, a.y, p.x, p.y), mkLine(p.x, p.y, a.x, p.y), mkLine(a.x, p.y, a.x, a.y)]);
@@ -636,7 +916,21 @@ function doClick(raw) {
     msg('Distance: ' + lengthText(startPt, p));
     setPreview(startPt, p);
     startPt = null;
-  } else if (tool === 'calibrate') {
+  } else if (tool === 'dimension') {
+    const p = snapPoint(raw);
+    if (!startPt) { startPt = p; setPreview(p, p); return; }
+    if (!dimB) {
+      if (p.x === startPt.x && p.y === startPt.y) return;
+      dimB = p; updatePreview(raw); return;
+    }
+    const d = dimGeom(startPt, dimB, p);
+    if (!d) { msg('Click to one side of the measured line.'); return; }
+    addEls(dimensionEls(startPt, dimB, d));
+    endDraw();
+  } else if (tool === 'offset') doOffset(raw);
+  else if (tool === 'trim') doTrim(raw);
+  else if (tool === 'extend') doExtend(raw);
+  else if (tool === 'calibrate') {
     const u = curU();
     if (!u || !u.el) { msg('Pick an underlay image first.'); return; }
     if (!(num('calDist') > 0)) { msg('Enter the real distance in meters first.'); return; }
@@ -712,7 +1006,8 @@ function dragMove(ev, p) {
     drag.u.crop = { x: x1, y: y1, w: x2 - x1, h: y2 - y1 };
     renderU(drag.u);
   } else if (drag.kind === 'move') {
-    const dx = p.x - drag.start.x, dy = p.y - drag.start.y;
+    let dx = p.x - drag.start.x, dy = p.y - drag.start.y;
+    if (orthoOn()) { if (Math.abs(dx) >= Math.abs(dy)) dy = 0; else dx = 0; }
     for (const it of drag.items) {
       if (it.el.tagName === 'line') {
         it.el.setAttribute('x1', +it.orig.x1 + dx); it.el.setAttribute('x2', +it.orig.x2 + dx);
@@ -721,7 +1016,11 @@ function dragMove(ev, p) {
     }
     drawHandles();
   } else if (drag.kind === 'handle') {
-    const q = snapPoint(p);
+    let q = snapPoint(p);
+    if (orthoOn()) {
+      const o = drag.end === 1 ? { x: +drag.orig.x2, y: +drag.orig.y2 } : { x: +drag.orig.x1, y: +drag.orig.y1 };
+      q = orthoPoint(o, q);
+    }
     drag.el.setAttribute('x' + drag.end, q.x); drag.el.setAttribute('y' + drag.end, q.y);
     drawHandles();
   } else if (drag.kind === 'rubber') {
@@ -773,9 +1072,15 @@ view.addEventListener('pointerdown', ev => {
   if (ev.button === 2) return; // right-click is handled by the contextmenu event
   try { view.setPointerCapture(ev.pointerId); } catch (e) { /* not supported */ }
   ptrs.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
-  if (ptrs.size >= 2) { cancelDrag(); tap = null; startGesture(); return; }
+  if (ptrs.size >= 2) {
+    cancelDrag();
+    if (tap && tap.drawFrom && tap.moved) endDraw();
+    tap = null; startGesture(); return;
+  }
   tap = { x: ev.clientX, y: ev.clientY, moved: false };
   const p = toSvg(ev);
+  // A line can be drawn by dragging from its start point
+  if (tool === 'line' && !startPt && ev.button === 0) tap.drawFrom = snapPoint(p);
   if (tool === 'pan' || ev.button === 1) { drag = { kind: 'pan', x: ev.clientX, y: ev.clientY }; tap = null; return; }
   if (tool === 'underlay') {
     const u = curU();
@@ -793,10 +1098,8 @@ view.addEventListener('pointermove', ev => {
   const p = toSvg(ev);
   updateStatus(p);
   if (drag) { dragMove(ev, p); return; }
-  if (startPt) {
-    const q = tool === 'rect' ? snapPoint(p) : drawPoint(p);
-    if (tool === 'rect') setRubber(startPt, q); else setPreview(startPt, q);
-  }
+  if (tap && tap.moved && tap.drawFrom && !startPt && tool === 'line') startPt = tap.drawFrom;
+  updatePreview(p);
   updateAids(p);
   if (tool === 'select' && ev.pointerType === 'mouse') {
     const h = hitTest(p);
@@ -809,14 +1112,23 @@ function pointerEnd(ev) {
   ptrs.delete(ev.pointerId);
   if (wasTwo) { if (ptrs.size < 2) gesture = null; tap = null; return; }
   if (drag) { endDrag(toSvg(ev)); tap = null; return; }
-  if (tap && !tap.moved && ev.type === 'pointerup') clickAction(toPt(tap.x, tap.y));
+  if (tap && ev.type === 'pointerup') {
+    if (!tap.moved) clickAction(toPt(tap.x, tap.y));
+    else if (tap.drawFrom && startPt) finishDragLine(toSvg(ev));
+  } else if (tap && tap.drawFrom && tap.moved) endDraw();
   tap = null;
+}
+function finishDragLine(raw) {
+  const p = drawPoint(raw);
+  if (Math.hypot(p.x - startPt.x, p.y - startPt.y) > 0) addEls([mkLine(startPt.x, startPt.y, p.x, p.y)]);
+  if ($('chain').checked) { startPt = p; typed = ''; setPreview(p, p); } else endDraw();
+  updateStatus();
 }
 view.addEventListener('pointerup', pointerEnd);
 view.addEventListener('pointercancel', pointerEnd);
 view.addEventListener('pointerleave', hideAids);
 // Right-click ends a chain or cancels a pending point
-view.addEventListener('contextmenu', ev => { ev.preventDefault(); endDraw(); updateStatus(); });
+view.addEventListener('contextmenu', ev => { ev.preventDefault(); tap = null; endDraw(); updateStatus(); });
 
 view.addEventListener('wheel', ev => {
   ev.preventDefault();
@@ -826,12 +1138,33 @@ view.addEventListener('wheel', ev => {
 window.addEventListener('keydown', ev => {
   if (ev.key === 'Shift') shiftDown = true;
   if (ev.target.tagName === 'INPUT') return;
+  // Typed length: digits after the first point of a line, Enter places the line
+  if (tool === 'line' && startPt && !ev.ctrlKey && !ev.metaKey && !ev.altKey) {
+    if (/^[0-9]$/.test(ev.key) || ((ev.key === '.' || ev.key === ',') && !typed.includes('.'))) {
+      typed += ev.key === ',' ? '.' : ev.key; typedChanged(); return;
+    }
+    if (ev.key === 'Backspace' && typed) { typed = typed.slice(0, -1); typedChanged(); return; }
+    if (ev.key === 'Enter' && typed) { ev.preventDefault(); placeTyped(); return; }
+  }
+  if (ev.key === 'a' && ev.ctrlKey) { ev.preventDefault(); selectAll(); }
   if (ev.key === 'Delete') deleteSelected();
   if (ev.key === 'Escape') { endDraw(); sel.clear(); selChanged(); }
   if (ev.key === 'z' && ev.ctrlKey && !ev.shiftKey) undo();
   if ((ev.key === 'y' && ev.ctrlKey) || (ev.key === 'Z' && ev.ctrlKey && ev.shiftKey)) redo();
 });
 window.addEventListener('keyup', ev => { if (ev.key === 'Shift') shiftDown = false; });
+
+function typedChanged() { if (lastP) updatePreview(lastP); updateStatus(); }
+function placeTyped() {
+  if (!(parseFloat(typed) * num('upm') > 0)) { msg('Set units per meter and type a length above zero.'); typed = ''; updateStatus(); return; }
+  const q = lastP ? drawPoint(lastP) : null;
+  if (!q || (q.x === startPt.x && q.y === startPt.y)) { msg('Move the cursor in the direction of the line first.'); return; }
+  const e = typedEnd(q);
+  addEls([mkLine(startPt.x, startPt.y, e.x, e.y)]);
+  typed = '';
+  if ($('chain').checked) { startPt = e; setPreview(e, e); } else endDraw();
+  updateStatus();
+}
 
 // Controls
 document.querySelectorAll('[data-tool]').forEach(b => b.addEventListener('click', () => setTool(b.dataset.tool)));
@@ -840,6 +1173,17 @@ $('redo').addEventListener('click', redo);
 $('del').addEventListener('click', deleteSelected);
 $('dup').addEventListener('click', duplicateSelected);
 $('applyText').addEventListener('click', applyToSelectedText);
+$('applyLine').addEventListener('click', applyLineStyle);
+$('selAll').addEventListener('click', selectAll);
+$('joinCol').addEventListener('click', joinCollinear);
+document.querySelectorAll('[data-arrange]').forEach(b => b.addEventListener('click', () => arrange(b.dataset.arrange)));
+function syncOrtho() {
+  const on = $('ortho').checked;
+  $('orthoBtn').textContent = 'Ortho: ' + (on ? 'on' : 'off');
+  $('orthoBtn').classList.toggle('on', on);
+}
+$('orthoBtn').addEventListener('click', () => { $('ortho').checked = !$('ortho').checked; syncOrtho(); });
+$('ortho').addEventListener('change', syncOrtho);
 $('zoomIn').addEventListener('click', () => zoomCenter(0.7));
 $('zoomOut').addEventListener('click', () => zoomCenter(1 / 0.7));
 $('zoomFrame').addEventListener('click', fitCamera);
@@ -872,6 +1216,7 @@ $('underFit').addEventListener('click', () => {
 
 // Resizable panel: drag the bar between the panel and the drawing
 const narrow = () => window.matchMedia('(max-width: 700px)').matches;
+function placeOverlays(w) { $('status').style.left = (w + 14) + 'px'; $('orthoBtn').style.left = (w + 14) + 'px'; }
 let resizing = false;
 $('resizer').addEventListener('pointerdown', ev => { resizing = true; $('resizer').setPointerCapture(ev.pointerId); });
 $('resizer').addEventListener('pointermove', ev => {
@@ -883,7 +1228,7 @@ $('resizer').addEventListener('pointermove', ev => {
   } else {
     const w = Math.max(180, Math.min(window.innerWidth - 200, ev.clientX));
     panel.style.width = w + 'px';
-    $('status').style.left = (w + 14) + 'px';
+    placeOverlays(w);
   }
 });
 $('resizer').addEventListener('pointerup', () => {
@@ -902,7 +1247,7 @@ function traceMarkup() {
   const out = [];
   for (const e of gTrace.children) {
     if (e.tagName === 'line') {
-      out.push(`    <line x1="${e.getAttribute('x1')}" y1="${e.getAttribute('y1')}" x2="${e.getAttribute('x2')}" y2="${e.getAttribute('y2')}" stroke="#000" stroke-width="1.5" vector-effect="non-scaling-stroke"/>`);
+      out.push(`    <line x1="${e.getAttribute('x1')}" y1="${e.getAttribute('y1')}" x2="${e.getAttribute('x2')}" y2="${e.getAttribute('y2')}" stroke="${lineColor(e)}" stroke-width="${e.getAttribute('stroke-width')}" vector-effect="non-scaling-stroke"/>`);
     } else {
       out.push(`    <text x="${e.getAttribute('x')}" y="${e.getAttribute('y')}" font-size="${e.getAttribute('font-size')}" fill="#000">${esc(e.textContent)}</text>`);
     }
@@ -1007,10 +1352,11 @@ $('exportPng').addEventListener('click', async () => {
     ctx.restore();
   }
   ctx.setTransform(s, 0, 0, s, -f.x * s, -f.y * s);
-  ctx.strokeStyle = '#000'; ctx.fillStyle = '#000'; ctx.lineWidth = 2 / s;
+  ctx.fillStyle = '#000';
   for (const e of gTrace.children) {
     if (e.tagName === 'line') {
       const g = segOf(e);
+      ctx.strokeStyle = lineColor(e); ctx.lineWidth = +e.getAttribute('stroke-width') * 4 / 3 / s;
       ctx.beginPath(); ctx.moveTo(g.x1, g.y1); ctx.lineTo(g.x2, g.y2); ctx.stroke();
     } else {
       ctx.font = `${e.getAttribute('font-size')}px serif`;
@@ -1030,6 +1376,12 @@ function importTrace(nodes) {
     const n = document.createElementNS(NS, el.tagName);
     for (const a of el.attributes) n.setAttribute(a.name, a.value);
     if (el.tagName === 'text') n.textContent = el.textContent;
+    else {
+      const c = el.getAttribute('stroke') || '#000', w = parseFloat(el.getAttribute('stroke-width'));
+      n.setAttribute('data-color', /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(c) ? c : '#000');
+      n.setAttribute('stroke-width', w > 0 ? w : 1.5);
+      n.setAttribute('vector-effect', 'non-scaling-stroke');
+    }
     gTrace.appendChild(n);
   }
   sel.clear(); hover = null; undoS = []; redoS = [];
@@ -1149,7 +1501,7 @@ document.querySelectorAll('#panel fieldset').forEach(fs => {
 
 if (ui.panelWidth && !narrow()) {
   $('panel').style.width = ui.panelWidth + 'px';
-  $('status').style.left = (ui.panelWidth + 14) + 'px';
+  placeOverlays(ui.panelWidth);
 }
 
 window.addEventListener('beforeunload', ev => { if (dirty) { ev.preventDefault(); ev.returnValue = ''; } });
@@ -1161,7 +1513,7 @@ if (gTrace.children.length || unders.length) dirty = true;
 rebuildUnderDom(); syncControls();
 applyFrame();
 if (Array.isArray(ui.view) && ui.view.length === 4 && ui.view.every(Number.isFinite)) setView(...ui.view); else fitCamera();
-setTool('line'); applyTheme();
+setTool('line'); applyTheme(); syncOrtho();
 </script>
 </body>
 </html>
