@@ -100,6 +100,10 @@
     <button data-tool="calibrate">Calibrate</button>
     <button data-tool="line">Line</button>
     <button data-tool="rect">Rectangle</button>
+    <button data-tool="polyline">Polyline</button>
+    <button data-tool="circle">Circle</button>
+    <button data-tool="path">Path</button>
+    <button data-tool="symbol">Place symbol</button>
     <button data-tool="text">Text</button>
     <button data-tool="measure">Measure</button>
     <button data-tool="dimension">Dimension</button>
@@ -116,6 +120,29 @@
     <label>Line color <input type="color" id="lineC" value="#000000"></label>
     <button id="applyLine">Apply to selected lines</button>
     <label>Offset distance (m) <input type="number" id="offDist" value="1" step="any"></label>
+    <label>Path: smooth curve <input type="checkbox" id="pathSmooth"></label>
+    <label>Path: closed <input type="checkbox" id="pathClosed"></label>
+    <label>Attach new text to the element under the click <input type="checkbox" id="attachNew" checked></label>
+  </fieldset>
+  <fieldset>
+    <legend>Symbols</legend>
+    <select id="symType"></select>
+    <label>Width (m) <input type="number" id="symW" value="1" step="any"></label>
+    <label>Depth (m) <input type="number" id="symD" value="1" step="any"></label>
+    <label>Rotation <select id="symRot"><option value="0">0°</option><option value="90">90°</option><option value="180">180°</option><option value="270">270°</option></select></label>
+    <button id="symApply" title="Apply type, size and rotation to the selected symbol">Apply to selected symbol</button>
+    <button id="symRotate" title="Turn the selected symbols by 90 degrees">Rotate 90°</button>
+  </fieldset>
+  <fieldset>
+    <legend>Layers</legend>
+    <select id="layerSel"></select>
+    <label>Name <input type="text" id="layerName"></label>
+    <button id="layerAdd">Add</button>
+    <button id="layerRename">Rename</button>
+    <button id="layerDel" title="Delete the layer; its elements move to the first remaining layer">Delete</button>
+    <label>Visible <input type="checkbox" id="layerVis" checked></label>
+    <label>Locked <input type="checkbox" id="layerLock"></label>
+    <button id="toLayer" title="Move the selected elements to the chosen layer">Move selected here</button>
   </fieldset>
   <fieldset>
     <legend>Edit</legend>
@@ -124,6 +151,10 @@
     <button id="del">Delete</button>
     <button id="dup">Duplicate</button>
     <button id="selAll">Select all</button>
+    <button id="attachText" title="Select one text and one element, then attach the text to the element">Attach text</button>
+    <button id="detachText" title="Make the selected texts free again">Detach text</button>
+    <label>Element ID <input type="text" id="elId"></label>
+    <button id="applyId">Rename ID</button>
     <button id="joinCol" title="Join touching or overlapping collinear lines of the same thickness and color">Join collinear</button>
   </fieldset>
   <fieldset>
@@ -172,6 +203,8 @@
     <rect id="grid" fill="url(#gridPat)" visibility="hidden"/>
     <rect id="frame" fill="none" stroke="#c00" stroke-dasharray="6 4" vector-effect="non-scaling-stroke"/>
     <g id="guides"></g>
+    <polyline id="polyPrev" fill="none" stroke="#0a0" stroke-width="1.5" vector-effect="non-scaling-stroke" visibility="hidden"/>
+    <circle id="circlePrev" fill="none" stroke="#0a0" stroke-width="1.5" vector-effect="non-scaling-stroke" visibility="hidden"/>
     <line id="preview" stroke="#0a0" stroke-width="1.5" vector-effect="non-scaling-stroke" visibility="hidden"/>
     <rect id="rubber" fill="rgba(0,100,255,.1)" stroke="#06c" stroke-dasharray="4 3" vector-effect="non-scaling-stroke" visibility="hidden"/>
     <g id="handles"></g>
@@ -198,6 +231,10 @@
     <li>Calibrate: enter the real distance in meters, then click two points a known distance apart on the underlay. The underlay is rescaled to match.</li>
     <li>Line: click the start, then the end, or drag from the start to the end. Ends snap to line ends, midpoints, intersections and the grid. After the start you can type a length in meters and press Enter. Ortho (the button on the drawing, the checkbox, or Shift) locks 45° steps; it makes rectangles square and keeps moves and line-end drags on one axis. Chain lines continues from the last end. Esc cancels.</li>
     <li>Rectangle: click two opposite corners. Measure: click two points to read the distance. Dimension: click two points, then where the dimension line goes.</li>
+    <li>Polyline and Path: click the points, then right-click, Enter or a second click on the last point to finish (Path can be a smooth curve, open or closed). Circle: click the center, then a point on the circle. Select a shape to drag its vertices or its radius. Every element has an ID, shown and renamable in Edit.</li>
+    <li>Symbols: choose a type, set the width and depth in meters, then click with Place symbol; the symbol is centered on the click. Select one to change its size, type or rotation, or turn it by 90°.</li>
+    <li>Text on an element: with the Text tool, a click on a line, polyline, path, circle or symbol attaches the text to it (the option can be switched off); it then follows the element, lies along lines and can be dragged to set its offset. Select one text and one element and use Attach text or Detach text to change it later. Deleting an element deletes its attached texts.</li>
+    <li>Layers: add, rename and delete layers, hide or lock the chosen one, and move the selected elements to it. New elements go to the chosen layer. Hidden layers are not drawn, snapped to or exported; locked layers cannot be picked.</li>
     <li>Offset: select lines, set the distance in meters, choose Offset and click the side. Trim: click the part of a line to remove between its crossings. Extend: click a line near the end to lengthen it to the next line.</li>
     <li>Line thickness and color apply to new lines; use Apply to selected lines to change existing ones. Edit has Select all (Ctrl+A) and Join collinear; Arrange aligns and distributes the selection.</li>
     <li>Text: type it in the Text field, choose the Text tool, click where it goes.</li>
@@ -214,7 +251,7 @@ const NS = 'http://www.w3.org/2000/svg';
 const $ = id => document.getElementById(id);
 const view = $('view'), gUnder = $('underlays'), gTrace = $('trace');
 const frameRect = $('frame'), preview = $('preview'), rubber = $('rubber'), gHandles = $('handles');
-const gridRect = $('grid'), snapMark = $('snapMark'), textPrev = $('textPreview'), gGuides = $('guides');
+const gridRect = $('grid'), snapMark = $('snapMark'), textPrev = $('textPreview'), gGuides = $('guides'), polyPrev = $('polyPrev'), circlePrev = $('circlePrev');
 
 // State
 let unders = [], activeU = -1, uidCounter = 0;
@@ -224,7 +261,7 @@ let drag = null, tap = null, gesture = null, shiftDown = false;
 const ptrs = new Map();
 let snapKind = null, lastP = null, dirty = false;
 let dimB = null, typed = '';
-let guides = [], trackSkip = null, parRef = null, prevTool = 'line', curClient = null;
+let guides = [], trackSkip = null, parRef = null, prevTool = 'line', curClient = null, poly = [];
 
 const num = id => parseFloat($(id).value) || 0;
 
@@ -273,6 +310,7 @@ function applyFrame() {
     frameRect.setAttribute(k, v); gridRect.setAttribute(k, v);
   }
   updateGrid(); drawRulers(); schedMap();
+  for (const e of gTrace.children) if (kindOf(e) === 'symbol') buildSymbol(e);   // symbols are sized in meters
 }
 
 function updateGrid() {
@@ -428,13 +466,13 @@ function intersect(a, b) {
 
 // Tracking: dashed guides that the cursor snaps to (alignment, extension, parallel, polar) and the perpendicular foot
 const TRACK_ANGLES = [0, 30, 45, 60, 90, 120, 135, 150, 180, 210, 225, 240, 270, 300, 315, 330];
-const isDrawing = () => !!startPt && (['line', 'measure', 'calibrate'].includes(tool) || (tool === 'dimension' && !dimB));
-const orthoLock = () => !!startPt && ['line', 'measure', 'calibrate'].includes(tool) && orthoOn();
+const isDrawing = () => !!startPt && (LINE_TOOLS.includes(tool) || (tool === 'dimension' && !dimB));
+const orthoLock = () => !!startPt && LINE_TOOLS.includes(tool) && orthoOn();
 const TRACK_RANK = { par: 0, polar: 1, ext: 2, align: 3 };
 
 function trackLines(p, tol) {
   const T = [], refs = [];
-  for (const l of gTrace.querySelectorAll('line')) {
+  for (const l of traceLines()) {
     if (l === trackSkip) continue;
     const s = segOf(l), L = Math.hypot(s.x2 - s.x1, s.y2 - s.y1);
     refs.push({ x: s.x1, y: s.y1 }, { x: s.x2, y: s.y2 }, { x: (s.x1 + s.x2) / 2, y: (s.y1 + s.y2) / 2 });
@@ -496,7 +534,7 @@ function trackSnap(p, tol) {
 // Perpendicular foot of the start point on the nearest line, when the cursor is near it
 function perpSnap(p, tol) {
   let best = null, bd = tol;
-  for (const l of gTrace.querySelectorAll('line')) {
+  for (const l of traceLines()) {
     const s = segOf(l), dx = s.x2 - s.x1, dy = s.y2 - s.y1, L2 = dx * dx + dy * dy;
     if (!L2) continue;
     const t = ((startPt.x - s.x1) * dx + (startPt.y - s.y1) * dy) / L2;
@@ -511,7 +549,7 @@ function perpSnap(p, tol) {
 function snapPoint(p) {
   guides = [];
   const tol = 8 / scale();
-  const segs = [...gTrace.querySelectorAll('line')].map(segOf);
+  const segs = traceLines().map(segOf);
   let best = null, bd = tol;
   const cand = (x, y, kind) => { const d = Math.hypot(x - p.x, y - p.y); if (d < bd) { bd = d; best = { x, y, kind }; } };
   for (const s of segs) { cand(s.x1, s.y1, 'end'); cand(s.x2, s.y2, 'end'); cand((s.x1 + s.x2) / 2, (s.y1 + s.y2) / 2, 'mid'); }
@@ -534,7 +572,7 @@ function snapPoint(p) {
     return { x: f.x + Math.round((p.x - f.x) / g) * g, y: f.y + Math.round((p.y - f.y) / g) * g };
   }
   snapKind = null;
-  return p;
+  return { x: r3(p.x), y: r3(p.y) };   // a free point is kept to a thousandth of a unit
 }
 
 function orthoPoint(a, p) {
@@ -545,11 +583,12 @@ function orthoPoint(a, p) {
 }
 
 const orthoOn = () => $('ortho').checked || shiftDown;
+const LINE_TOOLS = ['line', 'measure', 'calibrate', 'polyline', 'path'];
 const r6 = v => +v.toFixed(6);
 
 function drawPoint(raw) {
   let p = snapPoint(raw);
-  if (startPt && ['line', 'measure', 'calibrate'].includes(tool) && orthoOn()) { p = orthoPoint(startPt, p); snapKind = null; }
+  if (startPt && LINE_TOOLS.includes(tool) && orthoOn()) { p = orthoPoint(startPt, p); snapKind = null; }
   return p;
 }
 
@@ -587,26 +626,213 @@ const curStyle = () => ({ w: num('lineW') > 0 ? num('lineW') : 1.5, c: $('lineC'
 const lineColor = e => e.getAttribute('data-color') || '#000';
 const hex6 = c => /^#[0-9a-f]{6}$/i.test(c) ? c : /^#[0-9a-f]{3}$/i.test(c) ? '#' + [...c.slice(1)].map(h => h + h).join('') : '#000000';
 
-// The real color is kept in data-color; stroke is overwritten while a line is selected or hovered
+// Layers, ids and element kinds. Traced elements are kept flat in #trace; each has an id and a data-layer.
+let layers = [{ name: 'Default', visible: true, locked: false }], activeLayer = 'Default', idN = 0;
+const layerByName = n => layers.find(l => l.name === n);
+const layerOf = e => layerByName(e.getAttribute('data-layer') || '') || layers[0];
+const visibleEl = e => layerOf(e).visible;
+const editableEl = e => { const l = layerOf(e); return l.visible && !l.locked; };
+const traceEls = () => [...gTrace.children];
+const traceLines = () => traceEls().filter(e => e.tagName === 'line' && visibleEl(e));
+const kindOf = e => e.hasAttribute('data-symbol') ? 'symbol' : e.tagName;
+const isShape = e => kindOf(e) !== 'text';
+const byId = id => traceEls().find(e => e.id === id) || null;
+const ID_PREFIX = { line: 'line', polyline: 'poly', circle: 'circle', path: 'path', text: 'text', symbol: 'sym' };
+function newId(kind) {
+  let id;
+  do { id = ID_PREFIX[kind] + (++idN); } while (byId(id));
+  return id;
+}
+function stamp(e, kind) { e.setAttribute('id', newId(kind)); e.setAttribute('data-layer', activeLayer); return e; }
+function parsePts(s) { return (s || '').trim().split(/\s+/).filter(Boolean).map(t => { const [x, y] = t.split(',').map(Number); return { x, y }; }); }
+const ptsStr = pts => pts.map(p => r6(p.x) + ',' + r6(p.y)).join(' ');
+
+// The real color is kept in data-color; stroke is overwritten while a shape is selected or hovered
+function styleShape(e, st) {
+  e.setAttribute('stroke', st.c); e.setAttribute('data-color', st.c); e.setAttribute('stroke-width', st.w);
+  e.setAttribute('vector-effect', 'non-scaling-stroke');
+  return e;
+}
+const svgEl = n => document.createElementNS(NS, n);
 function mkLine(x1, y1, x2, y2, st = curStyle()) {
-  const l = document.createElementNS(NS, 'line');
+  const l = svgEl('line');
   l.setAttribute('x1', x1); l.setAttribute('y1', y1); l.setAttribute('x2', x2); l.setAttribute('y2', y2);
-  l.setAttribute('stroke', st.c); l.setAttribute('data-color', st.c); l.setAttribute('stroke-width', st.w);
-  l.setAttribute('vector-effect', 'non-scaling-stroke');
-  return l;
+  return stamp(styleShape(l, st), 'line');
+}
+function mkPoly(pts, st = curStyle()) {
+  const e = svgEl('polyline');
+  e.setAttribute('points', ptsStr(pts)); e.setAttribute('fill', 'none');
+  return stamp(styleShape(e, st), 'polyline');
+}
+function mkCircle(cx, cy, r, st = curStyle()) {
+  const e = svgEl('circle');
+  e.setAttribute('cx', r6(cx)); e.setAttribute('cy', r6(cy)); e.setAttribute('r', r6(r)); e.setAttribute('fill', 'none');
+  return stamp(styleShape(e, st), 'circle');
+}
+
+// A path through the points: straight segments, or a smooth curve (Catmull-Rom as cubic Beziers), open or closed
+function pathD(pts, smooth, closed) {
+  if (pts.length < 2) return '';
+  const f = v => r6(v);
+  if (!smooth || pts.length < 3) return 'M ' + pts.map(p => f(p.x) + ' ' + f(p.y)).join(' L ') + (closed ? ' Z' : '');
+  const n = pts.length, P = i => closed ? pts[(i + n) % n] : pts[Math.max(0, Math.min(n - 1, i))];
+  let d = 'M ' + f(pts[0].x) + ' ' + f(pts[0].y);
+  for (let i = 0; i < (closed ? n : n - 1); i++) {
+    const p0 = P(i - 1), p1 = P(i), p2 = P(i + 1), p3 = P(i + 2);
+    d += ` C ${f(p1.x + (p2.x - p0.x) / 6)} ${f(p1.y + (p2.y - p0.y) / 6)} ${f(p2.x - (p3.x - p1.x) / 6)} ${f(p2.y - (p3.y - p1.y) / 6)} ${f(p2.x)} ${f(p2.y)}`;
+  }
+  return d + (closed ? ' Z' : '');
+}
+function setPts(e, pts) {
+  if (e.tagName === 'polyline') e.setAttribute('points', ptsStr(pts));
+  else { e.setAttribute('data-points', ptsStr(pts)); e.setAttribute('d', pathD(pts, e.getAttribute('data-smooth') === 'true', e.getAttribute('data-closed') === 'true')); }
+}
+function mkPath(pts, smooth, closed, st = curStyle()) {
+  const e = svgEl('path');
+  e.setAttribute('data-smooth', smooth); e.setAttribute('data-closed', closed); e.setAttribute('fill', 'none');
+  setPts(e, pts);
+  return stamp(styleShape(e, st), 'path');
 }
 function mkText(x, y, s, size) {
-  const t = document.createElementNS(NS, 'text');
+  const t = svgEl('text');
   t.setAttribute('x', x); t.setAttribute('y', y);
   t.setAttribute('font-size', size); t.setAttribute('fill', '#000');
   t.textContent = s;
-  return t;
+  return stamp(t, 'text');
+}
+
+// Warehouse symbols: drawn in meters (scaled by units per meter), rotated in 90 degree steps, kept as a named group
+const SYMBOLS = {
+  stairs: { name: 'Stairs', w: 1.2, d: 3, shapes: (w, d) => {
+    const s = [{ d: `M0 0H${w}V${d}H0Z` }];
+    for (let y = 0.3; y < d - 0.05; y += 0.3) s.push({ d: `M0 ${r6(y)}H${w}` });
+    s.push({ d: `M${w / 2} ${d * 0.9}V${d * 0.1}M${w / 2 - 0.12} ${d * 0.1 + 0.25}L${w / 2} ${d * 0.1}L${w / 2 + 0.12} ${d * 0.1 + 0.25}` });
+    return s; } },
+  rack: { name: 'Shelf or rack', w: 2.7, d: 1.1, shapes: (w, d) => {
+    const s = [{ d: `M0 0H${w}V${d}H0Z` }];
+    for (let x = 1.35; x < w - 0.05; x += 1.35) s.push({ d: `M${r6(x)} 0V${d}` });
+    return s; } },
+  door: { name: 'Door with swing', w: 0.9, d: 0.9, square: true, shapes: w => [
+    { d: `M0 ${w}H${w}` }, { d: `M0 ${w}V0` }, { d: `M0 0A${w} ${w} 0 0 1 ${w} ${w}` }] },
+  gate: { name: 'Gate or roller door', w: 3, d: 0.2, shapes: (w, d) => [
+    { d: `M0 0H${w}V${d}H0Z` }, { d: `M0 ${d / 2}H${w}`, dash: true }] },
+  dock: { name: 'Loading dock door', w: 3, d: 0.5, shapes: (w, d) => [
+    { d: `M0 0H${w}V${d}H0Z` }, { d: `M-0.25 ${d}h0.25v0.3h-0.25ZM${w} ${d}h0.25v0.3h-0.25Z` },
+    { d: `M${w / 2} ${d + 0.9}V${d + 0.1}M${w / 2 - 0.15} ${d + 0.3}L${w / 2} ${d + 0.1}L${w / 2 + 0.15} ${d + 0.3}` }] },
+  column: { name: 'Column', w: 0.4, d: 0.4, square: true, shapes: w => [{ d: `M0 0H${w}V${w}H0Z`, fill: true }] },
+  pallet: { name: 'Pallet', w: 1.2, d: 0.8, shapes: (w, d) => [
+    { d: `M0 0H${w}V${d}H0Z` }, { d: `M${w / 3} 0V${d}M${2 * w / 3} 0V${d}` }] },
+  ramp: { name: 'Ramp', w: 4, d: 1.5, shapes: (w, d) => {
+    const s = [{ d: `M0 0H${w}V${d}H0Z` }];
+    for (let i = 1; i < 5; i++) s.push({ d: `M${r6(w * i / 5)} ${d}V${r6(d - d * i / 5)}` });
+    return s; } },
+  elevator: { name: 'Elevator', w: 2, d: 2, shapes: (w, d) => [
+    { d: `M0 0H${w}V${d}H0Z` }, { d: `M0 0L${w} ${d}M${w} 0L0 ${d}` }] }
+};
+const unitsPerM = () => num('upm') > 0 ? num('upm') : 1;
+function symDims(g) {
+  const def = SYMBOLS[g.getAttribute('data-symbol')], w = +g.getAttribute('data-width') || def.w;
+  return { w, d: def.square ? w : (+g.getAttribute('data-depth') || def.d) };
+}
+function symTransform(g) {
+  const u = unitsPerM(), { w, d } = symDims(g);
+  return `translate(${g.getAttribute('data-cx')} ${g.getAttribute('data-cy')}) rotate(${g.getAttribute('data-rot') || 0}) translate(${r6(-w * u / 2)} ${r6(-d * u / 2)}) scale(${u})`;
+}
+function buildSymbol(g) {
+  const def = SYMBOLS[g.getAttribute('data-symbol')];
+  if (!def) return;
+  const { w, d } = symDims(g);
+  g.setAttribute('transform', symTransform(g));
+  g.textContent = '';
+  for (const s of def.shapes(w, d)) {
+    const p = svgEl('path');
+    p.setAttribute('d', s.d); p.setAttribute('vector-effect', 'non-scaling-stroke'); p.setAttribute('fill', s.fill ? 'currentColor' : 'none');
+    if (s.dash) p.setAttribute('stroke-dasharray', '6 4');
+    g.appendChild(p);
+  }
+}
+function mkSymbol(type, cx, cy, wm, dm, rot, st = curStyle()) {
+  const g = svgEl('g');
+  g.setAttribute('data-symbol', type); g.setAttribute('data-cx', r6(cx)); g.setAttribute('data-cy', r6(cy));
+  g.setAttribute('data-rot', rot); g.setAttribute('data-width', wm); g.setAttribute('data-depth', dm);
+  g.setAttribute('fill', 'none'); g.setAttribute('stroke', st.c); g.setAttribute('data-color', st.c); g.setAttribute('color', st.c);
+  g.setAttribute('stroke-width', st.w);
+  buildSymbol(g);
+  return stamp(g, 'symbol');
+}
+// Position of a point in the symbol's own frame (centered, in drawing units): inside test and distance
+function symLocal(g, p) {
+  const c = { x: +g.getAttribute('data-cx'), y: +g.getAttribute('data-cy') }, r = -(+g.getAttribute('data-rot') || 0) * Math.PI / 180;
+  const dx = p.x - c.x, dy = p.y - c.y;
+  return { x: dx * Math.cos(r) - dy * Math.sin(r), y: dx * Math.sin(r) + dy * Math.cos(r) };
+}
+function symDist(g, p) {
+  const u = unitsPerM(), { w, d } = symDims(g), q = symLocal(g, p);
+  return Math.hypot(Math.max(Math.abs(q.x) - w * u / 2, 0), Math.max(Math.abs(q.y) - d * u / 2, 0));
+}
+function symBox(g) {
+  const u = unitsPerM(), { w, d } = symDims(g), c = { x: +g.getAttribute('data-cx'), y: +g.getAttribute('data-cy') };
+  const r = (+g.getAttribute('data-rot') || 0) * Math.PI / 180, ex = Math.abs(w * u / 2 * Math.cos(r)) + Math.abs(d * u / 2 * Math.sin(r));
+  const ey = Math.abs(w * u / 2 * Math.sin(r)) + Math.abs(d * u / 2 * Math.cos(r));
+  return { x: c.x - ex, y: c.y - ey, w: 2 * ex, h: 2 * ey };
+}
+
+// Text attached to an element by id: placed at the element's anchor plus its own offset, aligned along lines
+function anchorOf(t) {
+  const e = byId(t.getAttribute('data-for'));
+  if (!e || e.tagName === 'text') return null;
+  const k = kindOf(e), norm = a => a > 90 ? a - 180 : a <= -90 ? a + 180 : a;
+  if (k === 'line') {
+    const s = segOf(e);
+    return { x: (s.x1 + s.x2) / 2, y: (s.y1 + s.y2) / 2, ang: norm(Math.atan2(s.y2 - s.y1, s.x2 - s.x1) * 180 / Math.PI) };
+  }
+  if (k === 'polyline') {
+    const q = parsePts(e.getAttribute('points'));
+    let total = 0;
+    for (let i = 1; i < q.length; i++) total += Math.hypot(q[i].x - q[i - 1].x, q[i].y - q[i - 1].y);
+    let run = 0;
+    for (let i = 1; i < q.length; i++) {
+      const L = Math.hypot(q[i].x - q[i - 1].x, q[i].y - q[i - 1].y);
+      if (L > 0 && run + L >= total / 2) {
+        const f = (total / 2 - run) / L;
+        return { x: q[i - 1].x + (q[i].x - q[i - 1].x) * f, y: q[i - 1].y + (q[i].y - q[i - 1].y) * f, ang: norm(Math.atan2(q[i].y - q[i - 1].y, q[i].x - q[i - 1].x) * 180 / Math.PI) };
+      }
+      run += L;
+    }
+    return q.length ? { x: q[0].x, y: q[0].y, ang: 0 } : null;
+  }
+  if (k === 'path') {
+    const L = e.getTotalLength(), a = e.getPointAtLength(L / 2), b = e.getPointAtLength(Math.min(L, L / 2 + L * 0.01 + 0.001));
+    return { x: a.x, y: a.y, ang: norm(Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI) };
+  }
+  if (k === 'circle') return { x: +e.getAttribute('cx'), y: +e.getAttribute('cy'), ang: 0 };
+  return { x: +e.getAttribute('data-cx'), y: +e.getAttribute('data-cy'), ang: 0 };
+}
+function relayoutTexts() {
+  for (const t of gTrace.querySelectorAll('text[data-for]')) {
+    const a = anchorOf(t);
+    if (!a) { for (const k of ['data-for', 'data-dx', 'data-dy']) t.removeAttribute(k); continue; }
+    const x = r6(a.x + (+t.getAttribute('data-dx') || 0)), y = r6(a.y + (+t.getAttribute('data-dy') || 0));
+    t.setAttribute('x', x); t.setAttribute('y', y); t.setAttribute('text-anchor', 'middle');
+    if (a.ang) t.setAttribute('transform', `rotate(${r6(a.ang)} ${x} ${y})`); else t.removeAttribute('transform');
+  }
+}
+// Default offset of a new attached text: just above a line, polyline or path, on the anchor otherwise
+const textOffsetY = (target, size) => ['line', 'polyline', 'path'].includes(kindOf(target)) ? -r6(size * 0.5) : 0;
+function attachTo(t, target) {
+  t.setAttribute('data-for', target.id); t.setAttribute('data-dx', 0); t.setAttribute('data-dy', textOffsetY(target, +t.getAttribute('font-size') || 12));
+}
+
+function applyLayers() {
+  for (const e of traceEls()) e.setAttribute('display', visibleEl(e) ? 'inline' : 'none');
+  for (const e of [...sel]) if (!editableEl(e)) sel.delete(e);
 }
 
 function paint() {
+  relayoutTexts();
   for (const e of gTrace.children) {
     const hl = sel.has(e) ? '#e60' : e === hover ? '#06c' : null;
-    if (e.tagName === 'line') e.setAttribute('stroke', hl || lineColor(e));
+    if (isShape(e)) { e.setAttribute('stroke', hl || lineColor(e)); if (kindOf(e) === 'symbol') e.setAttribute('color', hl || lineColor(e)); }
     else e.setAttribute('fill', hl || '#000');
   }
   drawHandles();
@@ -614,14 +840,27 @@ function paint() {
   schedMap();
 }
 
+// Handles: the end points of a line, the vertices of a polyline or path, the rim of a circle
+function handlePts(e) {
+  const k = kindOf(e);
+  if (k === 'line') { const s = segOf(e); return [{ x: s.x1, y: s.y1 }, { x: s.x2, y: s.y2 }]; }
+  if (k === 'polyline') return parsePts(e.getAttribute('points'));
+  if (k === 'path') return parsePts(e.getAttribute('data-points'));
+  if (k === 'circle') return [{ x: +e.getAttribute('cx') + +e.getAttribute('r'), y: +e.getAttribute('cy') }];
+  return [];
+}
+function moveHandle(e, i, q) {
+  const k = kindOf(e);
+  if (k === 'line') setAttrs(e, { ['x' + (i + 1)]: q.x, ['y' + (i + 1)]: q.y });
+  else if (k === 'polyline' || k === 'path') { const pts = handlePts(e); pts[i] = { x: q.x, y: q.y }; setPts(e, pts); }
+  else if (k === 'circle') e.setAttribute('r', r6(Math.hypot(q.x - +e.getAttribute('cx'), q.y - +e.getAttribute('cy'))));
+}
 function drawHandles() {
   gHandles.textContent = '';
   const r = 5 / scale();
   for (const e of sel) {
-    if (e.tagName !== 'line') continue;
-    const s = segOf(e);
-    for (const [x, y] of [[s.x1, s.y1], [s.x2, s.y2]]) {
-      const c = document.createElementNS(NS, 'circle');
+    for (const { x, y } of handlePts(e)) {
+      const c = svgEl('circle');
       c.setAttribute('cx', x); c.setAttribute('cy', y); c.setAttribute('r', r);
       c.setAttribute('fill', '#fff'); c.setAttribute('stroke', '#e60');
       gHandles.appendChild(c);
@@ -631,18 +870,45 @@ function drawHandles() {
 
 function selChanged() {
   if (sel.size === 1) {
-    const e = [...sel][0];
-    if (e.tagName === 'text') { $('textValue').value = e.textContent; $('fontSize').value = e.getAttribute('font-size'); }
-    else { $('lineW').value = e.getAttribute('stroke-width'); $('lineC').value = hex6(lineColor(e)); }
+    const e = [...sel][0], k = kindOf(e);
+    $('elId').value = e.id;
+    if (k === 'text') { $('textValue').value = e.textContent; $('fontSize').value = e.getAttribute('font-size'); }
+    else {
+      $('lineW').value = e.getAttribute('stroke-width'); $('lineC').value = hex6(lineColor(e));
+      if (k === 'symbol') {
+        const { w, d } = symDims(e);
+        $('symType').value = e.getAttribute('data-symbol'); $('symW').value = w; $('symD').value = d; $('symRot').value = (+e.getAttribute('data-rot') || 0) % 360;
+      }
+    }
   }
   paint();
 }
 
-const snapshot = e => e.tagName === 'line'
-  ? { x1: e.getAttribute('x1'), y1: e.getAttribute('y1'), x2: e.getAttribute('x2'), y2: e.getAttribute('y2') }
-  : { x: e.getAttribute('x'), y: e.getAttribute('y') };
+const SNAP_ATTRS = {
+  line: ['x1', 'y1', 'x2', 'y2'], polyline: ['points'], circle: ['cx', 'cy', 'r'], path: ['d', 'data-points'],
+  text: ['x', 'y', 'transform', 'text-anchor', 'data-dx', 'data-dy', 'data-for'],
+  symbol: ['data-symbol', 'data-cx', 'data-cy', 'data-rot', 'data-width', 'data-depth', 'transform']
+};
+const snapshot = e => {
+  const o = {};
+  for (const k of SNAP_ATTRS[kindOf(e)].concat(['id', 'data-layer'])) o[k] = e.getAttribute(k);
+  return o;
+};
 
-function setAttrs(e, a) { for (const k in a) e.setAttribute(k, a[k]); }
+function setAttrs(e, a) { for (const k in a) { if (a[k] === null || a[k] === undefined) e.removeAttribute(k); else e.setAttribute(k, a[k]); } }
+
+// An element moved by (dx, dy) from its snapshot o. Text attached to an element moves its offset instead.
+function applyMove(e, o, dx, dy) {
+  const k = kindOf(e);
+  if (k === 'line') setAttrs(e, { x1: r6(+o.x1 + dx), x2: r6(+o.x2 + dx), y1: r6(+o.y1 + dy), y2: r6(+o.y2 + dy) });
+  else if (k === 'polyline' || k === 'path') setPts(e, parsePts(k === 'path' ? o['data-points'] : o.points).map(p => ({ x: p.x + dx, y: p.y + dy })));
+  else if (k === 'circle') setAttrs(e, { cx: r6(+o.cx + dx), cy: r6(+o.cy + dy) });
+  else if (k === 'symbol') { setAttrs(e, { 'data-cx': r6(+o['data-cx'] + dx), 'data-cy': r6(+o['data-cy'] + dy) }); e.setAttribute('transform', symTransform(e)); }
+  else if (e.hasAttribute('data-for')) setAttrs(e, { 'data-dx': r6(+o['data-dx'] + dx), 'data-dy': r6(+o['data-dy'] + dy) });
+  else setAttrs(e, { x: r6(+o.x + dx), y: r6(+o.y + dy) });
+}
+// True when e is a text attached to an element that is in the set (it follows that element)
+const followsSet = (e, set) => e.tagName === 'text' && e.hasAttribute('data-for') && [...set].some(o => o.id === e.getAttribute('data-for'));
 
 function runOp(op, dir) {
   if (op.type === 'multi') {
@@ -658,20 +924,30 @@ function runOp(op, dir) {
   } else {
     for (const it of op.items) {
       setAttrs(it.el, dir === 'undo' ? it.before : it.after);
+      if (kindOf(it.el) === 'symbol') buildSymbol(it.el);
       const t = dir === 'undo' ? it.beforeText : it.afterText;
       if (t !== undefined) it.el.textContent = t;
     }
   }
+  applyLayers();
   paint();
 }
 function push(op) { undoS.push(op); redoS.length = 0; changed(); paint(); }
 function undo() { const op = undoS.pop(); if (!op) return; runOp(op, 'undo'); redoS.push(op); changed(); }
 function redo() { const op = redoS.pop(); if (!op) return; runOp(op, 'redo'); undoS.push(op); changed(); }
 
-function addEls(els) { els.forEach(e => gTrace.appendChild(e)); push({ type: 'add', els }); }
+function addEls(els) {
+  const L = layerByName(activeLayer);
+  if (!L || !L.visible || L.locked) { msg('The active layer is hidden or locked.'); return; }
+  els.forEach(e => gTrace.appendChild(e));
+  push({ type: 'add', els });
+}
 
 function deleteSelected() {
   if (!sel.size) return;
+  // Text attached to a deleted element goes with it
+  const ids = new Set([...sel].map(e => e.id));
+  for (const t of gTrace.querySelectorAll('text[data-for]')) if (ids.has(t.getAttribute('data-for'))) sel.add(t);
   const all = [...gTrace.children];
   const items = [...sel].map(el => ({ el, idx: all.indexOf(el) })).sort((a, b) => a.idx - b.idx);
   items.forEach(it => it.el.remove());
@@ -681,14 +957,18 @@ function deleteSelected() {
 
 function duplicateSelected() {
   if (!sel.size) return;
-  const off = frame().w * 0.01;
+  const L = layerByName(activeLayer);
+  const off = frame().w * 0.01, idMap = new Map();
   const clones = [...sel].map(e => {
-    const c = e.cloneNode(true);
-    if (c.tagName === 'line') {
-      c.setAttribute('x1', +c.getAttribute('x1') + off); c.setAttribute('x2', +c.getAttribute('x2') + off);
-      c.setAttribute('y1', +c.getAttribute('y1') + off); c.setAttribute('y2', +c.getAttribute('y2') + off);
-    } else { c.setAttribute('x', +c.getAttribute('x') + off); c.setAttribute('y', +c.getAttribute('y') + off); }
+    const c = e.cloneNode(true), id = newId(kindOf(e));
+    idMap.set(e.id, id); c.setAttribute('id', id);
     return c;
+  });
+  clones.forEach(c => {
+    if (c.tagName !== 'text' || !c.hasAttribute('data-for')) { applyMove(c, snapshot(c), off, off); return; }
+    const t = idMap.get(c.getAttribute('data-for'));
+    if (t) c.setAttribute('data-for', t);   // follows its copied element
+    else { ['data-for', 'data-dx', 'data-dy'].forEach(k => c.removeAttribute(k)); applyMove(c, snapshot(c), off, off); }
   });
   clones.forEach(c => gTrace.appendChild(c));
   sel = new Set(clones);
@@ -712,15 +992,15 @@ function applyToSelectedText() {
 function applyLineStyle() {
   const st = curStyle(), items = [];
   for (const e of sel) {
-    if (e.tagName !== 'line') continue;
+    if (!isShape(e)) continue;
     items.push({ el: e, before: { 'stroke-width': e.getAttribute('stroke-width'), 'data-color': lineColor(e) }, after: { 'stroke-width': st.w, 'data-color': st.c } });
   }
-  if (!items.length) { msg('Select a line first.'); return; }
+  if (!items.length) { msg('Select a line, shape or symbol first.'); return; }
   const op = { type: 'attrs', items };
   runOp(op, 'redo'); push(op);
 }
 
-function selectAll() { sel = new Set(gTrace.children); selChanged(); }
+function selectAll() { sel = new Set(traceEls().filter(editableEl)); selChanged(); }
 
 // Align and distribute the selection by bounding boxes
 function bboxOf(e) {
@@ -728,14 +1008,9 @@ function bboxOf(e) {
     const s = segOf(e);
     return { x: Math.min(s.x1, s.x2), y: Math.min(s.y1, s.y2), w: Math.abs(s.x2 - s.x1), h: Math.abs(s.y2 - s.y1) };
   }
+  if (kindOf(e) === 'symbol') return symBox(e);
   const b = e.getBBox();
   return { x: b.x, y: b.y, w: b.width, h: b.height };
-}
-function shiftEl(e, dx, dy) {
-  if (e.tagName === 'line') {
-    const s = segOf(e);
-    setAttrs(e, { x1: r6(s.x1 + dx), x2: r6(s.x2 + dx), y1: r6(s.y1 + dy), y2: r6(s.y2 + dy) });
-  } else setAttrs(e, { x: r6(+e.getAttribute('x') + dx), y: r6(+e.getAttribute('y') + dy) });
 }
 function arrange(kind) {
   const els = [...sel], dist = kind.startsWith('dist');
@@ -761,7 +1036,7 @@ function arrange(kind) {
   }
   const items = els.map((e, i) => {
     const before = snapshot(e);
-    shiftEl(e, mv[i][0], mv[i][1]);
+    if (!followsSet(e, sel)) applyMove(e, before, mv[i][0], mv[i][1]);
     return { el: e, before, after: snapshot(e) };
   }).filter(it => JSON.stringify(it.before) !== JSON.stringify(it.after));
   if (!items.length) { msg('Already arranged.'); return; }
@@ -771,11 +1046,11 @@ function arrange(kind) {
 // Join touching or overlapping collinear lines of the same thickness and color (selected lines, or all when none is selected)
 function joinCollinear() {
   let lines = [...sel].filter(e => e.tagName === 'line');
-  if (!lines.length) lines = [...gTrace.children].filter(e => e.tagName === 'line');
+  if (!lines.length) lines = [...gTrace.children].filter(e => e.tagName === 'line' && editableEl(e));
   const tol = 0.01, all = [...gTrace.children];
   const orig = new Map(lines.map(l => [l, snapshot(l)]));
   const alive = new Set(lines), removed = [];
-  const key = l => l.getAttribute('stroke-width') + '|' + lineColor(l);
+  const key = l => l.getAttribute('stroke-width') + '|' + lineColor(l) + '|' + l.getAttribute('data-layer');
   let merged = true;
   while (merged) {
     merged = false;
@@ -836,8 +1111,8 @@ function doTrim(p) {
   if (!L2) return;
   const tOf = q => ((q.x - s.x1) * dx + (q.y - s.y1) * dy) / L2;
   const t0 = tOf(p), ts = [];
-  for (const o of gTrace.children) {
-    if (o === l || o.tagName !== 'line') continue;
+  for (const o of traceLines()) {
+    if (o === l) continue;
     const ip = intersect(s, segOf(o));
     if (ip) ts.push(tOf(ip));
   }
@@ -855,7 +1130,7 @@ function doTrim(p) {
     ops.push({ type: 'attrs', items: [{ el: l, before: snapshot(l), after: { x1: a.x, y1: a.y, x2: b.x, y2: b.y } }] });
     if (pieces[1]) {
       const c = pt(pieces[1][0]), e = pt(pieces[1][1]), n = l.cloneNode(true);
-      setAttrs(n, { x1: c.x, y1: c.y, x2: e.x, y2: e.y });
+      setAttrs(n, { x1: c.x, y1: c.y, x2: e.x, y2: e.y, id: newId('line') });
       ops.push({ type: 'add', els: [n] });
     }
   }
@@ -874,8 +1149,8 @@ function doExtend(p) {
   const dx = e.x - o.x, dy = e.y - o.y;
   if (!dx && !dy) return;
   let best = null;
-  for (const m of gTrace.children) {
-    if (m === l || m.tagName !== 'line') continue;
+  for (const m of traceLines()) {
+    if (m === l) continue;
     const b = segOf(m), bx = b.x2 - b.x1, by = b.y2 - b.y1, den = dx * by - dy * bx;
     if (Math.abs(den) < 1e-9) continue;
     const sT = ((b.x1 - e.x) * by - (b.y1 - e.y) * bx) / den;
@@ -897,16 +1172,34 @@ function dimensionEls(a, b, d) {
     mkText(r6(cx - w / 2), r6(cy + size * 0.35), s, size)];
 }
 
+// Distance from the point p to an element (0 inside a symbol or text box)
+function distTo(e, p, tol) {
+  const k = kindOf(e);
+  if (k === 'line') return distSeg(p, segOf(e));
+  if (k === 'polyline') {
+    const q = parsePts(e.getAttribute('points'));
+    let d = Infinity;
+    for (let i = 1; i < q.length; i++) d = Math.min(d, distSeg(p, { x1: q[i - 1].x, y1: q[i - 1].y, x2: q[i].x, y2: q[i].y }));
+    return d;
+  }
+  if (k === 'circle') return Math.abs(Math.hypot(p.x - +e.getAttribute('cx'), p.y - +e.getAttribute('cy')) - +e.getAttribute('r'));
+  if (k === 'path') {
+    const L = e.getTotalLength(), n = Math.max(20, Math.min(300, Math.ceil(L * scale() / 4)));
+    let d = Infinity;
+    for (let i = 0; i <= n; i++) { const q = e.getPointAtLength(L * i / n); d = Math.min(d, Math.hypot(p.x - q.x, p.y - q.y)); }
+    return d;
+  }
+  if (k === 'symbol') return symDist(e, p);
+  const b = e.getBBox();
+  return (p.x >= b.x - tol && p.x <= b.x + b.width + tol && p.y >= b.y - tol && p.y <= b.y + b.height + tol) ? 0 : Infinity;
+}
+
 function hitTest(p) {
   const tol = 8 / scale();
   let best = null, bd = tol;
   for (const e of gTrace.children) {
-    let d;
-    if (e.tagName === 'line') d = distSeg(p, segOf(e));
-    else {
-      const b = e.getBBox();
-      d = (p.x >= b.x - tol && p.x <= b.x + b.width + tol && p.y >= b.y - tol && p.y <= b.y + b.height + tol) ? 0 : Infinity;
-    }
+    if (!editableEl(e)) continue;
+    const d = distTo(e, p, tol);
     if (d <= bd) { bd = d; best = e; }
   }
   return best;
@@ -915,12 +1208,14 @@ function hitTest(p) {
 // Tools
 function setTool(t) {
   if (t === 'zoomwin' && tool !== 'zoomwin') prevTool = tool;
-  tool = t; startPt = null; calib = null; dimB = null; typed = ''; parRef = null;
+  tool = t; startPt = null; calib = null; dimB = null; typed = ''; parRef = null; poly = [];
   preview.setAttribute('visibility', 'hidden'); rubber.setAttribute('visibility', 'hidden');
+  polyPrev.setAttribute('visibility', 'hidden'); circlePrev.setAttribute('visibility', 'hidden');
   document.querySelectorAll('[data-tool]').forEach(b => b.classList.toggle('active', b.dataset.tool === t));
   view.style.cursor = { pan: 'grab', underlay: 'move', crop: 'crosshair', calibrate: 'crosshair', line: 'crosshair',
     rect: 'crosshair', text: 'text', measure: 'crosshair', dimension: 'crosshair', offset: 'crosshair', trim: 'crosshair',
-    extend: 'crosshair', rotate: 'crosshair', horizontal: 'crosshair', zoomwin: 'crosshair', select: 'default' }[t];
+    extend: 'crosshair', rotate: 'crosshair', horizontal: 'crosshair', zoomwin: 'crosshair', polyline: 'crosshair',
+    circle: 'crosshair', path: 'crosshair', symbol: 'crosshair', select: 'default' }[t];
   hideAids(); updateStatus();
 }
 
@@ -934,10 +1229,20 @@ function setRubber(a, b) {
   rubber.setAttribute('width', Math.abs(a.x - b.x)); rubber.setAttribute('height', Math.abs(a.y - b.y));
   rubber.setAttribute('visibility', 'visible');
 }
+function updatePolyPrev() {
+  if (poly.length < 2) { polyPrev.setAttribute('visibility', 'hidden'); return; }
+  polyPrev.setAttribute('points', ptsStr(poly)); polyPrev.setAttribute('visibility', 'visible');
+}
 function updatePreview(p) {
   if (!startPt) return;
   if (tool === 'rect') setRubber(startPt, rectPoint(p));
   else if (tool === 'horizontal') setPreview(startPt, p);
+  else if (tool === 'circle') {
+    const q = snapPoint(p);
+    circlePrev.setAttribute('cx', startPt.x); circlePrev.setAttribute('cy', startPt.y);
+    circlePrev.setAttribute('r', Math.hypot(q.x - startPt.x, q.y - startPt.y)); circlePrev.setAttribute('visibility', 'visible');
+    setPreview(startPt, q);
+  }
   else if (tool === 'dimension') {
     const q = snapPoint(p);
     if (!dimB) setPreview(startPt, q);
@@ -949,8 +1254,18 @@ function updatePreview(p) {
   }
 }
 function endDraw() {
-  startPt = null; dimB = null; typed = ''; parRef = null;
+  startPt = null; dimB = null; typed = ''; parRef = null; poly = [];
   preview.setAttribute('visibility', 'hidden'); rubber.setAttribute('visibility', 'hidden');
+  polyPrev.setAttribute('visibility', 'hidden'); circlePrev.setAttribute('visibility', 'hidden');
+}
+
+// A polyline or path ends with right-click, Enter or a second click on the last point
+function finishShape() {
+  const pts = poly.slice(), closed = tool === 'path' && $('pathClosed').checked, min = closed ? 3 : 2;
+  const t = tool;
+  endDraw();
+  if (pts.length < min) { if (pts.length) msg('Click at least ' + min + ' points.'); return; }
+  addEls([t === 'polyline' ? mkPoly(pts) : mkPath(pts, $('pathSmooth').checked, closed)]);
 }
 
 function fmtLen(d) {
@@ -961,7 +1276,8 @@ function lengthText(a, b) { return fmtLen(Math.hypot(b.x - a.x, b.y - a.y)); }
 
 const TOOL_NAMES = { pan: 'Pan', underlay: 'Underlay', crop: 'Crop', calibrate: 'Calibrate', line: 'Line',
   rect: 'Rectangle', text: 'Text', measure: 'Measure', dimension: 'Dimension', offset: 'Offset', trim: 'Trim',
-  extend: 'Extend', rotate: 'Rotate', horizontal: 'Make horizontal', zoomwin: 'Zoom window', select: 'Select' };
+  extend: 'Extend', rotate: 'Rotate', horizontal: 'Make horizontal', zoomwin: 'Zoom window', polyline: 'Polyline',
+  circle: 'Circle', path: 'Path', symbol: 'Place symbol', select: 'Select' };
 
 function hint() {
   switch (tool) {
@@ -977,6 +1293,10 @@ function hint() {
     case 'offset': return 'select lines, then click the side to offset them';
     case 'trim': return 'click the part of a line to remove';
     case 'extend': return 'click a line near the end to extend';
+    case 'polyline': return poly.length ? 'click the next point, right-click or Enter to finish' : 'click the first point';
+    case 'path': return poly.length ? 'click the next point, right-click or Enter to finish' : 'click the first point (Smooth curve and Closed are in Tools)';
+    case 'circle': return startPt ? 'click a point on the circle' : 'click the center';
+    case 'symbol': return 'click where the symbol goes (centered)';
     case 'rect': return startPt ? 'click the opposite corner' : 'click a corner';
     case 'text': return 'click where the text goes';
     case 'measure': return startPt ? 'click the second point' : 'click the first point';
@@ -997,7 +1317,7 @@ function selectionLength() {
 
 function updateStatus(p) {
   if (p) lastP = p;
-  const q = startPt && lastP && ['line', 'measure', 'calibrate'].includes(tool) ? drawPoint(lastP) : null;
+  const q = startPt && lastP && LINE_TOOLS.includes(tool) ? drawPoint(lastP) : null;
   const live = q ? lengthText(startPt, q) : null;
   const ang = q && (snapKind === 'polar' || snapKind === 'par' || snapKind === 'perp')
     ? ((Math.atan2(-(q.y - startPt.y), q.x - startPt.x) * 180 / Math.PI + 360) % 360).toFixed(1) + '°' : null;
@@ -1049,8 +1369,8 @@ function showSnapMark(q, kind) {
   snapMark.setAttribute('d', d); snapMark.setAttribute('visibility', 'visible');
 }
 function updateAids(p) {
-  if (!['line', 'rect', 'text', 'measure', 'calibrate', 'dimension'].includes(tool)) { hideAids(); return; }
-  const q = ['line', 'measure', 'calibrate'].includes(tool) ? drawPoint(p) : tool === 'rect' ? rectPoint(p) : snapPoint(p);
+  if (![...LINE_TOOLS, 'rect', 'text', 'dimension', 'circle', 'symbol'].includes(tool)) { hideAids(); return; }
+  const q = LINE_TOOLS.includes(tool) ? drawPoint(p) : tool === 'rect' ? rectPoint(p) : snapPoint(p);
   showSnapMark(q, snapKind);
   drawGuides();
   const s = $('textValue').value;
@@ -1083,8 +1403,25 @@ function doClick(raw) {
   } else if (tool === 'text') {
     const s = $('textValue').value;
     if (!s) { msg('Enter the text in the Text field first.'); return; }
+    const p = snapPoint(raw), t = mkText(p.x, p.y, s, num('fontSize'));
+    const h = $('attachNew').checked ? hitTest(raw) : null;
+    if (h && h.tagName !== 'text') attachTo(t, h);
+    addEls([t]);
+  } else if (tool === 'polyline' || tool === 'path') {
+    const p = drawPoint(raw), last = poly[poly.length - 1];
+    if (last && Math.hypot(p.x - last.x, p.y - last.y) < 1e-9) { finishShape(); return; }
+    poly.push({ x: p.x, y: p.y }); startPt = { x: p.x, y: p.y };
+    updatePolyPrev(); setPreview(p, p);
+  } else if (tool === 'circle') {
     const p = snapPoint(raw);
-    addEls([mkText(p.x, p.y, s, num('fontSize'))]);
+    if (!startPt) { startPt = p; circlePrev.setAttribute('visibility', 'hidden'); setPreview(p, p); return; }
+    const r = Math.hypot(p.x - startPt.x, p.y - startPt.y), c = startPt;
+    endDraw();
+    if (r > 0) addEls([mkCircle(c.x, c.y, r)]);
+  } else if (tool === 'symbol') {
+    const p = snapPoint(raw), def = SYMBOLS[$('symType').value];
+    if (!def) return;
+    addEls([mkSymbol($('symType').value, p.x, p.y, num('symW') || def.w, num('symD') || def.d, +$('symRot').value || 0)]);
   } else if (tool === 'measure') {
     const p = drawPoint(raw);
     if (!startPt) { startPt = p; setPreview(p, p); return; }
@@ -1132,14 +1469,11 @@ function doClick(raw) {
 function selectDown(ev, p) {
   const tol = 8 / scale();
   if (sel.size === 1) {
-    const l = [...sel][0];
-    if (l.tagName === 'line') {
-      const s = segOf(l);
-      for (const end of [1, 2]) {
-        if (Math.hypot(s['x' + end] - p.x, s['y' + end] - p.y) < tol) {
-          drag = { kind: 'handle', el: l, end, orig: snapshot(l) };
-          return;
-        }
+    const l = [...sel][0], pts = handlePts(l);
+    for (let i = 0; i < pts.length; i++) {
+      if (Math.hypot(pts[i].x - p.x, pts[i].y - p.y) < tol) {
+        drag = { kind: 'handle', el: l, idx: i, orig: snapshot(l) };
+        return;
       }
     }
   }
@@ -1159,6 +1493,7 @@ function cancelDrag() {
   if (!drag) return;
   if (drag.kind === 'move') drag.items.forEach(it => setAttrs(it.el, it.orig));
   else if (drag.kind === 'handle') setAttrs(drag.el, drag.orig);
+  if ((drag.kind === 'move' || drag.kind === 'handle') && (drag.items || [drag]).some(it => kindOf(it.el) === 'symbol')) (drag.items || [drag]).forEach(it => kindOf(it.el) === 'symbol' && buildSymbol(it.el));
   else if (drag.kind === 'crop') { drag.u.crop = drag.prev; renderU(drag.u); }
   else if (drag.kind === 'underlay') { drag.u.x = drag.ux; drag.u.y = drag.uy; renderU(drag.u); syncControls(); }
   else if (drag.kind === 'rotate') { drag.u.rot = drag.rot0; drag.u.x = drag.x0; drag.u.y = drag.y0; renderU(drag.u); syncControls(); }
@@ -1189,25 +1524,21 @@ function dragMove(ev, p) {
     drag.u.crop = { x: x1, y: y1, w: x2 - x1, h: y2 - y1 };
     renderU(drag.u);
   } else if (drag.kind === 'move') {
-    let dx = p.x - drag.start.x, dy = p.y - drag.start.y;
+    let dx = r3(p.x - drag.start.x), dy = r3(p.y - drag.start.y);
     if (orthoOn()) { if (Math.abs(dx) >= Math.abs(dy)) dy = 0; else dx = 0; }
-    for (const it of drag.items) {
-      if (it.el.tagName === 'line') {
-        it.el.setAttribute('x1', +it.orig.x1 + dx); it.el.setAttribute('x2', +it.orig.x2 + dx);
-        it.el.setAttribute('y1', +it.orig.y1 + dy); it.el.setAttribute('y2', +it.orig.y2 + dy);
-      } else { it.el.setAttribute('x', +it.orig.x + dx); it.el.setAttribute('y', +it.orig.y + dy); }
-    }
-    drawHandles();
+    const moving = drag.items.map(it => it.el);
+    for (const it of drag.items) if (!followsSet(it.el, moving)) applyMove(it.el, it.orig, dx, dy);
+    relayoutTexts(); drawHandles();
   } else if (drag.kind === 'handle') {
     trackSkip = drag.el;
     let q = snapPoint(p);
     trackSkip = null; drawGuides();
-    if (orthoOn()) {
-      const o = drag.end === 1 ? { x: +drag.orig.x2, y: +drag.orig.y2 } : { x: +drag.orig.x1, y: +drag.orig.y1 };
+    if (orthoOn() && drag.el.tagName === 'line') {
+      const o = drag.idx === 0 ? { x: +drag.orig.x2, y: +drag.orig.y2 } : { x: +drag.orig.x1, y: +drag.orig.y1 };
       q = orthoPoint(o, q);
     }
-    drag.el.setAttribute('x' + drag.end, q.x); drag.el.setAttribute('y' + drag.end, q.y);
-    drawHandles();
+    moveHandle(drag.el, drag.idx, q);
+    relayoutTexts(); drawHandles();
   } else if (drag.kind === 'rubber' || drag.kind === 'zoomwin') {
     setRubber(drag.start, p);
   } else if (drag.kind === 'rotate') {
@@ -1235,10 +1566,9 @@ function endDrag(p) {
     if (x2 - x1 > 2 / scale() || y2 - y1 > 2 / scale()) {
       const inside = (x, y) => x >= x1 && x <= x2 && y >= y1 && y <= y2;
       for (const e of gTrace.children) {
-        let ok;
-        if (e.tagName === 'line') { const s = segOf(e); ok = inside(s.x1, s.y1) && inside(s.x2, s.y2); }
-        else { const b = e.getBBox(); ok = inside(b.x, b.y) && inside(b.x + b.width, b.y + b.height); }
-        if (ok) sel.add(e);
+        if (!editableEl(e)) continue;
+        const b = bboxOf(e);
+        if (inside(b.x, b.y) && inside(b.x + b.w, b.y + b.h)) sel.add(e);
       }
       selChanged();
     }
@@ -1337,7 +1667,11 @@ view.addEventListener('pointerup', pointerEnd);
 view.addEventListener('pointercancel', pointerEnd);
 view.addEventListener('pointerleave', () => { hideAids(); curClient = null; drawRulers(); });
 // Right-click ends a chain or cancels a pending point
-view.addEventListener('contextmenu', ev => { ev.preventDefault(); tap = null; endDraw(); updateStatus(); });
+view.addEventListener('contextmenu', ev => {
+  ev.preventDefault(); tap = null;
+  if ((tool === 'polyline' || tool === 'path') && poly.length) finishShape(); else endDraw();
+  updateStatus();
+});
 
 view.addEventListener('wheel', ev => {
   ev.preventDefault();
@@ -1355,6 +1689,7 @@ window.addEventListener('keydown', ev => {
     if (ev.key === 'Backspace' && typed) { typed = typed.slice(0, -1); typedChanged(); return; }
     if (ev.key === 'Enter' && typed) { ev.preventDefault(); placeTyped(); return; }
   }
+  if (ev.key === 'Enter' && (tool === 'polyline' || tool === 'path') && poly.length) { ev.preventDefault(); finishShape(); updateStatus(); return; }
   if (ev.key === 'a' && ev.ctrlKey) { ev.preventDefault(); selectAll(); }
   if (ev.key === 'Delete') deleteSelected();
   if (ev.key === 'Escape') {
@@ -1452,6 +1787,118 @@ $('resizer').addEventListener('pointercancel', () => { resizing = false; });
 $('cropClear').addEventListener('click', () => { const u = curU(); if (u) { u.crop = null; renderU(u); changed(); } });
 ['fx', 'fy', 'fw', 'fh', 'floorId', 'level', 'upm'].forEach(id => $(id).addEventListener('input', () => { applyFrame(); changed(); }));
 ['showGrid', 'gridSize'].forEach(id => $(id).addEventListener('input', updateGrid));
+
+// Symbols
+for (const k in SYMBOLS) {
+  const o = document.createElement('option');
+  o.value = k; o.textContent = SYMBOLS[k].name;
+  $('symType').appendChild(o);
+}
+function symDefaults() {
+  const d = SYMBOLS[$('symType').value];
+  $('symW').value = d.w; $('symD').value = d.d; $('symD').disabled = !!d.square;
+}
+$('symType').addEventListener('change', symDefaults);
+symDefaults();
+function changeSymbols(fn) {
+  const items = [];
+  for (const e of sel) {
+    if (kindOf(e) !== 'symbol') continue;
+    const before = snapshot(e);
+    fn(e);
+    buildSymbol(e);
+    items.push({ el: e, before, after: snapshot(e) });
+  }
+  if (!items.length) { msg('Select a symbol first.'); return; }
+  push({ type: 'attrs', items });
+}
+$('symApply').addEventListener('click', () => changeSymbols(e => {
+  const def = SYMBOLS[$('symType').value], w = num('symW') || def.w;
+  setAttrs(e, { 'data-symbol': $('symType').value, 'data-width': w, 'data-depth': def.square ? w : (num('symD') || def.d), 'data-rot': +$('symRot').value || 0 });
+}));
+$('symRotate').addEventListener('click', () => changeSymbols(e => e.setAttribute('data-rot', ((+e.getAttribute('data-rot') || 0) + 90) % 360)));
+
+// Text attached to elements, and element ids
+$('attachText').addEventListener('click', () => {
+  const ts = [...sel].filter(e => e.tagName === 'text'), os = [...sel].filter(e => e.tagName !== 'text');
+  if (ts.length !== 1 || os.length !== 1) { msg('Select one text and one element to attach it to.'); return; }
+  const t = ts[0], before = snapshot(t);
+  attachTo(t, os[0]); relayoutTexts();
+  push({ type: 'attrs', items: [{ el: t, before, after: snapshot(t) }] });
+});
+$('detachText').addEventListener('click', () => {
+  const items = [];
+  for (const t of sel) {
+    if (t.tagName !== 'text' || !t.hasAttribute('data-for')) continue;
+    const before = snapshot(t);
+    ['data-for', 'data-dx', 'data-dy'].forEach(k => t.removeAttribute(k));
+    items.push({ el: t, before, after: snapshot(t) });
+  }
+  if (!items.length) { msg('Select an attached text first.'); return; }
+  push({ type: 'attrs', items });
+});
+$('applyId').addEventListener('click', () => {
+  if (sel.size !== 1) { msg('Select one element first.'); return; }
+  const e = [...sel][0], id = $('elId').value.trim();
+  if (!/^[A-Za-z][A-Za-z0-9_]*$/.test(id)) { msg('An ID starts with a letter and has only letters, digits and underscores.'); return; }
+  if (id === e.id) return;
+  if (byId(id)) { msg('That ID is already used.'); return; }
+  const items = [{ el: e, before: { id: e.id }, after: { id } }];
+  for (const t of gTrace.querySelectorAll('text[data-for]')) if (t.getAttribute('data-for') === e.id) items.push({ el: t, before: { 'data-for': e.id }, after: { 'data-for': id } });
+  const op = { type: 'attrs', items };
+  runOp(op, 'redo'); push(op);
+});
+
+// Layers: named, each with visibility and a lock; elements keep their layer in data-layer
+function syncLayers() {
+  const s = $('layerSel');
+  s.textContent = '';
+  for (const l of layers) {
+    const o = document.createElement('option');
+    o.value = l.name; o.textContent = l.name + (l.visible ? '' : ' (hidden)') + (l.locked ? ' (locked)' : '');
+    s.appendChild(o);
+  }
+  if (!layerByName(activeLayer)) activeLayer = layers[0].name;
+  s.value = activeLayer;
+  const L = layerByName(activeLayer);
+  $('layerVis').checked = L.visible; $('layerLock').checked = L.locked; $('layerName').value = L.name;
+  applyLayers();
+}
+$('layerSel').addEventListener('change', e => { activeLayer = e.target.value; syncLayers(); paint(); });
+$('layerAdd').addEventListener('click', () => {
+  const name = $('layerName').value.trim() || 'Layer ' + (layers.length + 1);
+  if (layerByName(name)) { msg('A layer with that name exists.'); return; }
+  layers.push({ name, visible: true, locked: false }); activeLayer = name;
+  syncLayers(); paint(); changed();
+});
+$('layerRename').addEventListener('click', () => {
+  const name = $('layerName').value.trim(), L = layerByName(activeLayer);
+  if (!name || name === L.name) return;
+  if (layerByName(name)) { msg('A layer with that name exists.'); return; }
+  for (const e of gTrace.children) if (e.getAttribute('data-layer') === L.name) e.setAttribute('data-layer', name);
+  L.name = name; activeLayer = name;
+  syncLayers(); paint(); changed();
+});
+$('layerDel').addEventListener('click', () => {
+  if (layers.length < 2) { msg('The last layer cannot be deleted.'); return; }
+  const L = layerByName(activeLayer), rest = layers.filter(l => l !== L);
+  for (const e of gTrace.children) if (e.getAttribute('data-layer') === L.name) e.setAttribute('data-layer', rest[0].name);
+  layers = rest; activeLayer = rest[0].name;
+  syncLayers(); paint(); changed();
+  msg('Layer deleted; its elements moved to ' + rest[0].name + '.');
+});
+['layerVis', 'layerLock'].forEach(id => $(id).addEventListener('change', () => {
+  const L = layerByName(activeLayer);
+  L.visible = $('layerVis').checked; L.locked = $('layerLock').checked;
+  syncLayers(); paint(); changed();
+}));
+$('toLayer').addEventListener('click', () => {
+  const items = [...sel].filter(e => e.getAttribute('data-layer') !== activeLayer)
+    .map(e => ({ el: e, before: { 'data-layer': e.getAttribute('data-layer') }, after: { 'data-layer': activeLayer } }));
+  if (!items.length) { msg('Select elements that are on another layer first.'); return; }
+  const op = { type: 'attrs', items };
+  runOp(op, 'redo'); push(op);
+});
 
 // Underlay name, order and nudging
 $('ulabel').addEventListener('input', () => {
@@ -1589,9 +2036,14 @@ function drawMinimap() {
   c.strokeStyle = '#888';
   for (const b of boxes) { c.beginPath(); b.forEach((q, i) => i ? c.lineTo(X(q.x), Y(q.y)) : c.moveTo(X(q.x), Y(q.y))); c.closePath(); c.stroke(); }
   for (const e of gTrace.children) {
-    if (e.tagName !== 'line') continue;
-    const g = segOf(e);
-    c.strokeStyle = lineColor(e); c.beginPath(); c.moveTo(X(g.x1), Y(g.y1)); c.lineTo(X(g.x2), Y(g.y2)); c.stroke();
+    if (!visibleEl(e) || e.tagName === 'text') continue;
+    const k = kindOf(e);
+    c.strokeStyle = lineColor(e); c.beginPath();
+    if (k === 'line') { const g = segOf(e); c.moveTo(X(g.x1), Y(g.y1)); c.lineTo(X(g.x2), Y(g.y2)); }
+    else if (k === 'circle') c.arc(X(+e.getAttribute('cx')), Y(+e.getAttribute('cy')), +e.getAttribute('r') * s, 0, 2 * Math.PI);
+    else if (k === 'symbol') { const b = symBox(e); c.rect(X(b.x), Y(b.y), b.w * s, b.h * s); }
+    else handlePts(e).forEach((q, i) => i ? c.lineTo(X(q.x), Y(q.y)) : c.moveTo(X(q.x), Y(q.y)));
+    c.stroke();
   }
   c.strokeStyle = '#06c'; c.lineWidth = 2; c.strokeRect(X(v.x), Y(v.y), v.width * s, v.height * s);
 }
@@ -1617,14 +2069,34 @@ window.addEventListener('resize', layoutOverlays);
 // Serialization: frame as viewBox, underlays as references in their own group, traced elements in their own group
 function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
 
+// One traced element as markup lines. Every element carries its id; text may name the element it is attached to.
+function elemMarkup(e) {
+  const k = kindOf(e), a = n => esc(e.getAttribute(n)), id = ` id="${esc(e.id)}"`;
+  const st = ` stroke="${lineColor(e)}" stroke-width="${a('stroke-width')}"`, ve = ' vector-effect="non-scaling-stroke"';
+  if (k === 'line') return [`<line${id} x1="${a('x1')}" y1="${a('y1')}" x2="${a('x2')}" y2="${a('y2')}"${st}${ve}/>`];
+  if (k === 'polyline') return [`<polyline${id} points="${a('points')}" fill="none"${st}${ve}/>`];
+  if (k === 'circle') return [`<circle${id} cx="${a('cx')}" cy="${a('cy')}" r="${a('r')}" fill="none"${st}${ve}/>`];
+  if (k === 'path') return [`<path${id} d="${a('d')}" data-points="${a('data-points')}" data-smooth="${a('data-smooth')}" data-closed="${a('data-closed')}" fill="none"${st}${ve}/>`];
+  if (k === 'text') {
+    let at = e.hasAttribute('data-for') ? ` data-for="${a('data-for')}" data-dx="${a('data-dx')}" data-dy="${a('data-dy')}"` : '';
+    at += ` x="${a('x')}" y="${a('y')}" font-size="${a('font-size')}" fill="#000"`;
+    if (e.hasAttribute('text-anchor')) at += ` text-anchor="${a('text-anchor')}"`;
+    if (e.hasAttribute('transform')) at += ` transform="${a('transform')}"`;
+    return [`<text${id}${at}>${esc(e.textContent)}</text>`];
+  }
+  const out = [`<g${id} data-symbol="${a('data-symbol')}" data-cx="${a('data-cx')}" data-cy="${a('data-cy')}" data-rot="${a('data-rot')}" data-width="${a('data-width')}" data-depth="${a('data-depth')}" transform="${a('transform')}" fill="none"${st} color="${lineColor(e)}">`];
+  for (const p of e.children) out.push(`  <path d="${esc(p.getAttribute('d'))}" fill="${p.getAttribute('fill')}"${p.hasAttribute('stroke-dasharray') ? ' stroke-dasharray="6 4"' : ''}${ve}/>`);
+  out.push('</g>');
+  return out;
+}
+
+// The traced elements grouped by layer, in layer order; a hidden layer has display="none", a locked one data-locked
 function traceMarkup() {
   const out = [];
-  for (const e of gTrace.children) {
-    if (e.tagName === 'line') {
-      out.push(`    <line x1="${e.getAttribute('x1')}" y1="${e.getAttribute('y1')}" x2="${e.getAttribute('x2')}" y2="${e.getAttribute('y2')}" stroke="${lineColor(e)}" stroke-width="${e.getAttribute('stroke-width')}" vector-effect="non-scaling-stroke"/>`);
-    } else {
-      out.push(`    <text x="${e.getAttribute('x')}" y="${e.getAttribute('y')}" font-size="${e.getAttribute('font-size')}" fill="#000">${esc(e.textContent)}</text>`);
-    }
+  for (const L of layers) {
+    out.push(`    <g data-layer="${esc(L.name)}"${L.visible ? '' : ' display="none"'}${L.locked ? ' data-locked="true"' : ''}>`);
+    for (const e of gTrace.children) if (layerOf(e) === L) out.push(...elemMarkup(e).map(s => '      ' + s));
+    out.push('    </g>');
   }
   return out;
 }
@@ -1732,13 +2204,42 @@ $('exportPng').addEventListener('click', async () => {
   ctx.setTransform(s, 0, 0, s, -f.x * s, -f.y * s);
   ctx.fillStyle = '#000';
   for (const e of gTrace.children) {
-    if (e.tagName === 'line') {
+    if (!visibleEl(e)) continue;
+    const k = kindOf(e);
+    if (k === 'text') {
+      ctx.save();
+      const m = /rotate\(([-\d.]+) /.exec(e.getAttribute('transform') || '');
+      ctx.translate(+e.getAttribute('x'), +e.getAttribute('y'));
+      if (m) ctx.rotate(+m[1] * Math.PI / 180);
+      ctx.font = `${e.getAttribute('font-size')}px serif`; ctx.textAlign = e.getAttribute('text-anchor') === 'middle' ? 'center' : 'left';
+      ctx.fillText(e.textContent, 0, 0);
+      ctx.restore();
+      continue;
+    }
+    ctx.strokeStyle = lineColor(e); ctx.lineWidth = +e.getAttribute('stroke-width') * 4 / 3 / s; ctx.setLineDash([]);
+    if (k === 'line') {
       const g = segOf(e);
-      ctx.strokeStyle = lineColor(e); ctx.lineWidth = +e.getAttribute('stroke-width') * 4 / 3 / s;
       ctx.beginPath(); ctx.moveTo(g.x1, g.y1); ctx.lineTo(g.x2, g.y2); ctx.stroke();
-    } else {
-      ctx.font = `${e.getAttribute('font-size')}px serif`;
-      ctx.fillText(e.textContent, +e.getAttribute('x'), +e.getAttribute('y'));
+    } else if (k === 'polyline') {
+      const q = parsePts(e.getAttribute('points'));
+      ctx.beginPath(); q.forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)); ctx.stroke();
+    } else if (k === 'circle') {
+      ctx.beginPath(); ctx.arc(+e.getAttribute('cx'), +e.getAttribute('cy'), +e.getAttribute('r'), 0, 2 * Math.PI); ctx.stroke();
+    } else if (k === 'path') ctx.stroke(new Path2D(e.getAttribute('d')));
+    else {
+      const u = unitsPerM(), { w, d } = symDims(e);
+      ctx.save();
+      ctx.translate(+e.getAttribute('data-cx'), +e.getAttribute('data-cy')); ctx.rotate((+e.getAttribute('data-rot') || 0) * Math.PI / 180);
+      ctx.translate(-w * u / 2, -d * u / 2); ctx.scale(u, u);
+      ctx.lineWidth = +e.getAttribute('stroke-width') * 4 / 3 / (s * u); ctx.fillStyle = lineColor(e);
+      for (const c of e.children) {
+        const p = new Path2D(c.getAttribute('d'));
+        ctx.setLineDash(c.hasAttribute('stroke-dasharray') ? [6 * 4 / 3 / (s * u), 4 * 4 / 3 / (s * u)] : []);
+        if (c.getAttribute('fill') === 'currentColor') ctx.fill(p);
+        ctx.stroke(p);
+      }
+      ctx.restore();
+      ctx.fillStyle = '#000';
     }
   }
   const blob = await new Promise(r => cv.toBlob(r, 'image/png'));
@@ -1747,22 +2248,57 @@ $('exportPng').addEventListener('click', async () => {
 });
 
 // Loading: traced elements from SVG markup (a list of element nodes)
+// Only known elements and attributes are taken over; the id and layer are kept when valid
+const KEEP_ATTRS = {
+  line: ['x1', 'y1', 'x2', 'y2'], polyline: ['points'], circle: ['cx', 'cy', 'r'], path: ['d', 'data-points', 'data-smooth', 'data-closed'],
+  text: ['x', 'y', 'font-size', 'data-for', 'data-dx', 'data-dy', 'text-anchor', 'transform']
+};
+function importElement(el, layerName) {
+  const tag = el.tagName, sym = tag === 'g' && el.hasAttribute('data-symbol');
+  let n;
+  if (sym) {
+    if (!SYMBOLS[el.getAttribute('data-symbol')]) return null;
+    n = svgEl('g');
+    for (const k of ['data-symbol', 'data-cx', 'data-cy', 'data-rot', 'data-width', 'data-depth']) if (el.hasAttribute(k)) n.setAttribute(k, el.getAttribute(k));
+  } else if (KEEP_ATTRS[tag]) {
+    n = svgEl(tag);
+    for (const k of KEEP_ATTRS[tag]) if (el.hasAttribute(k)) n.setAttribute(k, el.getAttribute(k));
+  } else return null;
+  if (tag === 'text') { n.textContent = el.textContent; n.setAttribute('fill', '#000'); }
+  else {
+    const c = el.getAttribute('stroke') || el.getAttribute('data-color') || '#000', w = parseFloat(el.getAttribute('stroke-width'));
+    const col = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(c) ? c : '#000';
+    styleShape(n, { c: col, w: w > 0 ? w : 1.5 });
+    n.setAttribute('fill', 'none');
+    if (sym) { n.setAttribute('color', col); buildSymbol(n); }
+    if (tag === 'path' && !n.hasAttribute('data-points')) n.setAttribute('data-points', '');
+  }
+  const id = el.getAttribute('id');
+  n.setAttribute('id', id && /^[A-Za-z][A-Za-z0-9_]*$/.test(id) && !byId(id) ? id : newId(sym ? 'symbol' : tag));
+  n.setAttribute('data-layer', layerName);
+  return n;
+}
+// nodes: the children of the saved trace group, layer groups or (older files) plain elements
 function importTrace(nodes) {
   gTrace.textContent = '';
+  layers = [];
+  const addLayer = (name, vis, lock) => { if (!layerByName(name)) layers.push({ name, visible: vis, locked: lock }); return name; };
+  const items = [];
   for (const el of nodes) {
-    if (el.tagName !== 'line' && el.tagName !== 'text') continue;
-    const n = document.createElementNS(NS, el.tagName);
-    for (const a of el.attributes) n.setAttribute(a.name, a.value);
-    if (el.tagName === 'text') n.textContent = el.textContent;
-    else {
-      const c = el.getAttribute('stroke') || '#000', w = parseFloat(el.getAttribute('stroke-width'));
-      n.setAttribute('data-color', /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(c) ? c : '#000');
-      n.setAttribute('stroke-width', w > 0 ? w : 1.5);
-      n.setAttribute('vector-effect', 'non-scaling-stroke');
-    }
-    gTrace.appendChild(n);
+    if (el.tagName === 'g' && el.hasAttribute('data-layer') && !el.hasAttribute('data-symbol')) {
+      const name = addLayer(el.getAttribute('data-layer') || 'Default', el.getAttribute('display') !== 'none', el.getAttribute('data-locked') === 'true');
+      for (const c of el.children) items.push([c, name]);
+    } else items.push([el, null]);
   }
+  for (const [el, name] of items) {
+    const n = importElement(el, name || addLayer('Default', true, false));
+    if (n) gTrace.appendChild(n);
+  }
+  if (!layers.length) layers.push({ name: 'Default', visible: true, locked: false });
+  idN = 0;
+  for (const e of gTrace.children) { const m = /(\d+)$/.exec(e.id); if (m) idN = Math.max(idN, +m[1]); }
   sel.clear(); hover = null; undoS = []; redoS = [];
+  syncLayers();
   paint();
 }
 
@@ -1812,6 +2348,7 @@ $('newDoc').addEventListener('click', () => {
   }
   clearTimeout(newArmed); newArmed = null; $('newDoc').textContent = 'New';
   gTrace.textContent = ''; sel.clear(); undoS = []; redoS = [];
+  layers = [{ name: 'Default', visible: true, locked: false }]; activeLayer = 'Default'; syncLayers();
   unders.forEach(u => { if (u.url) URL.revokeObjectURL(u.url); });
   unders = []; activeU = -1; rebuildUnderDom(); syncControls(); endDraw(); hideAids(); paint();
   clearTimeout(saveTimer); autosave(); dirty = false;
@@ -1890,7 +2427,7 @@ window.addEventListener('pagehide', () => { clearTimeout(saveTimer); autosave();
 
 restore();
 if (gTrace.children.length || unders.length) dirty = true;
-rebuildUnderDom(); syncControls();
+rebuildUnderDom(); syncControls(); syncLayers();
 applyFrame();
 if (Array.isArray(ui.view) && ui.view.length === 4 && ui.view.every(Number.isFinite)) setView(...ui.view); else fitCamera();
 setTool('line'); applyTheme(); syncOrtho(); syncMap();
