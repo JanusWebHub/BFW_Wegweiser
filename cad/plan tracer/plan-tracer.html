@@ -130,6 +130,7 @@
     <label>Grid spacing <input type="number" id="gridSize" value="10" step="any"></label>
     <label>Snap to grid <input type="checkbox" id="snapGrid"></label>
     <label>Ortho (45°) <input type="checkbox" id="ortho"></label>
+    <label>Tracking guides <input type="checkbox" id="tracking" checked></label>
     <label>Chain lines <input type="checkbox" id="chain"></label>
   </fieldset>
   <fieldset>
@@ -152,6 +153,7 @@
   <g id="ui" pointer-events="none">
     <rect id="grid" fill="url(#gridPat)" visibility="hidden"/>
     <rect id="frame" fill="none" stroke="#c00" stroke-dasharray="6 4" vector-effect="non-scaling-stroke"/>
+    <g id="guides"></g>
     <line id="preview" stroke="#0a0" stroke-width="1.5" vector-effect="non-scaling-stroke" visibility="hidden"/>
     <rect id="rubber" fill="rgba(0,100,255,.1)" stroke="#06c" stroke-dasharray="4 3" vector-effect="non-scaling-stroke" visibility="hidden"/>
     <g id="handles"></g>
@@ -176,7 +178,8 @@
     <li>Text: type it in the Text field, choose the Text tool, click where it goes.</li>
     <li>Select: click an element, Shift-click to add, drag on empty space to select a box, drag to move, drag a line end to reshape. Select one text to edit it and use Apply to selected text. Delete, Duplicate, Undo and Redo work on the selection.</li>
     <li>Pan: Pan tool, middle mouse button, or two fingers. Zoom: wheel, pinch or the Zoom buttons.</li>
-    <li>Right-click ends a chain or cancels a pending point. The marker at the cursor shows the snap: square = end, triangle = midpoint, cross = intersection, plus = grid.</li>
+    <li>Right-click ends a chain or cancels a pending point. The marker at the cursor shows the snap: square = end, triangle = midpoint, X = intersection, plus = grid, circle = aligned with another point, bar with ticks = extension of a line, right angle = perpendicular, two slashes = parallel, diamond = polar angle.</li>
+    <li>Tracking guides (dashed green, switched by the checkbox): the cursor snaps level with the ends and midpoints of lines and with the start point, onto the extension of a line beyond its end, and where two guides cross. While drawing it also snaps to the perpendicular foot on a line, parallel to a line you hovered over, and to 0, 30, 45, 60, 90 degrees and so on around the start point. Ortho turns the tracking off while a line is being drawn.</li>
     <li>Export PNG saves the frame area as a picture. Theme cycles system, light and dark. Click a section title to collapse it.</li>
     <li>Work is autosaved in this browser. Save writes the plan SVG; untick "Include underlay reference" to leave the images out. Open reads a plan SVG; pick the underlay images again to see them.</li>
   </ol>
@@ -186,7 +189,7 @@ const NS = 'http://www.w3.org/2000/svg';
 const $ = id => document.getElementById(id);
 const view = $('view'), gUnder = $('underlays'), gTrace = $('trace');
 const frameRect = $('frame'), preview = $('preview'), rubber = $('rubber'), gHandles = $('handles');
-const gridRect = $('grid'), snapMark = $('snapMark'), textPrev = $('textPreview');
+const gridRect = $('grid'), snapMark = $('snapMark'), textPrev = $('textPreview'), gGuides = $('guides');
 
 // State
 let unders = [], activeU = -1, uidCounter = 0;
@@ -196,6 +199,7 @@ let drag = null, tap = null, gesture = null, shiftDown = false;
 const ptrs = new Map();
 let snapKind = null, lastP = null, dirty = false;
 let dimB = null, typed = '';
+let guides = [], trackSkip = null, parRef = null;
 
 const num = id => parseFloat($(id).value) || 0;
 
@@ -366,8 +370,90 @@ function intersect(a, b) {
   return { x: a.x1 + t * (a.x2 - a.x1), y: a.y1 + t * (a.y2 - a.y1) };
 }
 
-// Snap to line ends, midpoints, intersections, then the grid
+// Tracking: dashed guides that the cursor snaps to (alignment, extension, parallel, polar) and the perpendicular foot
+const TRACK_ANGLES = [0, 30, 45, 60, 90, 120, 135, 150, 180, 210, 225, 240, 270, 300, 315, 330];
+const isDrawing = () => !!startPt && (['line', 'measure', 'calibrate'].includes(tool) || (tool === 'dimension' && !dimB));
+const orthoLock = () => !!startPt && ['line', 'measure', 'calibrate'].includes(tool) && orthoOn();
+const TRACK_RANK = { par: 0, polar: 1, ext: 2, align: 3 };
+
+function trackLines(p, tol) {
+  const T = [], refs = [];
+  for (const l of gTrace.querySelectorAll('line')) {
+    if (l === trackSkip) continue;
+    const s = segOf(l), L = Math.hypot(s.x2 - s.x1, s.y2 - s.y1);
+    refs.push({ x: s.x1, y: s.y1 }, { x: s.x2, y: s.y2 }, { x: (s.x1 + s.x2) / 2, y: (s.y1 + s.y2) / 2 });
+    if (!L) continue;
+    const ux = (s.x2 - s.x1) / L, uy = (s.y2 - s.y1) / L;
+    T.push({ ox: s.x2, oy: s.y2, dx: ux, dy: uy, kind: 'ext', ray: true }, { ox: s.x1, oy: s.y1, dx: -ux, dy: -uy, kind: 'ext', ray: true });
+  }
+  if (startPt) refs.push(startPt);
+  if (dimB) refs.push(dimB);
+  for (const r of refs) T.push({ ox: r.x, oy: r.y, dx: 1, dy: 0, kind: 'align' }, { ox: r.x, oy: r.y, dx: 0, dy: 1, kind: 'align' });
+  if (isDrawing() && Math.hypot(p.x - startPt.x, p.y - startPt.y) > 2 * tol) {
+    for (const a of TRACK_ANGLES) {
+      const r = a * Math.PI / 180;
+      T.push({ ox: startPt.x, oy: startPt.y, dx: Math.cos(r), dy: -Math.sin(r), kind: 'polar', ray: true });
+    }
+    if (parRef && parRef.isConnected) {
+      const s = segOf(parRef), L = Math.hypot(s.x2 - s.x1, s.y2 - s.y1);
+      if (L) {
+        const ux = (s.x2 - s.x1) / L, uy = (s.y2 - s.y1) / L;
+        T.push({ ox: startPt.x, oy: startPt.y, dx: ux, dy: uy, kind: 'par', ray: true }, { ox: startPt.x, oy: startPt.y, dx: -ux, dy: -uy, kind: 'par', ray: true });
+      }
+    }
+  }
+  return T;
+}
+
+// The tracking line or crossing of two tracking lines nearest the cursor, within the tolerance; null when none
+function trackSnap(p, tol) {
+  const hits = [];
+  for (const L of trackLines(p, tol)) {
+    const vx = p.x - L.ox, vy = p.y - L.oy, t = vx * L.dx + vy * L.dy;
+    if (L.ray && t < 0) continue;
+    const d = Math.abs(vx * L.dy - vy * L.dx);
+    if (d < tol) hits.push({ L, d, pt: { x: L.kind === 'align' && L.dx === 0 ? L.ox : L.ox + L.dx * t, y: L.kind === 'align' && L.dy === 0 ? L.oy : L.oy + L.dy * t } });
+  }
+  if (!hits.length) return null;
+  const rank = h => TRACK_RANK[h.L.kind];
+  let cross = null;
+  for (let i = 0; i < hits.length; i++) for (let j = i + 1; j < hits.length; j++) {
+    const A = hits[i].L, B = hits[j].L, den = A.dx * B.dy - A.dy * B.dx;
+    if (Math.abs(den) < 1e-6) continue;
+    const tA = ((B.ox - A.ox) * B.dy - (B.oy - A.oy) * B.dx) / den;
+    const tB = ((B.ox - A.ox) * A.dy - (B.oy - A.oy) * A.dx) / den;
+    if ((A.ray && tA < -1e-9) || (B.ray && tB < -1e-9)) continue;
+    const I = { x: A.ox + A.dx * tA, y: A.oy + A.dy * tA };
+    for (const Q of [A, B]) { if (Q.kind === 'align' && Q.dx === 0) I.x = Q.ox; if (Q.kind === 'align' && Q.dy === 0) I.y = Q.oy; }
+    const dd = Math.hypot(I.x - p.x, I.y - p.y);
+    if (dd < 2 * tol && (!cross || dd < cross.dd)) cross = { I, dd, hi: hits[i], hj: hits[j] };
+  }
+  const pick = (pt, hs) => {
+    const best = hs.slice().sort((a, b) => rank(a) - rank(b))[0];
+    return { p: { x: r6(pt.x), y: r6(pt.y) }, kind: best.L.kind, guides: hs.map(h => ({ a: { x: h.L.ox, y: h.L.oy }, b: { x: r6(pt.x), y: r6(pt.y) } })) };
+  };
+  if (cross) return pick(cross.I, [cross.hi, cross.hj]);
+  const best = hits.slice().sort((a, b) => rank(a) - rank(b) || a.d - b.d)[0];
+  return pick(best.pt, [best]);
+}
+
+// Perpendicular foot of the start point on the nearest line, when the cursor is near it
+function perpSnap(p, tol) {
+  let best = null, bd = tol;
+  for (const l of gTrace.querySelectorAll('line')) {
+    const s = segOf(l), dx = s.x2 - s.x1, dy = s.y2 - s.y1, L2 = dx * dx + dy * dy;
+    if (!L2) continue;
+    const t = ((startPt.x - s.x1) * dx + (startPt.y - s.y1) * dy) / L2;
+    if (t < 0 || t > 1) continue;
+    const f = { x: r6(s.x1 + t * dx), y: r6(s.y1 + t * dy) }, d = Math.hypot(f.x - p.x, f.y - p.y);
+    if (d < bd) { bd = d; best = f; }
+  }
+  return best;
+}
+
+// Snap to line ends, midpoints, intersections, then tracking, then the grid
 function snapPoint(p) {
+  guides = [];
   const tol = 8 / scale();
   const segs = [...gTrace.querySelectorAll('line')].map(segOf);
   let best = null, bd = tol;
@@ -379,6 +465,12 @@ function snapPoint(p) {
     if (ip) cand(ip.x, ip.y, 'int');
   }
   if (best) { snapKind = best.kind; return best; }
+  if ($('tracking').checked && !orthoLock()) {
+    const f = isDrawing() ? perpSnap(p, tol) : null;
+    if (f) { snapKind = 'perp'; guides = [{ a: { x: startPt.x, y: startPt.y }, b: f }]; return f; }
+    const r = trackSnap(p, tol);
+    if (r) { snapKind = r.kind; guides = r.guides; return r.p; }
+  }
   const g = num('gridSize');
   if ($('snapGrid').checked && g > 0) {
     const f = frame();
@@ -765,7 +857,7 @@ function hitTest(p) {
 
 // Tools
 function setTool(t) {
-  tool = t; startPt = null; calib = null; dimB = null; typed = '';
+  tool = t; startPt = null; calib = null; dimB = null; typed = ''; parRef = null;
   preview.setAttribute('visibility', 'hidden'); rubber.setAttribute('visibility', 'hidden');
   document.querySelectorAll('[data-tool]').forEach(b => b.classList.toggle('active', b.dataset.tool === t));
   view.style.cursor = { pan: 'grab', underlay: 'move', crop: 'crosshair', calibrate: 'crosshair', line: 'crosshair',
@@ -798,7 +890,7 @@ function updatePreview(p) {
   }
 }
 function endDraw() {
-  startPt = null; dimB = null; typed = '';
+  startPt = null; dimB = null; typed = ''; parRef = null;
   preview.setAttribute('visibility', 'hidden'); rubber.setAttribute('visibility', 'hidden');
 }
 
@@ -843,10 +935,13 @@ function selectionLength() {
 
 function updateStatus(p) {
   if (p) lastP = p;
-  const live = startPt && lastP && ['line', 'measure', 'calibrate'].includes(tool) ? lengthText(startPt, drawPoint(lastP)) : null;
+  const q = startPt && lastP && ['line', 'measure', 'calibrate'].includes(tool) ? drawPoint(lastP) : null;
+  const live = q ? lengthText(startPt, q) : null;
+  const ang = q && (snapKind === 'polar' || snapKind === 'par' || snapKind === 'perp')
+    ? ((Math.atan2(-(q.y - startPt.y), q.x - startPt.x) * 180 / Math.PI + 360) % 360).toFixed(1) + '°' : null;
   let t = TOOL_NAMES[tool] + ': ' + hint();
   if (lastP) t += `  |  ${lastP.x.toFixed(1)}, ${lastP.y.toFixed(1)}`;
-  if (live) t += '  |  length ' + live;
+  if (live) t += '  |  length ' + live + (ang ? ' at ' + ang : '');
   if (typed) t += '  |  typed length ' + typed + ' m, Enter to place';
   t += `  |  ${sel.size} selected`;
   $('status').textContent = t;
@@ -857,13 +952,24 @@ function updateStatus(p) {
   const L = selectionLength();
   if (L) rows.push((L.n > 1 ? 'total length ' : 'length ') + fmtLen(L.total));
   if (live) rows.push('drawing length ' + live);
+  if (ang) rows.push('angle ' + ang);
   if (typed) rows.push('typed length ' + typed + ' m');
   box.textContent = '';
   rows.forEach(r => { const d = document.createElement('div'); d.textContent = r; box.appendChild(d); });
 }
 
 // Snap marker and text preview at the cursor
-function hideAids() { snapMark.setAttribute('visibility', 'hidden'); textPrev.setAttribute('visibility', 'hidden'); }
+function hideAids() { snapMark.setAttribute('visibility', 'hidden'); textPrev.setAttribute('visibility', 'hidden'); gGuides.textContent = ''; }
+function drawGuides() {
+  gGuides.textContent = '';
+  for (const g of guides) {
+    const l = document.createElementNS(NS, 'line');
+    l.setAttribute('x1', g.a.x); l.setAttribute('y1', g.a.y); l.setAttribute('x2', g.b.x); l.setAttribute('y2', g.b.y);
+    l.setAttribute('stroke', '#2a9d4a'); l.setAttribute('stroke-width', 1); l.setAttribute('stroke-dasharray', '5 4');
+    l.setAttribute('vector-effect', 'non-scaling-stroke');
+    gGuides.appendChild(l);
+  }
+}
 function showSnapMark(q, kind) {
   if (!kind) { snapMark.setAttribute('visibility', 'hidden'); return; }
   const r = 6 / scale(), x = q.x, y = q.y;
@@ -871,7 +977,12 @@ function showSnapMark(q, kind) {
     end: `M ${x - r} ${y - r} h ${2 * r} v ${2 * r} h ${-2 * r} z`,
     mid: `M ${x} ${y - r} L ${x + r} ${y + r} L ${x - r} ${y + r} z`,
     int: `M ${x - r} ${y - r} L ${x + r} ${y + r} M ${x - r} ${y + r} L ${x + r} ${y - r}`,
-    grid: `M ${x - r} ${y} L ${x + r} ${y} M ${x} ${y - r} L ${x} ${y + r}`
+    grid: `M ${x - r} ${y} L ${x + r} ${y} M ${x} ${y - r} L ${x} ${y + r}`,
+    align: `M ${x - r} ${y} a ${r} ${r} 0 1 0 ${2 * r} 0 a ${r} ${r} 0 1 0 ${-2 * r} 0`,
+    ext: `M ${x - r} ${y} h ${2 * r} M ${x - r} ${y - r / 2} v ${r} M ${x + r} ${y - r / 2} v ${r}`,
+    perp: `M ${x - r} ${y - r} v ${2 * r} h ${2 * r} M ${x - r} ${y} h ${r} v ${r}`,
+    par: `M ${x - r} ${y + r} L ${x} ${y - r} M ${x} ${y + r} L ${x + r} ${y - r}`,
+    polar: `M ${x} ${y - r} L ${x + r} ${y} L ${x} ${y + r} L ${x - r} ${y} z`
   }[kind];
   snapMark.setAttribute('d', d); snapMark.setAttribute('visibility', 'visible');
 }
@@ -879,6 +990,7 @@ function updateAids(p) {
   if (!['line', 'rect', 'text', 'measure', 'calibrate', 'dimension'].includes(tool)) { hideAids(); return; }
   const q = ['line', 'measure', 'calibrate'].includes(tool) ? drawPoint(p) : tool === 'rect' ? rectPoint(p) : snapPoint(p);
   showSnapMark(q, snapKind);
+  drawGuides();
   const s = $('textValue').value;
   if (tool === 'text' && s) {
     textPrev.setAttribute('x', q.x); textPrev.setAttribute('y', q.y);
@@ -892,13 +1004,14 @@ function updateAids(p) {
 function clickAction(raw) {
   doClick(raw);
   updateStatus();
+  if (lastP) updateAids(lastP);
 }
 function doClick(raw) {
   if (tool === 'line') {
     const p = drawPoint(raw);
     if (!startPt) { startPt = p; setPreview(p, p); return; }
     addEls([mkLine(startPt.x, startPt.y, p.x, p.y)]);
-    if ($('chain').checked) { startPt = p; typed = ''; setPreview(p, p); } else endDraw();
+    if ($('chain').checked) { startPt = p; typed = ''; parRef = null; setPreview(p, p); } else endDraw();
   } else if (tool === 'rect') {
     const p = rectPoint(raw);
     if (!startPt) { startPt = p; setRubber(p, p); return; }
@@ -979,7 +1092,7 @@ function cancelDrag() {
   else if (drag.kind === 'handle') setAttrs(drag.el, drag.orig);
   else if (drag.kind === 'crop') { drag.u.crop = drag.prev; renderU(drag.u); }
   else if (drag.kind === 'underlay') { drag.u.x = drag.ux; drag.u.y = drag.uy; renderU(drag.u); syncControls(); }
-  rubber.setAttribute('visibility', 'hidden');
+  rubber.setAttribute('visibility', 'hidden'); gGuides.textContent = '';
   drag = null; paint();
 }
 
@@ -1016,7 +1129,9 @@ function dragMove(ev, p) {
     }
     drawHandles();
   } else if (drag.kind === 'handle') {
+    trackSkip = drag.el;
     let q = snapPoint(p);
+    trackSkip = null; drawGuides();
     if (orthoOn()) {
       const o = drag.end === 1 ? { x: +drag.orig.x2, y: +drag.orig.y2 } : { x: +drag.orig.x1, y: +drag.orig.y1 };
       q = orthoPoint(o, q);
@@ -1030,6 +1145,7 @@ function dragMove(ev, p) {
 
 function endDrag(p) {
   const d = drag; drag = null;
+  gGuides.textContent = '';
   if (d.kind === 'move' || d.kind === 'handle') {
     const items = (d.kind === 'move' ? d.items : [{ el: d.el, orig: d.orig }])
       .map(it => ({ el: it.el, before: it.orig, after: snapshot(it.el) }))
@@ -1099,6 +1215,7 @@ view.addEventListener('pointermove', ev => {
   updateStatus(p);
   if (drag) { dragMove(ev, p); return; }
   if (tap && tap.moved && tap.drawFrom && !startPt && tool === 'line') startPt = tap.drawFrom;
+  if (isDrawing() && $('tracking').checked) { const h = hitTest(p); if (h && h.tagName === 'line') parRef = h; }
   updatePreview(p);
   updateAids(p);
   if (tool === 'select' && ev.pointerType === 'mouse') {
@@ -1121,7 +1238,7 @@ function pointerEnd(ev) {
 function finishDragLine(raw) {
   const p = drawPoint(raw);
   if (Math.hypot(p.x - startPt.x, p.y - startPt.y) > 0) addEls([mkLine(startPt.x, startPt.y, p.x, p.y)]);
-  if ($('chain').checked) { startPt = p; typed = ''; setPreview(p, p); } else endDraw();
+  if ($('chain').checked) { startPt = p; typed = ''; parRef = null; setPreview(p, p); } else endDraw();
   updateStatus();
 }
 view.addEventListener('pointerup', pointerEnd);
@@ -1162,7 +1279,7 @@ function placeTyped() {
   const e = typedEnd(q);
   addEls([mkLine(startPt.x, startPt.y, e.x, e.y)]);
   typed = '';
-  if ($('chain').checked) { startPt = e; setPreview(e, e); } else endDraw();
+  if ($('chain').checked) { startPt = e; parRef = null; setPreview(e, e); } else endDraw();
   updateStatus();
 }
 
