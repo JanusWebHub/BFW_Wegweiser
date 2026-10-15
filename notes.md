@@ -1,0 +1,249 @@
+# support notes for conversation
+
+## 1. State
+
+- Repo `C:\projects\wegweiser`, branch `local/simpler`. The branch becomes the cleaned `main` after all simplification done, by a git method not yet decided.
+- The specification is done for the moment, by Deniz's statement of 12.10.26.
+- `cad/file_format_specification.md` exists and is provisional, in notation form: file types, file structure, model elements, ids and fields. It does not yet cover the zoning file, the adjacency graph, the precomputed routes dataset or the SVG files.
+- Work from 15.10.26 on continues on the branch `feature/plan-tracer`, created from `local/simpler` and pushed to the remote `januswebhub`.
+- `docs/ignore/stack-constraints.md` lists constraints on names, keys and labels per technology, with nothing specific to this project. It is not tracked in Git.
+- The decisions of 15.10.26 (finalize and the version stamp, layers, the plan tracer, where the floor id, level, frame and scale originate, the start of the zoning editor) are in the working record and section 4. `cad/zoning editor/specification.md`, `cad/plan tracer/readme.md` and `cad/file_format_specification.md` do not yet reflect them.
+- The course of actions is kept as a shared Artifact (section 4). Steps 1 to 11B are approved or tentatively approved; steps 12 to 23 are drafts.
+
+## 2. Next steps
+
+1. Reconcile the other documents with the working record and the specification:
+   - the rulebook, system design and implementation plan against the working record and the specification;
+   - names: lowercase, plan SVG, zone SVG (the rulebook says "Zoned SVG"), plan tracer, `cad/`, zoning editor, "zoning working view";
+   - "movement geometry" (movement lines are the model element now) in the zoning editor readme line 7, the working record, rulebook 3.3 and the system design requirements;
+   - rulebook terms with no counterpart in the specification (walkable part, obstacle, block, navigability, crossability): decide which of them the zoning editor models; rulebook 1.1 says "derived from the architectural plans", where the working record says supply chain;
+   - the rulebook must define zones, boundaries, portals and movement lines in the agreed terms, because the specification builds on the concepts defined there;
+   - the system design pipeline has an adjacency graph and architectural interpretation but no plan tracer or plan SVG, its Conceptual model section is a placeholder, and "Review and select model" is its only trace of baseline and checkpoint;
+   - the root readme omits `cad/` and still uses `README.md`;
+   - "Navigation SVG and displayed route geometry share a coordinate frame." was removed from the specification because it concerns the navigation module: decide its home;
+   - statements elsewhere that the specification supersedes: the four independent dimensions, "other formats imported as an underlay only", the proposal-only rule ("a program may at most propose"), the BFW graphs absorption, the interim raster or vector underlay, the terms "review state" and "review annotations".
+2. Define in `cad/file_format_specification.md` the structures of the zoning file, the adjacency graph, the precomputed routes dataset and the SVG files. Taken up after decluttering.
+3. Decide the fate of `cad/legacy/specs/graph_format.md` and `cad/legacy/specs/zoning_guidelines.md`.
+4. Reconcile the system design's routing module with the tuning editor decision of 15.10.26 (section 4): the tuning editor contains the graph compiler and the route computer and takes the connectivity graph and the zone SVG. Decide the technology of the compiler and the computer: probably plain JavaScript in a browser, as the zoning editor; the choice is between a Python runtime inside the page and a JavaScript rewrite.
+5. Decide the deferred points, after decluttering: how state and segment keys are written in files, the separator characters of ids, whether pipes in keys have spaces around them, the notation of a variant's value, the contract between two modules (what a passed file guarantees), and the naming of corridor zones (shorter names than `flur-tr9-1`, such as `flur-1`, `flur1` or `f1`, are being considered).
+6. Next, planned for 16.10.26: bring `cad/zoning editor/specification.md` in line with the decisions since its last edit (commit 0e97e22, 2026-10-14 13:06 +0200; file modified 2026-10-14 05:33 local). Its content last changed in 50f1495 (2026-10-12). Edits agreed in outline, previews not yet shown or applied (the specification needs Deniz's confirmation): line 8 (the generated files are specified in the file format specification; generation only when the author commands it); lines 14 to 16 (the zoning file is `zoning.json`; ids held once in the model; the zoning file is private to the zoning editor); lines 18 to 25 (floors with id, level, frame and scale, taken from the plan SVG, and the start of the zoning editor with its new and existing file cases; one exterior zone per floor; zone properties and floor; ids follow the notation and a portal id is built from its two zone ids; portal `line`, `midpoint`, vertical portals, portal flags); line 31 (renaming a zone as an edit operation, changing only the zoning file); line 59 (finalizing, see section 4); lines 41 to 47 and 82 (layers: loading reads the zoning file into the model, the viewer draws the model as SVG shapes over the plan SVG, both share the floor's frame and scale, and every layer is toggleable, where line 47 now makes only revision markup toggleable).
+7. Bring `cad/plan tracer/readme.md` in line with section 4: line 3 says the plan tracer generates the plan SVG, where it is now a drawing application in which the author loads and aligns underlays, sets the floor id, level, frame and scale, traces lines and text, and saves one plan SVG per floor. Wording to be shown to Deniz first.
+8. Continue the course of actions with Deniz from step 12 (the viewer draws the underlay), and take up the open points: the overlay in the zoning file, serialization of applied and proposed edits, the temp file, the failed check or missing plan SVG, where the plan SVG records floor id, level and scale.
+
+## 3. Settled, do not reopen
+
+- The snap item: "Drawn elements snap to each other within a given distance, to ensure exactly matching coordinates." The second sentence ("stored data has no tolerances") was dropped on purpose.
+- "The zoning author can change the model either directly or by drawing a request for an AI assistant or script using markup."
+- The check item "...loading, saving or checkpoint..." is as Deniz wrote it.
+- "The zoning editor remembers a file the zoning author picked and saves back to the file. Requires a Chromium-based browser." The short fragment after a full sentence is a precedent for a constraint on that sentence, and is used only for that.
+- "The zoning author can ask a program or AI assistant to propose a resolution of a violation found by the check or flagged by the zoning author." ("Ask someone to do something" is the construction; "request from" is not.)
+- Technology has no "initially". The plan SVG is the only reference underlay, with no gloss and no interim item.
+- "Edit" and "change" as defined in section 5. "Outputs" is named in purpose and used in the review workflow.
+- The specification says "concepts" (not "meanings") defined in the rulebook.
+- Id notation of 14.10.26: SVG ids without a prefix, `_` as the separator in portal ids, portal ids sorted by character code, mixed case, ASCII only with `ae`, `oe`, `ue`, `ss`, snake-case field names.
+- The concept of base elements is dropped (Deniz, 15.10.26). It was a provisional support for devising the format specification. The contract between two modules does not need it and is worked out later.
+- A file's `format` value is its file name without the extension, in kebab case. Files carry `zoning_file_version` and `saved_at`, ISO 8601 UTC timestamps with milliseconds.
+
+## 4. Decisions and reasons
+
+Topology and the model:
+
+- A shared boundary is stored once and referenced by id. The principle "stored data has no tolerances" is not stated in the specification any more, only implied by the snap item. Reason (an inference, the handoff gave none): the legacy plan (`claude/review/app-plan.md` lines 38 to 44) used tolerances (snap about 0.8 units, door on a boundary up to 0.6, drawn doors winning up to about 4.5) and repaired gaps silently by Voronoi cuts. The original snap wording relied on corner ids, which are dropped.
+- The tolerance lives in the drawing aid, not in the data. Where elements meet, their coordinates match exactly.
+- The model is the zoning editor's data about the building, held in memory. The zoning file holds it on disk in a custom JSON format in a stable order, so changes show up as small readable diffs.
+- A boundary is a straight line with its own start and end coordinates; "move boundary" changes only that boundary. How connections between boundary ends are recorded is open.
+- A portal is a line of finite length on its boundary, with a stored start and end. Its midpoint is derived and represents it in the connectivity graph as a single coordinate. This is not a contradiction with the rulebook. The rule that a portal sits on its boundary stands without exception; its enforcement and how a portal follows a moving boundary are open. A routing point other than the midpoint is a later option.
+- A movement line is one polyline, so it can be selected, dragged and deleted as one object. The movement zone stays defined in the rulebook but is not part of movement dynamics now.
+
+Review workflow and authority:
+
+- Stages: source of change, working state, review, checkpoint, output. Layers: reference underlay (the plan SVG), approved baseline, working overlay.
+- A checkpoint integrates all edits approved since the previous checkpoint into the approved baseline. The approved baseline is the model at the latest checkpoint. Outputs come from the same explicitly selected approved baseline.
+- Only the zoning author grants approval. Passing checks is not approval. The zoning editor never changes geometry on its own to make a check pass, and never resolves a violation silently.
+- A check is a real reading of the stored data, never an automatic consequence of how the data is stored. For example, "an outline is closed" is checked by reading the chain of boundaries.
+- The plan SVG, produced by the plan tracer as a vectorized and cleaned equivalent of the architectural plans, is the only reference underlay.
+
+Technology:
+
+- Plain JavaScript, no build step, no types; a web page in a browser; the viewer draws the model as SVG; no geometry library for now. Remembering a picked file needs a Chromium-based browser. Running headless (such as with Node) or in a window of its own is a later possibility.
+
+Dropped on purpose (and why, where known):
+
+- The four independent dimensions (content category, review state, origin, edit protection): a leftover from the redline workflow.
+- "A program may at most propose a match" and "no match is made silently".
+- The whole geometry import topic including the BFW graphs absorption, the import capability item in purpose, imported raster or vector images as interim underlay, and the toolchain and UI framework items (Node with Vite, Vitest, TypeScript).
+- "Review annotations" and "review state" as terms in the specification.
+- The architecture items on who may read or change the model, keeping the data out of reach, and visible failure on violation: implied by the editing rule, and an implementation technique, not a requirement. The viewer-reaction item was implied too.
+- The "mechanical consequences" item. Its source was the working record's section "Domain-Aware Editing"; its only real example, a portal following a moving boundary, is an open question.
+- "Unresolved interpretations" as a term. The concept survives as the potential feature "Stated relationships whose geometry is not yet drawn".
+- The cleanup paragraph of the old cad readme: other specification items give it.
+
+Naming:
+
+- The word "review" is not used as a noun naming one specific thing. Fixed phrases, always in full: "the BFW zoning work" (the job), "the BFW EG zoning review" (the collaboration with Claude on that job), "the remains of the BFW EG zoning review" (its files and folders), "the redline workflow" (marks, interpretation, applying, checks, regeneration). Applied in `docs/working-record.md` and `cad/readme.md`.
+
+File formats (14.10.26):
+
+- SVG ids carry no prefix. The legacy prefixes `zone-` and `portal-` existed because an XML id cannot start with a digit, and ids now start with a letter, the floor code.
+- Segments are stored once per direction. The rulebook defines a segment as a traversal from one portal to another, and costs are per direction.
+- The exterior carries a floor code in its id, so each floor has its own. The routing logic has to accommodate this, noted in the working record.
+- `navigable` is a zone field. The exterior is `crossable: false` and `navigable: true`.
+- `provenance` and the integer `version` were dropped. `zoning_file_version` identifies the zoning file version a file derives from, and `saved_at` says when the file was saved. A constant integer gave no traceability.
+- Opaque ids were rejected by Deniz. Ids stay readable. Renaming is an edit operation of the zoning editor, which changes only the zoning file; keeping generated files and the routing config in step belongs to operations.
+- The format document is notation only. Validity rules, search rules, the file location table and prose were removed.
+- Floor codes follow the German convention: `UG2`, `UG1`, `EG`, `OG1`, `OG2`, with levels -2 to 2.
+- A portal has `line` (start and end of the crossable section of the boundary between its two zones) and `midpoint` (of `line`). A vertical portal has `points` instead, one position per joined floor. Which files carry `line` is open.
+- Validation of the files, for example that a zone's `floor` equals the floor id in its id, is devised later. The files need not state such rules.
+- The base variant is `standard`, a key in `variants`. A variant's value has `non_crossable` and `non_navigable`, lists of zone ids holding only the exceptions. A variant only narrows the base graph (rulebook 3.3).
+- Costs are top-level fields common to all variants. Whether costs differ per variant is deferred, because it would complicate the nested notation of `variants`.
+- The sections of elements whose value nests or is not obvious from the field list carry one inline example with invented ids that follow the notation, not ids of the building.
+
+Routing module (15.10.26):
+
+- The system design's routing flow (zone SVG into the tuning editor, which produces the config; the compiler and the computer as separate steps) has no zoning file in it and no start. The settled flow: the tuning editor takes the connectivity graph and the zone SVG, contains the graph compiler and the route computer, and starts with an empty config (no costs, only `standard`). The first routing graph is distance-only and lives in the editor; the computer runs on it and the routes show on the zone SVG.
+- The zoning author tunes costs and creates variants there and sees the changed routes. Finished, the editor saves the routing config, the routing graph and the precomputed routes dataset. The routing graph file is saved although no consumer is named at the moment.
+- The input is the connectivity graph and not the zoning file: the zoning file stays private to the zoning editor, and the connectivity graph stays the interface between the zoning and routing modules. It already carries the zones, portals, floors and the authored movement geometry.
+- Technology is open, probably plain JavaScript in a browser. The existing compiler and computer (`src/build_database.py`, 335 lines; `src/calculate_routes.py`, 260 lines) are standard-library Python for the old data format.
+- A finalized version is the approved baseline at the latest checkpoint. The author clicks "finalize", which sets that baseline's `zoning_file_version`, stamped on the zoning file itself and on the outputs generated from it. Only finalize sets the stamp, so checkpoints stay unversioned and the file's content can be ahead of its stamp. Outputs are generated from the explicitly selected finalized approved baseline. Deniz agreed on 15.10.26 (his alternative reading, checkpoints intermediary and finalization the ultimate baseline, was not taken). Not yet in the zoning editor specification.
+
+Zoning editor, course of actions (15.10.26, being refined):
+
+- Layers: reference underlay (the plan SVG, a separate file, one per floor), approved baseline (the model at the latest checkpoint), working overlay. The overlay has candidate geometry (applied edits and proposed edits) and revision markup. Applied edits have altered the model and include approved ones awaiting a checkpoint; proposed edits have not altered it.
+- Loading reads the zoning file into the model in memory. The viewer draws the model as SVG shapes over the plan SVG, and both share the floor's frame and scale. Every layer is toggleable (Deniz, 15.10.26). The model is drawn, not replayed.
+- Deniz's lean: the zoning file holds the baseline, applied edits, proposed edits and revision markup, the plan SVG staying a separate file. He is not sure, because saving revision markup at every click is cumbersome.
+- Idea: one temp file while the program runs, overwritten on every change, holding the last checkpoint and the edits since, for recovery. Earlier checkpoints are not kept. It would live in the browser's own storage, because the page cannot create a sibling of a single picked file. Not decided.
+- Open: whether the zoning file holds the baseline only or the baseline plus the overlay parts; how applied and proposed edits are serialized (as operations with arguments or as resulting elements; the documents do not say); whether the temp file has the structure of the zoning file.
+- Plan tracer (15.10.26): a drawing application, not an automated process. The author starts it, loads the source material as underlays on an SVG drawing surface (several underlays, each moved, rotated, scaled and toggled separately, to form one coherent plan), traces only what the plans show as lines and text, and saves one plan SVG per floor. The surface has a floor id, a level, a reference frame and a scale, the fundamental values passed along the line. The first version is manual; automation is later work. The plan SVG also stores the placement of the underlays (moves, rotations, scales, toggles) as references to the source files with their transforms, not embedded images, in a group separate from the traced lines; the zoning editor draws only the traced lines and text. An SVG image element cannot display a PDF, so a PDF source must be converted to an image first (how is open, as is how the loading works). Applied in the working record only; the plan tracer readme, the format specification and the zoning editor specification follow later.
+- Origin of ids, frame and scale (Deniz, 15.10.26): the zone id and portal id originate in the zoning file; the floor id, level, frame and scale originate in the plan tracer, and the zoning file takes them from the plan SVG. Applied in the working record. The format specification does not state the origin. Open: where the plan SVG records the floor id, the level and the scale.
+- Zoning editor start (tentatively approved by Deniz, 15.10.26): the author initializes a new zoning file (A) or loads an existing one (B). Either way the data is in memory only, and the zoning file comes before the plan SVG in both cases. A new file is a skeleton in memory; nothing is written before the first save, where the author chooses the file location. The author then loads the plan SVG as the underlay (A: one plan SVG; B: the plan SVG referenced by each floor). A: the editor creates the floor from the plan SVG (id, level, `svg` path, frame, scale), the surface takes frame and scale, and saving is enabled. B: the editor checks the floor's id, level, frame and scale against the plan SVG, because they exist in both files. Dropped without a decision: relinking a plan SVG that cannot be found.
+- Open (Deniz: handle later): what the editor does when the check fails or the plan SVG cannot be found, including whether drawing is enabled only after the check succeeds. The contents of the skeleton are part of the zoning file structure, not yet defined.
+- The course of actions is kept as an Artifact, "Zoning Editor Course Of Actions" (shared list with branch steps; Deniz and Claude both edit it). Steps 1 to 7 (plan tracer) are approved, steps 8 to 11B (start of the zoning editor) tentatively, steps 12 to 23 are drafts not yet reviewed by Deniz. The rule check was missing from the first list; it is step 18.
+- Raised, not decided: snapping drawn elements to lines of the plan SVG (doable in the page; the snap item covers only drawn elements snapping to each other).
+
+## 5. Terms
+
+- Model: only the data. Zoning file: the same data on disk.
+- Edit operations: the code that changes the model. Viewer: the one name for the screen part.
+- Model element: kept for the rulebook's things only: zone, boundary, portal, movement line. A corner is not a model element, only a coordinate.
+- Geometry: the umbrella for everything that gives a model element its position. Defining coordinates: the coordinates that define an element. Geometry point: a coordinate such as a corner.
+- Shape: what the viewer draws in the SVG; it carries the id of the model element it shows, which is how a click reaches an edit operation with meaning.
+- Component: reserved for the program's code parts (edit operations, viewer, import code, generate code, load and save code). Not used for drawing or SVG parts.
+- Movement lines: the model element. "Movement geometry" was the older umbrella for movement lines and movement zones.
+- Edit: one separate, countable modification, the result of a single edit operation, which can be approved, kept in the working overlay and integrated at a checkpoint.
+- Change: the general word, which does not name one such item. Used as the verb or as the general noun (a request for a change, changes in a diff).
+- Floor code: the German code of a floor (`UG1`, `EG`, `OG1`). It is the floor id and the prefix of zone ids.
+- Entry portal and exit portal: the portals a walker enters and leaves a zone through. They give a segment its direction.
+
+## 6. Working agreements
+
+- Terse. Opinion first, then proposal. Edit only on "apply" and only what was shown, unless Deniz gives an explicit instruction. No bold, no em dashes, no links in documents, no stand-ins that hide meaning.
+- No invented reasons: if a reason fails, say so. Do not propose unrequested things or flag unfinished placement during decluttering.
+- Method: decompose into claims, judge each by role, group by subject, then polish wording; "review critically" means judging against the author's inferred intent. Both are saved in memory (`feedback_consolidation_method.md`, `feedback_critical_review.md`).
+- Mistakes that recur: sentence-level merges without decomposing, overstated tensions, reopening settled points, printing unchanged text in previews, long answers to short questions, unrequested proposals, padded findings.
+- Judge a file for deletion only by its contents and what the kept documents already hold. Never use Git or a backup as the reason.
+- Read every implicated file in full before a salvage or relation report. List every candidate item, one by one, and state clearly. No labels as names for things.
+- The format document is notation only: no prose and no rules.
+- Show edits in chat as plain markdown Before and After blocks, with line ranges in the labels and only the changed lines. No code blocks, no git diff.
+- Verify; do not hypothesize.
+- `database.json`, `web/data.*` and the EG prototype branch are not current. Consult them only when Deniz points at them, and then for inspiration only.
+- Make no decisions and give no judgement unless asked.
+- After a compaction, refresh on the whole session (files, record, transcript) before answering, not on one topic.
+- No padding and no performance of rigor: report only real findings that were not already ruled on, and say so when there is nothing. This is also a section in the global `CLAUDE.md`.
+
+## 7. History (append only)
+
+New entries go at the end, dated.
+
+### 09.10.26, earlier session (README work)
+
+- Three one-sentence sections were added to the legacy README (Live Validation, Open Existing Outputs, Automatic Changes Shown First). Four items offered by Claude (assisted tracing, rule-based suggestions, multi-floor, the BFW outputs as a reference) were declined.
+- The Copilot session that produced the zoning README (15 turns) was rebuilt and read. It began with research only, drifted into poetic prose that Deniz rejected, and then produced the adopted formulation: "a visual, domain-aware modeling application: a specialized 2D CAD editor for indoor-navigation models". A README was drafted with status labels and pruned; Deniz removed the status paragraph, the historical-inspiration section and the open-details section himself.
+- First critique round: rejected the pointer to the working record, links to other documents and an "authorized by whom" fix; accepted terms going to the working record, the `legacy/` line (later removed again), the Review section split, and the name and wording fixes. Approved wording: "is intended to become fully usable without AI", "could accommodate ... potentially before their geometry is complete", "is intended to be able to import" other formats. Claude invented a criticism of a fine sentence and conceded wrongly, then rechecked and corrected.
+- Working record cleanup: the "Local continuation" section removed; "Standalone app development" became "Zoning module development"; the "Last updated" date fixed; the review paragraphs consolidated into one; the Copilot observation integrated in the past tense into the evidential-roles paragraph; redundancies handled except the decluttering story told three times, which Deniz said to treat separately; some edits applied by Deniz.
+- Zoning README: terminology fixes ("zoning editor" replaced module, editor and application) and the sections Parts And Artifacts and Plan Tracer added. Deniz restructured it: a "Zoning Editor" parent heading, "Scope And Independence" removed (the `legacy/` mention is gone intentionally), the AI-independence paragraph moved into Purpose And Nature, the interpretation section dissolved. Decided: older documents are not integrated into the README, and "to be worked out later" status sentences do not belong in it. The README is finished.
+- Mistakes Deniz corrected: condensing approved wording, sorting by kind instead of status, wrongly conceding a point, treating something unsaid as missing, stating analyses too definitively, proposing rewrites before asking for guidance, analyzing paragraphs in isolation, raising non-issues, re-flagging the "Zoned SVG" rename, misreading "pending", verbosity. A memory was saved: approved items stay in approved wording, sorted by status, with no labels.
+
+### 10 and 11.10.26, session on `local/simpler`
+
+- Naming: "review" as a noun dropped, fixed phrases decided and applied in the working record and `cad/readme.md`.
+- Stack decided (later removed from the specification): plain JavaScript first with no build step and no types, a web page in a browser first, the viewer draws SVG, UI framework deferred, Node with Vite, Vitest and TypeScript an alternative for later.
+- Topology decided; corner ids dropped; terms model, edit operations, viewer, project file (since renamed to "zoning file") fixed; "only the zoning author decides, a program may at most propose"; "other formats are imported as an underlay only for now, geometry import is a later decision" (later removed); the cleanup paragraph of the old cad readme dropped.
+- Model discussion: the terms of section 5 (model element, geometry, defining coordinates, geometry point, shape, component, movement lines, polyline); boundaries and portals (straight boundary, portal midpoint derived, the on-boundary rule, non-straight boundaries open, routing point override as a later option); principles (no silent resolution of a violation, a check is a real reading of stored data, unresolved interpretations removed from the model).
+- First specification draft in sections, with six unplaced items (snap distance, mechanical consequences, "a program may at most propose a match", rule check on loading, what that check also catches, absorbed BFW graphs). Pronouns and shorthands replaced by explicit terms, items split to one statement each. "Review state" and "review annotations" kept for the time being. End state: tree clean at commit 168b279.
+
+### 11.10.26, later: consolidation and restructure of the specification
+
+- Consolidation by claims and roles, section by section (the check items merged into one, layers, construction, files, purpose). A snapshot of the specification was taken at 87 items. Then a thematic restructure (purpose, model, behavior, architecture, technology, open issues), verified against that snapshot for content loss by a sorted diff before the later deliberate drops.
+- Decisions: the model and project file (since renamed to "zoning file") as three items; the model changes only through edit operations; checks run at loading, saving and checkpoint or on demand; the checkpoint defined; the review workflow sorted into stages; decision authority split off; the four dimensions item removed; imports first decided "included", then the whole import line removed; geometry import dropped; the plan SVG the only reference underlay; the interim underlay, the toolchain and UI framework items removed; the navigation SVG coordinate frame line moved to the reconcile list.
+- The snap item was overhauled; the intent was found by comparing with the legacy plan (see section 4): tolerance in the drawing aid, not in the data. "Positional relations" was Deniz's own coinage and was abandoned.
+- Memory files saved: consolidation method and critical review.
+- Mistakes: surface merges, two overstated "tensions", reopening the settled check wording, invented reasons, unchanged text in previews, proposals with too many options.
+- A handoff recap ("midterm", 12.10.26) was written before context compaction.
+
+### 12.10.26
+
+- Architecture trimmed after discussion: the viewer-reaction item, who may read or change the model, data kept out of reach, and visible failure on violation were removed (implied or an implementation technique).
+- The mechanical consequences item was traced to the working record ("Domain-Aware Editing") and removed. The check items merged into "checks the model against a set of rules". The decision authority wording was rewritten ("ask ... to propose a resolution of a violation found by the check or flagged by the zoning author"), and its items reordered (approval authority before the lock item).
+- The Chromium item moved from open issues into the files item as a constraint fragment. Open issues split into "open issues" and "potential features"; "unresolved interpretations" renamed to "stated relationships whose geometry is not yet drawn".
+- A full check-up of the specification: "outputs" named in purpose, "edit" and "change" sorted (section 5), the layers colon, the technology comma. Section headers reconsidered: no logical consolidation. The specification was declared done for the moment.
+- Claude proposed unrequested items (a subsection note, a move of the pan and zoom item) against the saved memory; Deniz corrected it and an apology followed.
+- notes.md restructured into the seven sections above; the older recaps were folded in.
+
+### 13.10.26, decluttering and history reconstruction
+
+Earlier in the day:
+
+- The specification stayed as it was (done for the moment). notes.md was restructured into seven sections with an append-only history.
+- Decluttered `claude/review`, `claude/transcripts` and `claude/claude design` with Deniz deciding each item: app-plan.md and the cloud scripts were discarded, a few ideas went into the working record, and what is worth keeping from the review sits in `cad/legacy/` (fixed graphs, redline page, the two older spec files, a short readme). Deniz confirmed that what remains in `cad/legacy/` is fine.
+- Compared the file indexes. `docs/file-index-261005T1813.md` was the old snapshot, `docs/file-index-261013T0719.md` the new one. Decluttering was narrowed to `docs/ignore/texts/`, then widened to all of it.
+- First reconstruction of the project history in the working record, built from Git, file times, documents and Deniz's own account (simplification as the frame, Claude Design and Claude Code work as an independent effort). A memory was saved: read every implicated file before reporting.
+
+This part:
+
+- Claude review group (4 files) reviewed one file at a time against the kept documents. All discarded. Rule set by Deniz: judge deletion only by the contents, never by Git or backups (memory saved).
+- Copilot group (9 files): the five views were removed together, then content-261005.txt (checked against src/ and web/), plan-261005.md, current-state-report-261005.md and ai-agent-responses-261005.md one by one. All discarded. Deniz rejected every salvage candidate (the search vocabulary, the analytics separation, the operation behaviors).
+- The other 13 files of `docs/ignore/texts/` (the overhaul and pre-overhaul material) were scanned for dates and Git history, including PR #2 on GitHub, then reviewed newest to oldest. All were superseded or outdated and all discarded.
+- History reconstruction extended backwards from 2026-09-24 to the first upload on 2026-06-29, from the commit log, the reflog, PR #2 and the files' contents. Deniz's corrections: Janus created the project, Deniz joined on 09-01 and did most of the later work, Cowork is Claude Cowork, PR3 was planned and not needed. The working record now has the earlier phases in `course of events`, an opening in the overview, the 09-24 rebuild of `main` (2623bd7 created 22:30, author date 09:45), a rewritten 10-13 entry and "since removed" for the documents.
+- The record has no labels such as "false start". Deniz asked to drop labels altogether.
+- `docs/implementation-replan.md`: every decluttering item and every step of the sequence is marked done. Deniz dissolved the subfolders of `docs/ignore` (`texts`, `visuals`). The picture files now sit directly in `docs/ignore/`.
+- Mistakes Deniz corrected: verbose answers (keep short), a salvage suggestion that left out items from the review (list every item, state clearly), Git cited as a reason to delete, "not in Git" claimed before checking the PR history, fixating on labels.
+
+Files reviewed and removed (the index that listed them is deleted):
+
+- Claude review: claude-remote-branch-tips-review-recap-261005.md, handoff-261005.md, copilot-report-261005.md, tidyup-plan.md.
+- Copilot pipeline views and level plan: system-overview-261004.md, system-model-261004.md, development-lifecycle-261004.md, build-pipeline-261004.md, operation-flow-261004.md, content-261005.txt, plan-261005.md, current-state-report-261005.md, ai-agent-responses-261005.md.
+- Overhaul and earlier: documentation-restructuring-tracker-260924.md, devlog-261004.md, migration-review-tracker.md, unfinished-business.md, rulebook_sorted.md, rulebook.md, axioms.md, glossary.md, working_notes.md, adr.md, wegweiser-design.md, eval.md, workflow_strategy.md.
+- Removed earlier the same day: `claude/review`, `claude/transcripts`, `claude/claude design`, `docs/data/step*`, `docs/ignore/archive/other/*`. The old index `docs/file-index-261005T1813.md` lists them.
+
+### 14.10.26, file format specification
+
+- Removed "unresolved interpretations" from the working record.
+- Reviewed `cad/legacy/specs/graph_format.md` and `zoning_guidelines.md` against the fixed graphs and the documents. Deniz restored `graph_format.md` to its legacy state. The review produced the base elements and the new file `cad/file_format_specification.md`, written by consolidating the legacy ids and fields into one section per model element, then rewriting it in notation form.
+- Renamed "project file" to "zoning file" in the specification, working record, notes and legacy readme.
+- Built the format specification: file types table, file structure, model elements, ids and fields. Decided floor codes, zone ids with the floor code in front, `navigable`, segments per direction, `entry_portal` and `exit_portal`, `format` labels, two timestamps in place of `version`. Rebuilt the three JSON examples and validated them with a script.
+- Wrote `docs/ignore/stack-rules.md`, naming rules per technology, then corrected it and generalized all sections but the last.
+- Recorded the confirmed id and format decisions and the deferred items in the working record.
+- Mistakes Deniz corrected: treating excluded prototype files as current, adding unrequested "what this does to the proposal" paragraphs, hypotheticals instead of verified facts, resisting his idea of a shared base before testing it, misattributing editor warnings, and errors in the first stack-rules draft (a CSS selector example, HTML inline SVG case, URL and Markdown claims).
+- After the compaction: the portal fields were reworked (`point` became `midpoint`, new `line`, `points` replaces both on a vertical portal) and the examples updated.
+- `stack-rules.md` was renamed `stack-constraints.md` and made project-agnostic. Its "Applied to our ids" section was removed after checking the specification against it (no violations); three items went into the working record.
+- The global `CLAUDE.md` got a "No padding, no performance of rigor" section, and the git section's Why line was reworded.
+- The working record got the base elements, the floor ids, the exterior, segments and keys, the portal fields, the corridor naming item and the later items.
+- Mistakes Deniz corrected: a wrong explanation of the exterior clause right after the compaction, a padded consistency check (four gaps he had already ruled on or that had no merit), adjusting the length of a rule instead of finding its cause, and wording for `midpoint` that was wrong ("the portal's crossable section", when the portal is that section) or insufficient ("the midpoint of the portal").
+- Routing config: the variant design was settled (`standard`, `non_crossable`, `non_navigable`, costs outside the variants), the specification and both full-file examples were updated, and inline examples were added to the portal, state, segment and variant sections. The working record has the same.
+- Mistake Deniz corrected: calling the base variant implicit ("the configuration does not need to list it"), which he had not said.
+
+### 15.10.26, routing
+
+- Walked through the real steps: the author finalizes a zoning file version, selects it and commands the zoning editor to generate the connectivity graph, the zone SVG and the navigation SVG. The editor does not generate on its own.
+- Deniz saw the missing link: the routing flow was designed before the zoning file. His idea: the tuning editor internalizes the compiler and the computer, starts with an empty config, and the author tunes in the viewer. Tested against the documents; it holds. Decided: connectivity graph and zone SVG as input, three files saved, technology probably plain JavaScript in a browser (open). The working record has the confirmed list "Confirmed 2026-10-15 (routing)".
+- Mistake Deniz corrected: saying the compiler and the computer would sit inside the tuning editor "without a bridge" under plain JavaScript, when both exist as Python scripts.
+- The three references to `cad/file_format_template.md` in the working record were corrected to `cad/file_format_specification.md`, after a check of the specification, the record, `notes.md` and the constraints file for updates in step (done on 14.10.26, after the entry above was written).
+- A further check after the routing decisions found the specification and `notes.md` in step. The working record's routing module paragraph (line 67) was stale and was rewritten sentence by sentence with Deniz's confirmation: the tuning editor takes the connectivity graph and zone SVG, contains the graph compiler and the routing computer, starts with an empty config, and saves the routing config, the routing graph and the precomputed routes dataset.
+- Mistake Deniz corrected: a proposed edit shortened "precomputed routes dataset" to "dataset" and replaced "inspect" with "shows" in approved wording.
+- Started aligning `cad/zoning editor/specification.md`: identified its last edit (git and file system), listed every decision since (file formats, operations, routing), and drafted the line-by-line changes. The finalize reading was confirmed later the same day (section 4). Nothing in that specification was edited yet; the edits are for 16.10.26.
+- After the compaction, in order: the finalize reading (Deniz had offered two; I called it settled, he corrected me, and it was then agreed: the stamp is set only by finalize, on the zoning file and the outputs); the layers and what the working overlay holds (applied edits, proposed edits, revision markup), with every layer toggleable and the viewer drawing the model over the plan SVG; the temp file idea and the overlay question (open); a talk about what the plan SVG is (lines and text, and a possible snap to its lines).
+- The course of actions was written as a shared Artifact. Deniz reworked the plan tracer part: a manual drawing application, several underlays aligned by hand, placement stored in the plan SVG, PDF converted first, and the floor id, level, frame and scale originating in the plan tracer (steps 1 to 7). Then the start of the zoning editor: a new file or an existing file, in memory, then the plan SVG, then the floor created or checked (steps 8 to 11B, tentatively approved). The rule check was added as step 18.
+- Deniz dropped the concept of base elements; the working record and these notes were adjusted (the term, the list and the contract sentence removed; the contract between modules deferred).
+- Decisions and open points were written to the working record and to section 4.
+- `notes.md` was taken out of `.gitignore` and added to Git, and the session's changes were committed and pushed on `local/simpler`. Then the branch `feature/plan-tracer` was created from `local/simpler` and pushed to the remote `januswebhub` with its upstream set. A remote branch of that name already existed, one commit behind, and the push fast-forwarded it. The other local branches and their upstreams were listed; all are in sync except `feature/eg-prototype`, which is behind its remote by one commit as of the last fetch. The zoning editor specification, the plan tracer readme and the format specification were not edited.
+- Mistakes Deniz corrected: the finalize reading called settled, verifying that a statement was absent from the specification by grepping one word (it must be read), saying he edited the artifact "while I was preparing the write" when his edits were older drafts, and jumping ahead to edits he had not asked for.
