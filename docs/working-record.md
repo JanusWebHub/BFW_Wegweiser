@@ -1,7 +1,7 @@
 # Working Record: Decisions And Agreements
 
 Started: 2026-10-03
-Last updated: 2026-10-15
+Last updated: 2026-10-16
 Human participant: Deniz
 AI assistants: GitHub Copilot, Claude Code
 
@@ -200,13 +200,15 @@ Confirmed 2026-10-15 (plan tracer first version):
 - It loads image files (JPG or PNG) as underlays. A PDF source is converted to an image beforehand.
 - The floor id, level, frame and units per meter are typed in on the drawing surface.
 - The zoning author saves the plan SVG through a file dialog and can leave the underlay references out of it. Opening a plan SVG reads it back; the underlay images are picked again.
-- The plan tracer is no longer limited to lines and text. It also draws polylines, circles and paths, gives every traced element an id, attaches text to an element by its id, and offers a warehouse symbol library and named layers. This replaces "as lines and text" and "traces only what the plans show" in the plan tracer list above, and "The zoning editor draws only the traced lines and text". These parts come last in the build, and the plan SVG format for them is not defined yet.
+- The plan tracer is no longer limited to lines and text. It also draws polylines, circles and paths, gives every traced element an id, attaches text to an element by its id, and offers a warehouse symbol library and named layers. This replaces "as lines and text" and "traces only what the plans show" in the plan tracer list above, and "The zoning editor draws only the traced lines and text". These parts were built last, in batch 5, and the plan SVG format for them is Claude's provisional choice, described in the paragraph headed "Provisional" below.
 
 Provisional (plan SVG written by `plan-tracer.html` so far): the frame as `viewBox`; `data-floor-id`, `data-level` and `data-units-per-meter` on the root element; a group `underlays` with one `image` per underlay (file name as `href`, transform, opacity, and `data-` attributes for position, rotation, scale, flips, lock and crop, a crop as a `clipPath`); a group `trace` with one group per layer (`data-layer` with the layer name, `display="none"` when hidden, `data-locked="true"` when locked, in layer order) holding the traced elements, each with an `id` such as `line1`, `poly2`, `circle3`, `path4`, `text5` or `sym6`: `line`, `polyline`, `circle`, `path` (`d`, plus `data-points`, `data-smooth` and `data-closed`), `text` (with `data-for` naming the element it is attached to and `data-dx` and `data-dy` as its offset, centered and rotated along a line) and warehouse symbols as groups (`data-symbol`, `data-cx`, `data-cy`, `data-rot`, `data-width` and `data-depth` in meters, drawn in meters inside `scale(units per meter)`); each shape carries its own stroke color and thickness. The file name offered on saving is `<floor id>-plan.svg`.
 
 Confirmed 2026-10-15 (language): all development modules (plan tracer, zoning editor, tuning editor) use English for identifiers, documentation, interface text and code comments. German is for the navigation client's user-facing text only.
 
 Confirmed 2026-10-15 (plan tracer build): the plan tracer is built in five batches, each built, tested and committed on its own: aids and feedback (batch 1), drawing (batch 2), snaps and guides (batch 3), underlay and view (batch 4), and last the plan SVG format changes (batch 5). Left out: arrow-key nudging, an underlay thumbnail, a phone layout, corner join, mirror, rotate and scale of a selection, base-point move and array, a properties panel, a snap settings list, a keyboard shortcuts list. In batch 2 a dimension is drawn as ordinary lines and a text, with no link to the measured line. Batch 5 was built from this list on Deniz's instruction to proceed without a further layout round: the format it writes (ids, layer groups, attached text, symbols and their default sizes and drawings, the path attributes) is Claude's provisional choice and is not decided. In batch 3 the snaps and guides are one switch, "Tracking guides", on by default, with no list of separate snap settings: alignment with the ends, midpoints and start point, extension beyond line ends, perpendicular, parallel to a hovered line, and polar angles of 0, 30, 45, 60 and 90 degrees in every direction. Snaps to ends, midpoints and intersections win over guides, and guides win over the grid; ortho turns tracking off while a line is being drawn. In batch 4 each underlay also keeps a label, a brightness and a contrast, saved as `data-label`, `data-brightness` and `data-contrast` on its `image` in the plan SVG (written only when not default); the file name remains the key for picking the image again, and the order of the `image` elements is the drawing order. The view has rulers in meters from the frame corner, a scale bar, an overview map that is off by default, and a zoom window.
+
+Confirmed 2026-10-16 (plan tracer build flow): Deniz instructed that Claude commits each finished batch with the message "provisional message" once its checks pass and the notes and this record are updated, and goes on to the next batch without a layout round or a go from him, while he supervises. Batches 1 to 3 were committed by Deniz. Batch 4 was committed by Claude after Deniz's go on its layout; batch 5 was built without a layout round. The plan tracer is complete as planned, in five batches. The commits of batches 3 to 5 are not pushed.
 
 Tentatively approved 2026-10-15 (zoning editor start):
 
@@ -237,6 +239,6 @@ To be worked out later (stated 2026-10-14 while drafting `cad/file_format_specif
 - Snapping drawn elements to lines of the plan SVG. The snap item in the zoning editor specification covers only drawn elements snapping to each other.
 - How a PDF source is converted to an image for use as an underlay in the plan tracer. The first version loads image files through a file picker, and the zoning author converts a PDF beforehand.
 - Where the plan SVG records the floor id, the level and the scale. The plan tracer provisionally writes them as attributes of the root element.
-- The plan SVG format of the polylines, circles, paths, ids, attached text, symbols and layers of the last build batch.
+- Whether the plan SVG format that batch 5 provisionally writes for the polylines, circles, paths, ids, attached text, symbols and layers stands, including the id scheme, the layer groups and the default sizes and drawings of the symbols.
 - The contract between two modules: what the file passed from one module to the next guarantees, and how its meaning is kept unchanged.
 - What the zoning editor does when the check of a floor against its plan SVG fails or the plan SVG cannot be found, including whether drawing is enabled only after the check succeeds.
