@@ -210,6 +210,8 @@ Confirmed 2026-10-15 (plan tracer build): the plan tracer is built in five batch
 
 Confirmed 2026-10-16 (plan tracer build flow): Deniz instructed that Claude commits each finished batch with the message "provisional message" once its checks pass and the notes and this record are updated, and goes on to the next batch without a layout round or a go from him, while he supervises. Batches 1 to 3 were committed by Deniz. Batch 4 was committed by Claude after Deniz's go on its layout; batch 5 was built without a layout round. The plan tracer is complete as planned, in five batches. The commits of batches 3 to 5 are not pushed.
 
+Confirmed 2026-10-16 (plan tracer tests): the plan tracer is tested by a suite in `cad/plan tracer/tests/`, started with `node run.mjs`. It consists of a static test of the HTML and browser tests that drive a headless Chrome with real mouse and key events. The tests are grouped by what a check can disturb in the checks after it, not by build batch: the trace (drawing, snapping, editing, history, layers) on one page, and underlays and view, files and persistence, the interface around the drawing, and one end-to-end floor each on their own. `run.mjs` is the only file that holds paths; the tests receive them as arguments. Em dashes are not tested. Checks that need a person to look or feel (appearance in both themes, symbol drawings, the real file dialogs, speed with a large scan, other browsers, touch, the Artifact copy) are kept in `tests/manual-checks.md` for the zoning author to do by hand. On 2026-10-16 all 420 scripted checks passed and found no defect in the tool; the manual checks are not yet done.
+
 Tentatively approved 2026-10-15 (zoning editor start):
 
 - On starting, the zoning author either initializes a new zoning file or loads an existing one. Either way the data is held in memory only, and the zoning file comes first, before the plan SVG.
@@ -240,5 +242,6 @@ To be worked out later (stated 2026-10-14 while drafting `cad/file_format_specif
 - How a PDF source is converted to an image for use as an underlay in the plan tracer. The first version loads image files through a file picker, and the zoning author converts a PDF beforehand.
 - Where the plan SVG records the floor id, the level and the scale. The plan tracer provisionally writes them as attributes of the root element.
 - Whether the plan SVG format that batch 5 provisionally writes for the polylines, circles, paths, ids, attached text, symbols and layers stands, including the id scheme, the layer groups and the default sizes and drawings of the symbols.
+- Whether the plan tracer's snapping and tracking also use the points of polylines, circles, paths and symbols. They use straight lines only, while the Help says that ends snap to "line ends".
 - The contract between two modules: what the file passed from one module to the next guarantees, and how its meaning is kept unchanged.
 - What the zoning editor does when the check of a floor against its plan SVG fails or the plan SVG cannot be found, including whether drawing is enabled only after the check succeeds.
