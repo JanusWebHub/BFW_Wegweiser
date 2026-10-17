@@ -9,7 +9,7 @@
 | Zone SVG                   | `zone.svg`                | semantic floor plan of zones and portals |
 | Navigation SVG             | `navigation.svg`          | map for displaying routes                |
 | Zoning file                | `zoning.json`             | the model, saved by the zoning editor    |
-| Plan SVG                   | `plan.svg`                | vectorized equivalent of the plans       |
+| Plan SVG                   | `<floor id>-plan.svg`     | vectorized equivalent of the plans       |
 | Precomputed routes dataset | `precomputed-routes.json` | routes per zone pair and variant         |
 
 ## File structure
@@ -47,6 +47,60 @@ JSON, top level:
 - `segment_costs`: `{ <segment key>: <number> }`, extra cost of the segment, in the unit of `distance_m`
 - `variants`: `{ <variant id>: <variant> }`
 
+### Plan SVG
+
+One file per floor. SVG, root `svg`:
+
+- `viewBox`: `x y width height`, the floor's frame
+- `data-floor-id`: floor id
+- `data-level`: integer, the floor's level
+- `data-units-per-meter`: number
+- `data-saved-at`: timestamp of when this file was saved, ISO 8601 UTC with milliseconds
+- `g id="underlays"`: the underlays, optional content
+- `g id="trace"`: the traced elements
+
+Group `underlays`:
+
+- `image`: one per underlay, in drawing order, the first at the bottom
+- `href`: file name of the source image; the key for picking the image again
+- `width`, `height`: size of the image
+- `transform`: placement, computed from the `data-` attributes below
+- `opacity`: number
+- `display="none"`: only on a hidden underlay
+- `data-x`, `data-y`: position
+- `data-rotation`: degrees
+- `data-scale`: number
+- `data-flip-x`, `data-flip-y`: `"true"`, only on a flipped underlay
+- `data-locked`: `"true"`, only on a locked underlay
+- `data-crop`: `x y width height`, only on a cropped underlay
+- `clip-path`: `url(#clip-<n>)`, only on a cropped underlay; the `clipPath id="clip-<n>"` sits in a `defs` in the group
+- `data-label`, `data-brightness`, `data-contrast`: only when not the default (empty, 1, 1)
+
+Group `trace`:
+
+- One `g` per layer, in layer order
+- `data-layer`: layer name
+- `display="none"`: only on a hidden layer
+- `data-locked`: `"true"`, only on a locked layer
+- The traced elements sit in their layer's `g`
+
+Traced element, every kind:
+
+- `id`: starts with a letter, then letters, digits and `_`; unique in the file; e.g. `line1`, `poly2`, `circle3`, `path4`, `text5`, `sym6`
+- `stroke`, `stroke-width`: color and thickness; not on `text`
+- `fill="none"`; not on `text`
+- `vector-effect="non-scaling-stroke"`; not on `text`
+
+Traced element, by kind:
+
+- `line`: `x1`, `y1`, `x2`, `y2`
+- `polyline`: `points`, `x,y` pairs separated by spaces
+- `circle`: `cx`, `cy`, `r`
+- `path`: `d`; `data-points`, the points the path runs through; `data-smooth`, `"true"` or `"false"`; `data-closed`, `"true"` or `"false"`
+- `text`: `x`, `y`, `font-size`, `fill`; `text-anchor` and `transform`, only when set; the text is the content
+- `text`, attached to an element: `data-for`, the id of that element; `data-dx`, `data-dy`, the offset
+- Symbol, a `g`: `data-symbol`, one of `stairs`, `rack`, `door`, `gate`, `dock`, `column`, `pallet`, `ramp`, `elevator`; `data-cx`, `data-cy`, the center; `data-rot`, degrees; `data-width`, `data-depth`, meters; `transform`; `color`; the drawing as `path` children, in meters
+
 ## Model elements, ids and fields
 
 ### Floor
@@ -58,10 +112,6 @@ JSON:
 - `svg`: string, path of the floor's plan SVG file
 - `view_box`: `[x, y, width, height]`, numbers as in the SVG `viewBox` attribute; the floor's coordinate frame
 - `units_per_meter`: number, SVG units per meter
-
-SVG:
-
-- One plan SVG file per floor, named by `svg`
 
 ### Zone
 
@@ -140,18 +190,6 @@ JSON:
 ### Route
 
 - A chain of zones and portals: `zone | portal | zone | ... | portal | zone`.
-
-### Movement geometry
-
-- The encoding is not yet specified.
-
-### Movement line
-
-- The encoding is not yet specified.
-
-### Boundary
-
-- The encoding is not yet specified.
 
 ## Connectivity graph example
 

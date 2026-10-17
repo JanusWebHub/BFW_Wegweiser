@@ -62,15 +62,11 @@ Each entry names its source: Git (commits and branch reflog), file system (times
 
 The system is organized into independent zoning, routing and navigation modules. This permits different buildings to supply compatible authored inputs without changing the routing module, and route-search algorithms to change without changing their routing-graph input.
 
-The zoning module produces zone SVG, connectivity JSON and navigation SVG. Movement geometry, including designer-authored movement lines, is intended to be part of the connectivity graph. The exact movement-geometry encoding and routing module input requirements remain unspecified. Navigation SVG passes from the zoning module to the navigation module.
-
-The routing module contains a graph compiler, routing computer and tuning editor. The tuning editor, a repurposed version of the zoning editor, takes the connectivity graph and zone SVG and contains the graph compiler and the routing computer. The graph compiler produces a routing graph from the connectivity graph and the routing configuration, which starts empty. The routing computer consumes that graph and produces the precomputed routes dataset. The tuning editor is used to inspect calculated routes on zone SVG, and it updates routing configuration for the next iteration. The connectivity graph persists across tuning iterations. Its geometry, including movement geometry, is editable in the zoning editor and fixed in the tuning editor. Tuning changes only the routing configuration, which holds costs and variant restrictions. The tuning editor saves the routing configuration, the routing graph and the precomputed routes dataset. The optimized and finalized version of the precomputed routes dataset passes from the routing module to the navigation module.
-
 ## Authoring Concepts
 
 The following sections on layers and on intent, application and approval record agreed authoring concepts for the zoning editor. Human decision authority applies regardless of software implementation.
 
-### Layers and independent dimensions
+### Layers and building content
 
 | Building Content | Meaning |
 | --- | --- |
@@ -79,36 +75,13 @@ The following sections on layers and on intent, application and approval record 
 | Detailed spaces | Rooms, subdivisions, blocks and similar modeled areas |
 | Connection elements | Doors, openings and virtual portals |
 
+Confirmed 2026-10-17: these element groups stay relevant for differentiating within the zoning editor. They are no longer labeled a content category, and how they are used is to be worked out later as part of the functionality and features of the zoning editor.
+
 Provisional idea: a zone category "mass", particularly for wall masses. Its definition and relationship to navigable and non-navigable zones are not yet settled.
-
-| Working Arrangement | Meaning |
-| --- | --- |
-| Reference underlay | Plan SVG |
-| Approved baseline | Model state at latest checkpoint |
-| Working overlay | Current markup and model changes |
-
-Within the working overlay, candidate geometry shows proposed changes and applied edits, including edits already approved during the session. Separately toggleable revision markup shows drawn requests, notes and remarks communicating intent.
-
-Four independent dimensions distinguish the work:
-
-- Content category: building outline, circulation layout, detailed spaces or connection elements.
-- Review state: requested, proposed, applied awaiting review, approved; rejected and superseded where applicable.
-- Origin: zoning author, AI assistant or script.
-- Edit protection: editable or locked, with explicit unlocking. Approval does not automatically lock geometry.
-
-Editing shared boundaries across content layers requires coordination. Each shared boundary is stored once in the zoning file; any further coordination mechanism is not yet decided.
 
 ### Intent, application and approval
 
-A request records intent. A proposal describes a candidate implementation. Applying a change alters the working model but does not imply approval.
-
 A drawn request may resemble geometry but remains markup until explicitly applied. A proposal can be previewed without altering the model. The zoning author can draw requested changes for an AI assistant or script to apply, or leave notes asking an AI assistant to propose changes. Notes need not be change requests.
-
-Approved edits remain in the working overlay until the zoning author explicitly establishes a new revision checkpoint and updates the baseline. Not every editing batch creates a checkpoint. The baseline remains inspectable during review; approval does not guarantee absolute correctness.
-
-Checkpoints need not be retained as separate revisions within the zoning editor. Regular Git commits at checkpoints are a best practice for preserving history, not a requirement.
-
-AI assistants and scripts may propose changes or apply authorized changes; only the zoning author grants approval. Passing checks does not constitute approval. Existing geometry is not to be silently replaced, explicit removals are not to be reversed to satisfy connectivity, and approval is not to be inferred.
 
 ## Historical EG demo
 
@@ -118,55 +91,43 @@ On 2026-10-07, the EG navigation prototype was added on branch `feature/eg-proto
 
 Bring the operations of the redline workflow into the zoning editor incrementally: persist and communicate intent, support applying changes directly, then support checking and regenerating the model and views. The end goal is a self-sufficient zoning editor that generates semantic SVG and graph outputs, usable without AI assistance. Optional assistance may remain, but must not be necessary to remember or execute decisions.
 
-The zoning editor's document is to be a custom-designed JSON zoning file. It stores each shared boundary once and stores portals by position along a boundary. The zoning editor is intended to be able to import other formats (SVG underlay or geometry, connectivity or routing graphs) as sources of information.
-
 ### Artifacts and the zoning module's parts
 
 Confirmed 2026-10-09:
 
 - The chain of artifacts is: source material, plan SVG, zone SVG, navigation SVG. It is a supply chain, not a derivation.
 - The zoning module's directory is `cad/`. Its two main parts are the plan tracer and the zoning editor.
-- The plan SVG is a vectorized equivalent of the architectural plans, drawn by the zoning author in the plan tracer and used in place of the plans as the underlay.
-  - **Why:** the sources (the PDF, the emergency-plan photos) are messy and large. None contains all the relevant information, and most contain information that shouldn't be carried over.
-  - **How it is made:** the zoning author loads the sources as underlays in the plan tracer and traces them by hand. Automating this is later work.
 - The original sources are kept in `cad/source material/`.
-- The reference underlay is now the plan SVG. The exact input and loading of the underlay into the zoning editor is to be worked out later.
 - Zone SVG is the new name for "Zoned SVG".
 - Zone SVG is generated by the zoning editor from the zoning file.
 - The zoning file is the zoning editor's own working document, which it saves and loads. It is separate from the zoning editor's inputs and outputs, as a native file format is from the files a program imports and exports.
 - The zoning editor is a visual, domain-aware modeling application: a specialized 2D CAD editor for indoor-navigation models, with a floor plan as its main working surface.
-- The navigation SVG is an output generated by the zoning editor.
 - `graph_format.md` and `zoning_guidelines.md` describe older formats and are to be harvested for ideas, which are to be integrated into the guiding documents for the zoning editor and the plan tracer.
 
 Terms in the zoning module description that still need definition, to be placed in the rulebook or system design once their level is clear:
 
 - Movement geometry: authored movement paths within zones, replacing the straight-segment assumption of the older graph format. Its encoding is not specified.
-- Plan SVG: the vectorized equivalent of the architectural plans, used as the underlay. Its exact content is open.
+- Plan SVG: the vectorized equivalent of the architectural plans, used as the underlay.
 - Zone SVG: the SVG generated from the zoning file. Its content is specified provisionally in `cad/file_format_specification.md`, a work in progress.
+- Model: only the data. Zoning file: the same data on disk.
+- Edit operations: the code that changes the model. Viewer: the one name for the screen part.
+- Model element: kept for the rulebook's things only.
+- Geometry: the umbrella for everything that gives a model element its position. Defining coordinates: the coordinates that define an element. Geometry point: a coordinate such as a corner.
+- Shape: what the viewer draws in the SVG; it carries the id of the model element it shows, which is how a click reaches an edit operation with meaning.
+- Component: reserved for the program's code parts (edit operations, viewer, import code, generate code, load and save code). Not used for drawing or SVG parts.
+- Movement lines: the model element. "Movement geometry" was the older umbrella for movement lines and movement zones.
+- Edit: one separate, countable modification, the result of a single edit operation, which can be approved, kept in the working overlay and integrated at a checkpoint.
+- Change: the general word, which does not name one such item. Used as the verb or as the general noun (a request for a change, changes in a diff).
+- Floor code: the German code of a floor (`UG1`, `EG`, `OG1`). It is the floor id and the prefix of zone ids.
+- Entry portal and exit portal: the portals a walker enters and leaves a zone through. They give a segment its direction.
 
 Confirmed 2026-10-14 (id notation, drafted in `cad/file_format_specification.md`):
 
-- SVG element ids are the zone and portal ids themselves, without a prefix, because they start with a letter and are valid XML ids as they are.
-- The underscore stays as the separator in portal ids.
-- A portal id lists its two zone ids sorted, by character code: code point order, which the default sort of Python and JavaScript gives for ASCII. `localeCompare` does not.
-- Ids keep mixed case: floor codes and printed room numbers in uppercase as printed, names in lowercase.
-- Ids are ASCII only. Umlauts and ß are transliterated (`ae`, `oe`, `ue`, `ss`), as far upstream as possible.
 - Field names are snake case (`view_box`, `units_per_meter`).
 - Every file carries two timestamps in ISO 8601 UTC with milliseconds: `zoning_file_version`, the version of the zoning file it derives from, set when a version is finalized in the editor, and `saved_at`, when the file itself was saved. They replace the integer `version`.
-- The `format` value of any file that has one is its file name without the extension, in kebab case (`connectivity-graph`, `routing-graph`, `routing-config`), without a project prefix.
-- The floor holds the frame (`view_box`) and the scale (`units_per_meter`).
 - States, segments, routes, costs, variants, movement lines, boundaries, and the navigable and crossable properties are attached to, or derived from, zones and portals. Spaces, separators and the adjacency graph are sidelined.
-- The zone id and the portal id originate in the zoning file. The floor id, the level, the frame and the scale originate in the plan tracer, and the zoning file takes them from the plan SVG. Every other file is a view of the zoning file and takes what its module needs.
-- Floor ids are `UG2`, `UG1`, `EG`, `OG1`, `OG2`, with levels -2, -1, 0, 1, 2.
-- A zone id starts with its floor id and a dot.
-- Each floor has its own exterior zone, `<floor id>.exterior`, which is navigable and not crossable. This does not conflict with the rulebook.
-- A further portal between the same two zones appends `_2`, `_3`.
-- Segments are stored per direction, two per pair of portals in a zone. A segment lists `[entry_portal ; exit_portal]` and its key is `entry_portal | zone | exit_portal`. The state key is `zone_from | portal | zone_to`.
 - `provenance` is removed from the files.
-- Each file type has a fixed file name, listed in the specification (`zoning.json` for the zoning file).
 - The file format specification is notation only: field name, value shape, short note. It contains no prose and no rules.
-- A portal has `line` (the start and end of the crossable section of the boundary between its two zones) and `midpoint` (the midpoint of `line`). A vertical portal has `points` instead, one position per joined floor.
-- The base variant is named `standard`: the variant with nothing restricted, and a key in `variants`. A variant's value lists the zones it makes non-crossable and the zones it makes non-navigable, only the exceptions.
 - The format specification carries one inline example, with invented ids that follow the notation and none of the building's own, in the section of each element whose value nests or is not obvious from the field list: portal, state, segment and variant.
 
 Confirmed 2026-10-15 (file format concepts):
@@ -174,68 +135,51 @@ Confirmed 2026-10-15 (file format concepts):
 - The concept of base elements is dropped. It was a provisional support for devising the file format specification, and the specification does not use it.
 - The contract between two modules, what a passed file guarantees and keeps unchanged in meaning, does not need that concept. It is worked out later.
 
-Confirmed 2026-10-15 (routing):
+Confirmed 2026-10-15 (language): all development modules (plan tracer, zoning editor, tuning editor) use English for identifiers, documentation, interface text and code comments. German is for the navigation client's user-facing text only. To be reconciled: the root `readme.md` (line 16) and `agents.md` (line 16) still say that code comments are in German.
 
-- The tuning editor takes the connectivity graph and the zone SVG as input. It contains the graph compiler and the route computer, so no separate run of either is needed.
-- The first routing config is created inside the tuning editor and is empty: no costs, and `standard` with empty lists. The first routing graph then has distance as its only cost. It exists as data inside the tuning editor, the route computer runs on it directly, and the routes are shown on the zone SVG.
-- The zoning author tunes costs and creates variants in the tuning editor and sees the changed routes there. When finished, the editor saves the routing config, the routing graph and the precomputed routes dataset.
-- The zoning file stays private to the zoning editor. The connectivity graph is the interface between the zoning module and the routing module.
-- The zoning editor generates the connectivity graph, the zone SVG and the navigation SVG only when the zoning author selects a finalized zoning file version and commands it. All three carry that `zoning_file_version`.
-- A finalized version is the approved baseline at the latest checkpoint. Finalizing sets the `zoning_file_version`, stamped on the zoning file itself and on the outputs generated from it. Only finalizing sets it, so checkpoints carry no version.
-- Loading reads the zoning file into the model in memory. The viewer draws the model as SVG shapes over the plan SVG, and both share the floor's frame and scale. Every layer is toggleable.
+Decisions with their reasons:
 
-Confirmed 2026-10-15 (plan tracer):
-
-- The plan tracer is a drawing application. The zoning author starts it, loads the source material as underlays on an SVG drawing surface, and traces only what the plans show, as lines and text, by drawing on that surface.
-- The drawing surface can load several underlays, move, rotate and scale each of them, and toggle each separately, so that the zoning author can fit them into one coherent plan to draw on.
-- The drawing surface has a floor id, a level, a reference frame and a scale. They are fundamental values that are passed along the line.
-- The zoning author saves the drawing as the plan SVG, one per floor.
-- The plan SVG also stores the placement of the underlays (moves, rotations, scales and toggles), so that the work can resume. It holds references to the source files with their transforms, not embedded images, in a group separate from the traced lines and text. The zoning editor draws only the traced lines and text.
-- An SVG image element cannot display a PDF, so a PDF source has to be converted to an image before it can be loaded as an underlay.
-- The first version is a working module with manual tracing. Automating it is later work.
-
-Confirmed 2026-10-15 (plan tracer first version):
-
-- The plan tracer is a single HTML file in plain JavaScript that runs in a desktop browser: `cad/plan tracer/plan-tracer.html`.
-- It loads image files (JPG or PNG) as underlays. A PDF source is converted to an image beforehand.
-- The floor id, level, frame and units per meter are typed in on the drawing surface.
-- The zoning author saves the plan SVG through a file dialog and can leave the underlay references out of it. Opening a plan SVG reads it back; the underlay images are picked again.
-- The plan tracer is no longer limited to lines and text. It also draws polylines, circles and paths, gives every traced element an id, attaches text to an element by its id, and offers a warehouse symbol library and named layers. This replaces "as lines and text" and "traces only what the plans show" in the plan tracer list above, and "The zoning editor draws only the traced lines and text". The plan SVG format for them is Claude's provisional choice, described in the paragraph headed "Provisional" below.
-
-Provisional (plan SVG written by `plan-tracer.html` so far): the frame as `viewBox`; `data-floor-id`, `data-level` and `data-units-per-meter` on the root element; a group `underlays` with one `image` per underlay (file name as `href`, transform, opacity, and `data-` attributes for position, rotation, scale, flips, lock and crop, a crop as a `clipPath`, and `data-label`, `data-brightness` and `data-contrast`, written only when not default); the file name is the key for picking the image again, and the order of the `image` elements is the drawing order; a group `trace` with one group per layer (`data-layer` with the layer name, `display="none"` when hidden, `data-locked="true"` when locked, in layer order) holding the traced elements, each with an `id` such as `line1`, `poly2`, `circle3`, `path4`, `text5` or `sym6` (starting with a letter, then letters, digits and underscores; unique in the file and never reused): `line`, `polyline`, `circle`, `path` (`d`, plus `data-points`, `data-smooth` and `data-closed`), `text` (with `data-for` naming the element it is attached to and `data-dx` and `data-dy` as its offset, centered and rotated along a line) and warehouse symbols as groups (`data-symbol`, `data-cx`, `data-cy`, `data-rot`, `data-width` and `data-depth` in meters, drawn in meters inside `scale(units per meter)`); each shape carries its own stroke color and thickness. The file name offered on saving is `<floor id>-plan.svg`.
-
-Confirmed 2026-10-15 (language): all development modules (plan tracer, zoning editor, tuning editor) use English for identifiers, documentation, interface text and code comments. German is for the navigation client's user-facing text only.
-
-Tentatively approved 2026-10-15 (zoning editor start):
-
-- On starting, the zoning author either initializes a new zoning file or loads an existing one. Either way the data is held in memory only, and the zoning file comes first, before the plan SVG.
-- A new zoning file starts as a skeleton in memory. Nothing is written to disk before the first save, where the zoning author chooses the file location.
-- The zoning author then loads the plan SVG as the underlay and the viewer shows it. For a new zoning file the zoning author loads a plan SVG. For an existing one the plan SVG referenced by each floor is loaded.
-- For a new zoning file, the zoning editor creates the floor from the plan SVG: its id, level, `svg` path, frame and scale. The drawing surface takes the frame and the scale, and saving is enabled.
-- For an existing zoning file, the zoning editor checks the floor's id, level, frame and scale against the plan SVG. They exist in both files, so the check catches a plan SVG that was traced again.
+- A shared boundary is stored once and referenced by id. Reason (an inference, the handoff gave none): the legacy plan (`claude/review/app-plan.md` lines 38 to 44, since removed) used tolerances (snap about 0.8 units, door on a boundary up to 0.6, drawn doors winning up to about 4.5) and repaired gaps silently by Voronoi cuts. The original snap wording relied on corner ids, which are dropped.
+- The tolerance lives in the drawing aid, not in the data. Where elements meet, their coordinates match exactly.
+- A check is a real reading of the stored data, never an automatic consequence of how the data is stored. For example, "an outline is closed" is checked by reading the chain of boundaries.
+- Dropped on purpose: the four independent dimensions (content category, review state, origin, edit protection), a leftover from the redline workflow.
+- Dropped on purpose: "A program may at most propose a match" and "no match is made silently".
+- Dropped on purpose: the whole geometry import topic including the BFW graphs absorption, the import capability item in purpose, imported raster or vector images as interim underlay, and the toolchain and UI framework items (Node with Vite, Vitest, TypeScript).
+- The word "review" is not used as a noun naming one specific thing. Fixed phrases, always in full: "the BFW zoning work" (the job), "the BFW EG zoning review" (the collaboration with Claude on that job), "the remains of the BFW EG zoning review" (its files and folders), "the redline workflow" (marks, interpretation, applying, checks, regeneration). Applied in this record and `cad/readme.md`.
+- SVG ids carry no prefix. The legacy prefixes `zone-` and `portal-` existed because an XML id cannot start with a digit, and ids now start with a letter, the floor code.
+- Segments are stored once per direction. The rulebook defines a segment as a traversal from one portal to another, and costs are per direction.
+- The integer `version` was dropped because a constant integer gave no traceability.
+- Opaque ids were rejected by Deniz. Ids stay readable.
 
 To be worked out later (stated 2026-10-14 while drafting `cad/file_format_specification.md`):
 
 - The exterior zone carries a floor code in its id, so each floor has its own exterior zone. The routing logic has to accommodate this exception.
-- The names of the plan SVG files, one per floor, such as `EG-plan.svg`. The plan tracer offers `<floor id>-plan.svg` for now.
-- Whether the pipes in state, segment and route notation have spaces around them in files. The specification writes them with spaces as a depiction.
-- How the state and segment keys are written in files: as strings with a separator, as structured entries, or as a new composite key. Pipes and spaces in a string key are unsafe in file names, URLs and Markdown tables.
-- The characters and separators of ids: the dot between floor code and name and the underscore between zones. Few characters are valid in every technology used. The dot needs `CSS.escape` in selectors and bracket access in JavaScript.
-- Keeping the deployed generated files, and the routing config keyed by their ids, in step with a changed zoning file. This belongs to operations. The zoning editor's edit operations change only the zoning file.
 - The encodings of movement geometry, movement lines and boundaries.
-- The technology of the tuning editor, its graph compiler and its route computer: probably plain JavaScript in a browser, as for the zoning editor. The existing compiler and computer are Python scripts for the old data format. The choice is between a Python runtime inside the page and a JavaScript rewrite.
 - Which files carry a portal's `line`.
 - Validation of the files, for example that a zone's `floor` field equals the floor id its id starts with. The files are not required to state such rules.
 - The structures of the zoning file, the adjacency graph, the precomputed routes dataset and the SVG files in the format specification.
-- The naming of corridor zones. Names such as `flur-tr9-1` (and the portal ids built from them, such as `EG.E.62_EG.flur-tr9-1_2`) are long and convoluted. Shorter names such as `flur-1`, `flur1` or `f1` are being considered.
-- Whether costs differ per variant. If they do, the cost fields move into the variant, which complicates the nested notation of `variants`. For now the costs are top-level fields common to all variants.
-- What the zoning file holds of the working overlay: the approved baseline only, or the baseline plus the overlay's applied edits, proposed edits and revision markup. The plan SVG stays a separate file. The leaning is to hold all four, but saving revision markup at every click is cumbersome.
-- How applied edits and proposed edits are serialized: as operations with arguments, or as resulting elements.
-- Recovery of the working state: one temp file while the program runs, overwritten on every change, holding the last checkpoint and the edits since. It would live in the browser's own storage. Whether it has the structure of the zoning file is open.
-- Snapping drawn elements to lines of the plan SVG. The snap item in the zoning editor specification covers only drawn elements snapping to each other.
-- How a PDF source is converted to an image for use as an underlay in the plan tracer. The first version loads image files through a file picker, and the zoning author converts a PDF beforehand.
-- Where the plan SVG records the floor id, the level and the scale. The plan tracer provisionally writes them as attributes of the root element.
-- Whether the plan SVG format that the plan tracer provisionally writes for the polylines, circles, paths, ids, attached text, symbols and layers stands, including the id scheme, the layer groups and the default sizes and drawings of the symbols.
-- Whether the plan tracer's snapping and tracking also use the points of polylines, circles, paths and symbols. They use straight lines only, while the Help says that ends snap to "line ends".
+- The phone related parts of the plan tracer code, such as the layout for narrow windows, are to be removed, because the plan tracer is only for desktop browsers.
+- How the building content groups (building outline, circulation layout, detailed spaces, connection elements) are used within the zoning editor, as part of its functionality and features.
+- The fate of `cad/legacy/specs/graph_format.md` and `cad/legacy/specs/zoning_guidelines.md`.
+
+To be worked out later, for the zoning editor:
+
+- The characters and separators of ids: the dot between floor code and name and the underscore between zones. Few characters are valid in every technology used. The dot needs `CSS.escape` in selectors and bracket access in JavaScript.
+- Keeping the deployed generated files, and the routing config keyed by their ids, in step with a changed zoning file. This belongs to operations. The zoning editor's edit operations change only the zoning file.
 - The contract between two modules: what the file passed from one module to the next guarantees, and how its meaning is kept unchanged.
-- What the zoning editor does when the check of a floor against its plan SVG fails or the plan SVG cannot be found, including whether drawing is enabled only after the check succeeds.
+- The naming of corridor zones. Names such as `flur-tr9-1` (and the portal ids built from them, such as `EG.E.62_EG.flur-tr9-1_2`) are long and convoluted. Shorter names such as `flur-1`, `flur1` or `f1` are being considered.
+
+To be reconciled with this record and the specifications:
+
+- The rulebook, the system design and the implementation plan.
+- Names: lowercase, plan SVG, zone SVG (the rulebook says "Zoned SVG"), plan tracer, `cad/`, zoning editor, "zoning working view".
+- "Movement geometry" (movement lines are the model element now) in the zoning editor readme line 7, this record, rulebook 3.3 and the system design requirements.
+- The rulebook terms with no counterpart in the specifications (walkable part, obstacle, block, navigability, crossability): which of them the zoning editor models. Rulebook 1.1 says "derived from the architectural plans", where this record says supply chain.
+- The rulebook must define zones, boundaries, portals and movement lines in the agreed terms, because the specifications build on the concepts defined there.
+- The system design pipeline has an adjacency graph and architectural interpretation but no plan tracer or plan SVG, its Conceptual model section is a placeholder, and "Review and select model" is its only trace of baseline and checkpoint.
+- The system design's routing module against the tuning editor: the tuning editor contains the graph compiler and the route computer and takes the connectivity graph and the zone SVG, where the system design's routing flow has no zoning file and no start.
+- The root readme omits `cad/` and still uses `README.md`.
+- The plan tracer readme: line 3 says the plan tracer generates the plan SVG, where it is now a drawing application in which the author loads and aligns underlays, sets the floor id, level, frame and scale, traces, and saves one plan SVG per floor. The wording is to be shown to Deniz first.
+- "Navigation SVG and displayed route geometry share a coordinate frame." was removed from the zoning editor specification because it concerns the navigation module: its home is to be decided.
+- Statements elsewhere that the specifications supersede: "other formats imported as an underlay only", the proposal-only rule ("a program may at most propose"), the BFW graphs absorption, the interim raster or vector underlay, the terms "review state" and "review annotations".
+- The language rule: `readme.md` line 16 ("comments and user-facing text are in German") and `agents.md` line 16 ("German for code comments and user-facing text"). The rule now is English for all development modules (plan tracer, zoning editor, tuning editor), interface text and comments included, and German only for the navigation client's user-facing text.

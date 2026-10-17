@@ -5,7 +5,7 @@ This specification is provisional and amendable, and the specification is author
 ## purpose
 
 - The zoning editor is an interface where the zoning author draws zones on top of the floor plan.
-- The zoning editor generates the outputs zone SVG, connectivity JSON and navigation SVG.
+- The zoning editor generates the outputs zone SVG, connectivity graph JSON and navigation SVG.
 
 ## model
 
@@ -14,22 +14,41 @@ This specification is provisional and amendable, and the specification is author
 - The model is the zoning editor's data about the building, held in memory while the program runs. The model builds on the concepts defined in the rulebook.
 - The zoning file holds the model on disk. Saving writes the model to the zoning file and loading reads the zoning file back into the model.
 - The zoning file uses a custom format designed for the zoning editor, JSON text in a stable order, so changes show up as small readable diffs.
+- The zoning file is `zoning.json`. It is private to the zoning editor.
+- Zone ids and portal ids originate in the zoning file.
+
+### floors
+
+- The model holds the floors of the building. Each floor has an id, a level, the path of its plan SVG, a frame and a scale.
+- The zoning file takes the id, the level, the frame and the scale of a floor from the plan SVG.
 
 ### model elements
 
-- The zoning editor represents the model elements zones, boundaries, portals, movement lines, each with its own id.
+- The zoning editor represents the model elements zones, boundaries, portals, movement lines, each with its own id. Ids follow the notation in the file format specification, and a portal id is built from the ids of its two zones.
 - Each boundary is a straight line with its own start and end coordinates.
 - Each zone lists the zone's boundaries by id, and two zones that share a boundary refer to the same boundary, so the boundary is stored once.
-- Each portal is a straight line with its own start and end coordinates, chosen from positions along the portal's boundary.
+- Each zone has a floor and the properties crossable and navigable. Each floor has its own exterior zone, which is navigable and not crossable.
+- Each portal is a straight line with its own start and end coordinates, the crossable section of the boundary between its two zones, chosen from positions along the portal's boundary.
 - The portal's midpoint is derived from the start and the end, and represents the portal in the connectivity graph as a single coordinate.
+- A vertical portal, between zones on two floors, has one position per joined floor instead of the start, the end and the midpoint.
+- A portal is virtual or not, and a portal to the exterior can be marked as an emergency exit or a main entrance.
 - Each movement line is one polyline with its own ordered defining coordinates.
 
 ## behavior
+
+### start
+
+- On starting, the zoning author initializes a new zoning file or loads an existing one. Either way the data is held in memory only, and the zoning file comes before the plan SVG.
+- A new zoning file starts as a skeleton. Nothing is written to disk before the first save, where the zoning author chooses the file location.
+- The zoning author then loads the plan SVG as the reference underlay: one plan SVG for a new zoning file, the plan SVG referenced by each floor for an existing one.
+- For a new zoning file, the zoning editor creates the floor from the plan SVG, the viewer takes its frame and scale, and saving is enabled.
+- For an existing zoning file, the zoning editor checks the floor's id, level, frame and scale against the plan SVG, because they exist in both files.
 
 ### editing
 
 - The model changes only through edit operations, such as moving a boundary or adding a portal.
 - The move boundary operation moves a boundary by changing the boundary's own start and end coordinates and nothing else.
+- Renaming a zone is an edit operation and changes only the zoning file.
 - Drawn elements snap to each other within a given distance, to ensure exactly matching coordinates.
 - The zoning author can change the model either directly or by drawing a request for an AI assistant or script using markup.
 
@@ -43,9 +62,12 @@ This specification is provisional and amendable, and the specification is author
 - The zoning editor holds the work in three layers: reference underlay, approved baseline, working overlay.
 - The reference underlay is the plan SVG.
 - The working overlay holds current edits.
-- Candidate geometry shows proposed and applied edits.
-- Revision markup, separately toggleable, shows drawn requests and notes.
+- Candidate geometry shows applied edits and proposed edits.
+- An applied edit has altered the model and includes approved edits awaiting a checkpoint. A proposed edit has not altered the model.
+- Revision markup shows drawn requests and notes.
 - A note can be a plain remark and does not have to ask for a change.
+- Every layer is toggleable.
+- The viewer draws the plan SVG as the reference underlay and the model as SVG shapes over it. Both share the floor's frame and scale.
 
 ### review workflow
 
@@ -55,16 +77,20 @@ This specification is provisional and amendable, and the specification is author
 - The zoning author approves the edit.
 - The edit stays in the working overlay until the zoning author explicitly establishes a checkpoint.
 - A checkpoint integrates all edits approved since the previous checkpoint into the approved baseline.
+- Not every editing batch creates a checkpoint.
+- Checkpoints need not be retained as separate revisions within the zoning editor. Regular Git commits at checkpoints are a best practice for preserving history, not a requirement.
 - The approved baseline is the model at the latest checkpoint.
-- Outputs are generated from the same explicitly selected approved baseline.
+- A finalized version is the approved baseline at the latest checkpoint.
+- Finalizing sets the `zoning_file_version` of that baseline, stamped on the zoning file. Only finalizing sets it, so checkpoints carry no version and the file's content can be ahead of its stamp.
+- The zoning editor generates the outputs only when the zoning author selects a finalized version and commands it. All outputs carry its `zoning_file_version`.
 
 ### decision authority
 
 - The zoning author can ask a program or AI assistant to propose a resolution of a violation found by the check or flagged by the zoning author.
 - Only the zoning author grants approval.
-- Approval does not automatically lock geometry.
 - Passing checks does not constitute approval.
 - The zoning editor never changes geometry on its own to make a check pass.
+- Explicit removals are not reversed to satisfy connectivity, and approval is not inferred.
 
 ### files
 
@@ -89,6 +115,12 @@ This specification is provisional and amendable, and the specification is author
 - How the start and the end coordinates of a portal are related to the positions on its boundary is to be worked out.
 - How a portal follows a boundary that moves, and how the rule that a portal sits on the portal's boundary is enforced are to be worked out.
 - Boundaries that are not straight would need more than two coordinates, potentially as an SVG polyline or path. How a portal sits on them must be worked out as well.
+- What the zoning file holds of the working overlay is to be worked out: the approved baseline only, or the baseline plus the applied edits, proposed edits and revision markup.
+- How applied edits and proposed edits are serialized is to be worked out: as operations with arguments, or as resulting elements.
+- The recovery of the working state is to be worked out: one temp file, overwritten on every change, holding the last checkpoint and the edits since, kept in the browser's own storage, and whether it has the structure of the zoning file.
+- How the plan SVG is used as the reference underlay is to be worked out, including whether and how the underlays of the source material are loaded.
+- What the zoning editor does when the check of a floor against its plan SVG fails or the plan SVG cannot be found is to be worked out, including whether drawing is enabled only after the check succeeds.
+- Snapping drawn elements to lines of the plan SVG is to be worked out.
 
 ## potential features
 
