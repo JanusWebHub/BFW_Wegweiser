@@ -1,17 +1,14 @@
 # support notes for conversation
 
-This file exists to keep ai agents Claude and Copilot from losing content and awareness within and across sessions. State says where things are and what is open. Settled keeps settled wording from being reopened. History holds the continuity.
+This file exists to keep ai agents Claude and Copilot from losing content and awareness within and across sessions. State says where things are. Settled keeps settled wording from being reopened. History holds the continuity.
 
 ## 1. State
 
-- Repo `C:\projects\wegweiser`, branch `local/simpler`. The branch becomes the cleaned `main` after all simplification done, by a git method not yet decided.
-- The specification is done for the moment, by Deniz's statement of 12.10.26.
-- `cad/file_format_specification.md` exists and is provisional, in notation form: file types, file structure, model elements, ids and fields. It does not yet cover the zoning file, the adjacency graph, the precomputed routes dataset or the navigation SVG.
-- Work from 15.10.26 on continues on the branch `feature/plan-tracer`, created from `local/simpler` and pushed to the remote `januswebhub`. The plan tracer (`cad/plan tracer/plan-tracer.html`) is built, tested and pushed. It is a single-file drawing application for desktop browsers. Its documents in the same folder are `specification.md` (requirements) and `features.md` (what the tool does), and the layout of the plan SVG is in `cad/file_format_specification.md`.
-- Status of the plan tracer (17.10.26): the tests are in `cad/plan tracer/tests/` and started with `node run.mjs`; all 420 scripted checks passed on 16.10.26. Open: the plan SVG layout and the snapping question (open issues of its specification); `cad/plan tracer/readme.md` is not yet aligned (working record); the 23 checks by hand in `tests/manual-checks.md`; the phone related code is to be removed (working record).
-- `docs/ignore/stack-constraints.md` lists constraints on names, keys and labels per technology, with nothing specific to this project. It is not tracked in Git.
-- The decisions of 15.10.26 (finalize and the version stamp, layers, the plan tracer, where the floor id, level, frame and scale originate, the start of the zoning editor) are in the specifications of the zoning editor and the plan tracer and in the file format specification. `cad/plan tracer/readme.md` does not yet reflect them.
-- The course of actions is kept as a file in `cad/` and as a shared Artifact. Steps 1 to 11B are approved or tentatively approved; steps 12 to 23 are drafts.
+- The project is being simplified as a whole on the branch `local/simpler` (repo `C:\projects\wegweiser`). The simplification covers the worktree, branches, local files, documentation and the abstract design.
+- Decluttering is the current part of the larger simplification effort. Its focus is on the `cad/legacy/`, currently on the `cad/legacy/specs/`.
+- Dealing with the legacy items led to the specification documents. see commit `ecb08b8`.
+- The plan tracer is one strand within this, on the branch `feature/plan-tracer`, which is ahead of `local/simpler`.
+- The course of actions for the zoning module is kept as a file in `cad/` and as a shared Artifact.
 
 ## 2. Settled, do not reopen
 
@@ -142,3 +139,7 @@ This part:
 - The course of actions became a file in `cad`, titled "Zoning Module Course Of Actions", next to its Artifact.
 - The sources were purged of what the specifications now hold. The working record took the reconcile list, the zoning editor open items, the terms and the decisions with their reasons. `notes.md` is cut to State, Settled and History.
 - The gap in History between 15.10 and today was closed by reading the transcript backwards: the sections "15.10.26, evening: the plan tracer" and "16.10.26, tests and the purpose of the documents" were reconstructed and then trimmed of detail found elsewhere.
+- The sources-to-specifications pass was committed as one commit.
+- After Claude misread State as a stale branch name, Deniz fixed the frame.
+- State section was rebuilt on that frame and cut to orientation.
+- `notes.md` was renamed `continuity-log.md`.
