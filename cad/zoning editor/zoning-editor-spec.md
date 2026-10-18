@@ -5,6 +5,8 @@ This specification is provisional and amendable, and the specification is author
 ## purpose
 
 - The zoning editor is an interface where the zoning author draws zones on top of the floor plan.
+- The zoning editor is a visual, domain-aware modeling application: a specialized 2D CAD editor for indoor-navigation models, with a floor plan as its main working surface.
+- Its closest practical relatives are floor-plan editors, GIS editors and lightweight CAD applications.
 - The zoning editor generates the outputs zone SVG, connectivity graph JSON and navigation SVG.
 
 ## model
@@ -33,6 +35,15 @@ This specification is provisional and amendable, and the specification is author
 - A vertical portal, between zones on two floors, has one position per joined floor instead of the start, the end and the midpoint.
 - A portal is virtual or not, and a portal to the exterior can be marked as an emergency exit or a main entrance.
 - Each movement line is one polyline with its own ordered defining coordinates.
+
+### building content groups
+
+| Building Content | Meaning |
+| --- | --- |
+| Building outline | Boundary between building interior and exterior |
+| Circulation layout | Main circulation areas and their boundaries |
+| Detailed spaces | Rooms, subdivisions, blocks and similar modeled areas |
+| Connection elements | Doors, openings and virtual portals |
 
 ## behavior
 
@@ -108,23 +119,3 @@ This specification is provisional and amendable, and the specification is author
 - The viewer draws the model as SVG and lets the zoning author click on shapes directly.
 - The zoning editor is built in plain JavaScript, with no build step and no types.
 - The zoning editor runs as a web page in a browser.
-
-## open issues
-
-- How a connection between two boundary ends is recorded, and how it is checked and enforced are to be worked out.
-- How the start and the end coordinates of a portal are related to the positions on its boundary is to be worked out.
-- How a portal follows a boundary that moves, and how the rule that a portal sits on the portal's boundary is enforced are to be worked out.
-- Boundaries that are not straight would need more than two coordinates, potentially as an SVG polyline or path. How a portal sits on them must be worked out as well.
-- What the zoning file holds of the working overlay is to be worked out: the approved baseline only, or the baseline plus the applied edits, proposed edits and revision markup.
-- How applied edits and proposed edits are serialized is to be worked out: as operations with arguments, or as resulting elements.
-- The recovery of the working state is to be worked out: one temp file, overwritten on every change, holding the last checkpoint and the edits since, kept in the browser's own storage, and whether it has the structure of the zoning file.
-- How the plan SVG is used as the reference underlay is to be worked out, including whether and how the underlays of the source material are loaded.
-- What the zoning editor does when the check of a floor against its plan SVG fails or the plan SVG cannot be found is to be worked out, including whether drawing is enabled only after the check succeeds.
-- Snapping drawn elements to lines of the plan SVG is to be worked out.
-
-## potential features
-
-- The zoning editor could later run outside a web browser, both headless, such as with Node, and in a window of its own.
-- A routing point other than the midpoint can be added later as an optional stored crossing point that overrides the midpoint.
-- Ids for geometry points, such as a corner.
-- Stated relationships whose geometry is not yet drawn, such as "these are separate spaces".

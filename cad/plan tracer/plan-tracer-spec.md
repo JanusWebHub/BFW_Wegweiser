@@ -5,7 +5,7 @@ This specification is provisional and amendable, and the specification is author
 ## purpose
 
 - The plan tracer is a drawing application in which the zoning author draws the plan SVG over the architectural plans.
-- The plan SVG is a vectorized equivalent of the architectural plans, used in place of the plans as the underlay of the zoning editor.
+- The plan SVG is a vectorized equivalent of the architectural plans, faithful to the source material and used in place of the plans as the underlay of the zoning editor.
 - The plan tracer is not an automated process. Automating it is later work.
 
 ## behavior
@@ -43,10 +43,3 @@ This specification is provisional and amendable, and the specification is author
 - The plan tracer is a single HTML file in plain JavaScript.
 - The plan tracer runs in a desktop browser.
 - Identifiers, documentation, interface text and code comments are in English.
-
-## open issues
-
-- How a PDF source is converted to an image is to be worked out.
-- Where the plan SVG records the floor id, the level and the scale is to be worked out. The plan tracer provisionally writes them as attributes of the root element.
-- Whether the plan SVG layout that the plan tracer provisionally writes stands, including the id scheme and the layer groups, is to be worked out.
-- Whether snapping and tracking also use the points of polylines, circles, paths and symbols is to be worked out. They use straight lines only now.
