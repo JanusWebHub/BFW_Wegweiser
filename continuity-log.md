@@ -6,9 +6,8 @@ This file exists to keep ai agents Claude and Copilot from losing content and aw
 
 - The project is being simplified as a whole on the branch `local/simpler` (repo `C:\projects\wegweiser`). The simplification covers the worktree, branches, local files, documentation and the abstract design.
 - Decluttering is the current part of the larger simplification effort. Its focus is on the `cad/legacy/`, currently on the `cad/legacy/specs/`.
-- Dealing with the legacy items led to the specification documents. see commit `ecb08b8`.
+- Dealing with the legacy items led to the specification documents, one per module (in `cad/`, `src/` and `web/`) and `docs/file-format-specification.md`.
 - The plan tracer is one strand within this, on the branch `feature/plan-tracer`, which is ahead of `local/simpler`.
-- The course of actions for the zoning module is kept as a file in `cad/` and as a shared Artifact.
 
 ## 2. Settled, do not reopen
 

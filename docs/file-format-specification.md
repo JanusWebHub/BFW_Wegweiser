@@ -1,4 +1,4 @@
-# File format specification
+# File Format Specification
 
 | File type                  | File Name                 | Contents                                 |
 | -------------------------- | ------------------------- | ---------------------------------------- |

@@ -1,7 +1,7 @@
 # Working Record: Decisions And Agreements
 
 Started: 2026-10-03
-Last updated: 2026-10-18
+Last updated: 2026-10-19
 Human participant: Deniz
 AI assistants: GitHub Copilot, Claude Code
 
@@ -100,7 +100,7 @@ Confirmed 2026-10-09.
 
 ### File formats and ids
 
-Confirmed 2026-10-14 (id notation, drafted in `cad/file_format_spec.md`).
+Confirmed 2026-10-14 (id notation, drafted in `docs/file-format-specification.md`).
 
 - Field names are snake case (`view_box`, `units_per_meter`).
 - Every file except the plan SVG carries two timestamps in ISO 8601 UTC with milliseconds: `zoning_file_version`, the version of the zoning file it derives from, set when a version is finalized in the editor, and `saved_at`, when the file itself was saved. They replace the integer `version`. The plan SVG carries only `saved_at`.
@@ -136,7 +136,7 @@ Confirmed 2026-10-15 (file format concepts).
 
 ### File formats
 
-To be worked out later (stated 2026-10-14 while drafting `cad/file_format_spec.md`).
+To be worked out later (stated 2026-10-14 while drafting `docs/file-format-specification.md`).
 
 - The encodings of movement geometry, movement lines and boundaries.
 - Which files carry a portal's `line`.

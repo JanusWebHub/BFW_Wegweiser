@@ -1,4 +1,4 @@
-# zoning module specification
+# Zoning Module Specification
 
 This specification is provisional and amendable, and the specification is authoritative for the development of the zoning module. Changes to the specification require the explicit confirmation of the human participant.
 
