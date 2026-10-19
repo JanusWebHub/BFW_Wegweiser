@@ -12,6 +12,13 @@
 | Plan SVG                   | `<floor id>-plan.svg`     | vectorized equivalent of the plans       |
 | Precomputed routes dataset | `precomputed-routes.json` | routes per zone pair and variant         |
 
+## Rules
+
+- Field names in JSON are snake case, e.g. `view_box`, `units_per_meter`.
+- Every file except the plan SVG carries `zoning_file_version` and `saved_at`; the plan SVG carries only `saved_at`. Both are ISO 8601 UTC with milliseconds.
+- Ids are readable, not opaque.
+- SVG ids carry no prefix and start with a letter.
+
 ## File structure
 
 A file's `format` value is its File Name without the extension.
@@ -190,116 +197,3 @@ JSON:
 ### Route
 
 - A chain of zones and portals: `zone | portal | zone | ... | portal | zone`.
-
-## Connectivity graph example
-
-```json
-{
-  "format": "connectivity-graph",
-  "zoning_file_version": "2026-10-14T09:30:00.000Z",
-  "saved_at": "2026-10-14T09:31:12.000Z",
-  "floors": {
-    "EG":  { "level": 0, "svg": "EG-plan.svg", "view_box": [0, 0, 1580, 900], "units_per_meter": 20 },
-    "OG1": { "level": 1, "svg": "OG1-plan.svg", "view_box": [0, 0, 1580, 900], "units_per_meter": 20 }
-  },
-  "zones": {
-    "EG.exterior":     { "floor": "EG",  "crossable": false, "navigable": true },
-    "EG.E.62":         { "floor": "EG",  "crossable": false, "navigable": true },
-    "EG.flur-tr9-1":   { "floor": "EG",  "crossable": true,  "navigable": true },
-    "EG.flur-tr9-2":   { "floor": "EG",  "crossable": true,  "navigable": true },
-    "EG.TR9":          { "floor": "EG",  "crossable": true,  "navigable": true },
-    "OG1.TR9":         { "floor": "OG1", "crossable": true,  "navigable": true },
-    "OG1.flur-tr9":    { "floor": "OG1", "crossable": true,  "navigable": true }
-  },
-  "portals": {
-    "EG.E.62_EG.flur-tr9-1":        { "virtual": false, "midpoint": [453, 234] },
-    "EG.TR9_EG.flur-tr9-1":         { "virtual": false, "midpoint": [625, 234] },
-    "EG.flur-tr9-1_EG.flur-tr9-2":  { "virtual": true, "midpoint": [677, 202] },
-    "EG.exterior_EG.flur-tr9-2":    { "virtual": false, "midpoint": [1206, 180], "main_entrance": true },
-    "EG.TR9_OG1.TR9":               { "virtual": true, "vertical": true, "points": {"EG": [650, 330], "OG1": [650, 330]} },
-    "OG1.TR9_OG1.flur-tr9":         { "virtual": false, "midpoint": [625, 234] }
-  }
-}
-```
-
-## Routing config example
-
-```json
-{
-  "format": "routing-config",
-  "zoning_file_version": "2026-10-14T09:30:00.000Z",
-  "saved_at": "2026-10-14T09:45:30.000Z",
-  "state_costs": {
-    "EG.flur-tr9-1|EG.TR9_EG.flur-tr9-1|EG.TR9": 12.0,
-    "EG.TR9|EG.TR9_OG1.TR9|OG1.TR9": 20.0,
-    "OG1.TR9|EG.TR9_OG1.TR9|EG.TR9": 15.0
-  },
-  "segment_costs": {
-    "EG.E.62_EG.flur-tr9-1|EG.flur-tr9-1|EG.flur-tr9-1_EG.flur-tr9-2": 5.0
-  },
-  "variants": { "standard": { "non_crossable": [], "non_navigable": [] } }
-}
-```
-
-## Routing graph example
-
-```json
-{
-  "format": "routing-graph",
-  "zoning_file_version": "2026-10-14T09:30:00.000Z",
-  "saved_at": "2026-10-14T09:46:05.000Z",
-  "floors": {
-    "EG":  { "level": 0, "svg": "EG-plan.svg", "view_box": [0, 0, 1580, 900], "units_per_meter": 20 },
-    "OG1": { "level": 1, "svg": "OG1-plan.svg", "view_box": [0, 0, 1580, 900], "units_per_meter": 20 }
-  },
-  "zones": {
-    "EG.exterior":     { "floor": "EG",  "crossable": false, "navigable": true },
-    "EG.E.62":         { "floor": "EG",  "crossable": false, "navigable": true },
-    "EG.flur-tr9-1":   { "floor": "EG",  "crossable": true,  "navigable": true },
-    "EG.flur-tr9-2":   { "floor": "EG",  "crossable": true,  "navigable": true },
-    "EG.TR9":          { "floor": "EG",  "crossable": true,  "navigable": true },
-    "OG1.TR9":         { "floor": "OG1", "crossable": true,  "navigable": true },
-    "OG1.flur-tr9":    { "floor": "OG1", "crossable": true,  "navigable": true }
-  },
-  "portals": {
-    "EG.E.62_EG.flur-tr9-1":        { "virtual": false, "midpoint": [453, 234] },
-    "EG.TR9_EG.flur-tr9-1":         { "virtual": false, "midpoint": [625, 234] },
-    "EG.flur-tr9-1_EG.flur-tr9-2":  { "virtual": true, "midpoint": [677, 202] },
-    "EG.exterior_EG.flur-tr9-2":    { "virtual": false, "midpoint": [1206, 180], "main_entrance": true },
-    "EG.TR9_OG1.TR9":               { "virtual": true, "vertical": true, "points": {"EG": [650, 330], "OG1": [650, 330]} },
-    "OG1.TR9_OG1.flur-tr9":         { "virtual": false, "midpoint": [625, 234] }
-  },
-  "segments": {
-    "EG.flur-tr9-1": [
-      { "portals": ["EG.E.62_EG.flur-tr9-1", "EG.TR9_EG.flur-tr9-1"], "geometry": [[453, 234], [625, 234]], "distance_m": 8.6 },
-      { "portals": ["EG.TR9_EG.flur-tr9-1", "EG.E.62_EG.flur-tr9-1"], "geometry": [[625, 234], [453, 234]], "distance_m": 8.6 },
-      { "portals": ["EG.E.62_EG.flur-tr9-1", "EG.flur-tr9-1_EG.flur-tr9-2"], "geometry": [[453, 234], [677, 202]], "distance_m": 11.31 },
-      { "portals": ["EG.flur-tr9-1_EG.flur-tr9-2", "EG.E.62_EG.flur-tr9-1"], "geometry": [[677, 202], [453, 234]], "distance_m": 11.31 },
-      { "portals": ["EG.TR9_EG.flur-tr9-1", "EG.flur-tr9-1_EG.flur-tr9-2"], "geometry": [[625, 234], [677, 202]], "distance_m": 3.05 },
-      { "portals": ["EG.flur-tr9-1_EG.flur-tr9-2", "EG.TR9_EG.flur-tr9-1"], "geometry": [[677, 202], [625, 234]], "distance_m": 3.05 }
-    ],
-    "EG.flur-tr9-2": [
-      { "portals": ["EG.exterior_EG.flur-tr9-2", "EG.flur-tr9-1_EG.flur-tr9-2"], "geometry": [[1206, 180], [677, 202]], "distance_m": 26.47 },
-      { "portals": ["EG.flur-tr9-1_EG.flur-tr9-2", "EG.exterior_EG.flur-tr9-2"], "geometry": [[677, 202], [1206, 180]], "distance_m": 26.47 }
-    ],
-    "EG.TR9": [
-      { "portals": ["EG.TR9_EG.flur-tr9-1", "EG.TR9_OG1.TR9"], "geometry": [[625, 234], [650, 330]], "distance_m": 4.96 },
-      { "portals": ["EG.TR9_OG1.TR9", "EG.TR9_EG.flur-tr9-1"], "geometry": [[650, 330], [625, 234]], "distance_m": 4.96 }
-    ],
-    "OG1.TR9": [
-      { "portals": ["EG.TR9_OG1.TR9", "OG1.TR9_OG1.flur-tr9"], "geometry": [[650, 330], [625, 234]], "distance_m": 4.96 },
-      { "portals": ["OG1.TR9_OG1.flur-tr9", "EG.TR9_OG1.TR9"], "geometry": [[625, 234], [650, 330]], "distance_m": 4.96 }
-    ],
-    "OG1.flur-tr9": []
-  },
-  "state_costs": {
-    "EG.flur-tr9-1|EG.TR9_EG.flur-tr9-1|EG.TR9": 12.0,
-    "EG.TR9|EG.TR9_OG1.TR9|OG1.TR9": 20.0,
-    "OG1.TR9|EG.TR9_OG1.TR9|EG.TR9": 15.0
-  },
-  "segment_costs": {
-    "EG.E.62_EG.flur-tr9-1|EG.flur-tr9-1|EG.flur-tr9-1_EG.flur-tr9-2": 5.0
-  },
-  "variants": { "standard": { "non_crossable": [], "non_navigable": [] } }
-}
-```

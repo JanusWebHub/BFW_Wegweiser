@@ -147,6 +147,7 @@ This specification is provisional and amendable, and the specification is author
 - The plan tracer runs in a desktop browser.
 - No geometry library is used at this point, because the zoning editor needs only a few simple calculations, written for the zoning editor's own elements.
 - The viewer draws the model as SVG and lets the zoning author click on shapes directly.
+- The shapes the viewer draws carry the id of the model element they show.
 - The zoning editor is built in plain JavaScript, with no build step and no types.
 - The zoning editor runs as a web page in a browser.
 - Identifiers, documentation, interface text and code comments are in English.

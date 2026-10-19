@@ -17,7 +17,7 @@ This file exists to keep ai agents Claude and Copilot from losing content and aw
 - "The zoning editor remembers a file the zoning author picked and saves back to the file. Requires a Chromium-based browser." The short fragment after a full sentence is a precedent for a constraint on that sentence, and is used only for that.
 - "The zoning author can ask a program or AI assistant to propose a resolution of a violation found by the check or flagged by the zoning author." ("Ask someone to do something" is the construction; "request from" is not.)
 - Technology has no "initially". The plan SVG is the only reference underlay, with no gloss and no interim item.
-- "Edit" and "change" as defined in the working record. "Outputs" is named in purpose and used in the review workflow.
+- "Outputs" is named in purpose and used in the review workflow.
 - The specification says "concepts" (not "meanings") defined in the rulebook.
 - The concept of base elements is dropped (Deniz, 15.10.26). It was a provisional support for devising the format specification. The contract between two modules does not need it and is worked out later.
 - "Review annotations" and "review state" as terms in the specification are dropped.
@@ -165,3 +165,7 @@ This part:
 - `.gitattributes` was created with the rule, the `.cmd` and `.bat` exceptions and the binary types, and the rule was added to the readme. Both were committed as "Set LF line endings for text files".
 - The repository was normalized: `src/main.py` was the only file stored with CRLF. It was committed as "Normalize src/main.py to LF".
 - The working tree was converted to LF with `git rm --cached -r .` and `git reset --hard`. All tracked text files are now LF on disk. The two commits were pushed.
+- The pass was done: the working record's Confirmed items were checked against the four specifications, Deniz decided each, and what the specifications cover left the record.
+- Deniz decided that the file format specification also holds rules. A "Rules" section was added and the full-file examples were removed.
+- Deniz dropped "geometry point" as a term.
+- The open and reconciliation items were checked against the specifications and the other documents. Stale ones were reworded or removed.
