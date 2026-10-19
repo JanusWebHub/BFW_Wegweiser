@@ -15,6 +15,10 @@ One person may occupy several roles. Specific role and artifact names are to be 
 
 Identifiers, documentation, interface text, code comments and commit messages are in English in all development modules (plan tracer, zoning editor, tuning editor). User-facing text of the browser client is in German.
 
+## Line endings
+
+Use LF for everything except mandatory Windows files such as `.cmd` or `.bat`. Explicit patterns set this, including these idle exceptions and the binary files.
+
 ## Architecture
 
 The architecture separates zoning, routing and navigation modules. The modules are organized as follows:
