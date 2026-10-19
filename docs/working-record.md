@@ -208,4 +208,4 @@ To be worked out later (stated 2026-10-14 while drafting `cad/file_format_spec.m
 
 - The system design pipeline has an adjacency graph and architectural interpretation but no plan tracer or plan SVG, its Conceptual model section is a placeholder, and "Review and select model" is its only trace of baseline and checkpoint.
 - The system design's routing module against the tuning editor: the tuning editor contains the graph compiler and the route computer and takes the connectivity graph and the zone SVG, where the system design's routing flow has no zoning file and no start.
-- "Navigation SVG and displayed route geometry share a coordinate frame." was removed from the zoning editor specification because it concerns the navigation module: its home is to be decided.
+- "Navigation SVG and displayed route geometry share a coordinate frame." was removed from the zoning module specification because it concerns the navigation module: its home is to be decided.

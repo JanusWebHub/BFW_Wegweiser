@@ -146,13 +146,17 @@ This part:
 
 ### 18.10.26, open issues and readmes
 
-- Task: the working record from its Confirmed section on against the specifications. Only settled content moves. Open questions stay in the working record only, so the specifications carry none.
-- The open issues and the potential features of the routing, zoning editor and plan tracer specifications went to the working record, verbatim.
 - Deniz deleted the course of actions, the two file index files, `agents.md` and the skills, and renamed the specifications and the features document to the `-spec` and `-features` names with hyphens.
 - The Open section was regrouped by module or theme instead of by document. The reconcile items stay under document names.
 - Deniz decided to remove the readmes in `cad/`, `cad/plan tracer/`, `cad/zoning editor/` and `cad/legacy/`. What was worth keeping went to the plan tracer and zoning editor specifications and the working record. The AI independence paragraph was dropped on purpose and recorded as such.
 - The root readme was brought up to date: the language rule, `cad/` in the architecture and the layout, and the module descriptors. Its reconcile items and the Language section left the working record.
 - The file formats and ids items of the working record were checked against the specifications. Two were removed and the timestamp item was corrected for the plan SVG.
 - The working record got "since removed" on history entries, a new date and no mentions of deleted files.
-- The pass over the settled content of the working record was not reached.
-- Mistakes Deniz corrected: raising the dropped AI independence paragraph as an open question, twice; saying this log held its wording when it holds a fragment; proposing descriptors with conjugated verbs, and wordings that were too long.
+- Drafted, refined and verified the commit `4153a11` "Declutter and update the documentation".
+
+### 19.10.26, module specifications
+
+- Deniz settled the consolidation: three module specifications (zoning, routing, navigation) and one format specification, kept in `docs/`.
+- The plan tracer specification was merged into the zoning module specification, with no duplicate headings. One reference in the working record was updated.
+- The full `-specification` names were decided and Deniz renamed the files.
+- The repository was checked for leftover old specification names: none outside History.
