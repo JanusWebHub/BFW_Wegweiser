@@ -160,3 +160,9 @@ This part:
 - The plan tracer specification was merged into the zoning module specification, with no duplicate headings. One reference in the working record was updated.
 - The full `-specification` names were decided and Deniz renamed the files.
 - The repository was checked for leftover old specification names: none outside History.
+- The consolidation was committed as "Consolidate the specs into module specifications".
+- The continuity log changes were amended to that commit.
+- Deniz settled the line ending rule: LF for everything except mandatory Windows files such as `.cmd` and `.bat`.
+- `.gitattributes` was created with the rule, the `.cmd` and `.bat` exceptions and the binary types, and the rule was added to the readme. Both were committed as "Set LF line endings for text files".
+- The repository was normalized: `src/main.py` was the only file stored with CRLF. It was committed as "Normalize src/main.py to LF".
+- The working tree was converted to LF with `git rm --cached -r .` and `git reset --hard`. All tracked text files are now LF on disk. The two commits were pushed.
