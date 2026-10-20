@@ -4,7 +4,7 @@ The rulebook defines the conceptual model. The module specifications describe th
 
 ## System overview
 
-Plan tracing, zoning, routing, and navigation form a sequence of independent modules. The zoning author produces a finalized building model and generated assets; the routing module tunes and precomputes routes; the navigation module serves a navi-user from those assets.
+The zoning module contains plan tracing and zoning authoring. The routing and navigation modules then consume its outputs in sequence: the zoning author produces a finalized building model and generated assets; the routing module tunes and precomputes routes; the navigation module serves a navi-user from those assets.
 
 ```mermaid
 flowchart TB
