@@ -100,6 +100,7 @@ To be worked out later (stated 2026-10-14 while drafting `docs/file-format-speci
 - The notation of a variant's value is to be worked out.
 - Where the plan SVG records the floor id, the level and the scale is to be worked out. The plan tracer provisionally writes them as attributes of the root element.
 - Whether the plan SVG layout that the plan tracer provisionally writes stands, including the id scheme and the layer groups, is to be worked out.
+- How PDF-derived SVGs are adapted to the receiving module's expected format is to be worked out, including how the page backdrop is represented and placed without disrupting import.
 
 ### Zoning editor
 
