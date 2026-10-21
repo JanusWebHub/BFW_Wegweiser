@@ -1,7 +1,7 @@
 # Working Record: Decisions And Agreements
 
 Started: 2026-10-03
-Last updated: 2026-10-19
+Last updated: 2026-10-20
 Human participant: Deniz
 AI assistants: GitHub Copilot, Claude Code
 
@@ -143,20 +143,4 @@ To be worked out later (stated 2026-10-14 while drafting `docs/file-format-speci
 
 ## Reconciliation
 
-### Across the documents
-
-- The rulebook, the system design and the implementation plan.
-- Names: lowercase, plan SVG, zone SVG (the rulebook says "Zoned SVG"), plan tracer, `cad/`, zoning editor, "zoning working view".
-- "Movement geometry" (movement lines are the model element now) in the title of rulebook section 2, rulebook 3.3, the system design requirements and the implementation plan.
-- Statements elsewhere that the specifications supersede: the term "review annotations" in the system design.
-
-### Rulebook
-
-- The rulebook terms with no counterpart in the specifications (walkable part, obstacle, block, navigability, crossability): which of them the zoning editor models. Rulebook 1.1 says "derived from the architectural plans".
-- The rulebook must define zones, boundaries, portals and movement lines in the agreed terms, because the specifications build on the concepts defined there.
-
-### System design
-
-- The system design pipeline has an adjacency graph and architectural interpretation but no plan tracer or plan SVG, its Conceptual model section is a placeholder, and "Review and select model" is its only trace of baseline and checkpoint.
-
-- The system design's routing module against the tuning editor: the tuning editor contains the graph compiler and the route computer and takes the connectivity graph and the zone SVG, where the system design's routing flow has no zoning file and no start.
+The rulebook, system design, and implementation plan were reconciled on 2026-10-20 against the module specifications and file-format specification. The rulebook defines the agreed model terms; the system design describes the current module architecture and data flows; and the implementation plan sequences development of those modules.

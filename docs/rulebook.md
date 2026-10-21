@@ -1,115 +1,78 @@
 # Rulebook
 
-This rulebook is the source of truth for the project's conceptual model, and every project file must conform to it.
+This rulebook defines the project's conceptual model. Module specifications make module-specific design decisions, and the file-format specification defines how data is represented in files. All documents use these model terms consistently.
 
-## 1. Structural elements and topology
-
-Defines the spaces, zones, boundaries, portals, and segment relations that structure navigation.
+## 1. Floors, zones, boundaries, and portals
 
 ### 1.1
 
-Architectural plans and the Zoned SVG are two-dimensional representations of the building. The Zoned SVG is derived from the architectural plans, retaining only features relevant to navigation.
+An architectural plan is a source representation of a floor. The plan tracer produces a plan SVG, a vectorized equivalent used as the zoning editor's reference underlay.
+
+The zoning editor produces a zone SVG, a view of the modeled zones and portals, and a Navigation SVG for displaying routes.
 
 ### 1.2
 
-A zone is a two-dimensional space that partitions the modeled area without gaps or overlaps.
+A zone is a modeled area on one floor. Each zone has two independent properties:
 
-A zone can be navigable or non-navigable.
+- **Navigable**: the zone may be selected as the start or target of a navigation query.
+- **Crossable**: a route may pass through the zone.
+
+Each floor has its own exterior zone. The exterior is navigable and not crossable.
 
 ### 1.3
 
-A separator is a fixed, non-crossable division between two spaces in the architectural plan.
-
-A boundary is a one-dimensional division between two zones in the Zoned SVG. It may represent a physical separator or be virtual.
+A boundary is a straight line that separates zones. When two zones share a boundary, they refer to the same boundary.
 
 ### 1.4
 
-A portal represents the crossable portion of a boundary and is drawn in the Zoned SVG as a highlighted section with its midpoint marked. In the conceptual model, it is represented by that midpoint.
+A portal is a crossable section of a boundary between exactly two zones. It may represent a door or other opening, or a virtual connection. A portal is represented in the connectivity graph by its midpoint, derived from the ends of its line.
 
-A portal may correspond to a physical door or other opening between distinct architectural spaces, or to a virtual opening on a virtual boundary.
+A portal to the exterior may be marked as an emergency exit or a main entrance. A vertical portal connects zones on different floors and has one position on each joined floor.
 
-A portal always joins exactly two zones. Because a boundary is a line, multiple zones may meet at a point but do not share a portal there; each pair of zones has its own shared boundary and portal.
-
-### 1.5
-
-A segment is a traversal through one zone, from one portal to another. It lies in the zone’s interior.
-
-### 1.6
-
-The exterior is treated as a single zone surrounding the building. A route may begin or end there but never cross it.
-
-## 2. Movement geometry and constraints
-
-Defines walkable space, obstacles, blocks, movement zones, and movement lines.
+## 2. Movement lines and segments
 
 ### 2.1
 
-A zone divides into a walkable part and a non-walkable part.
+A movement line is a designer-drawn polyline representing a path through a zone.
 
 ### 2.2
 
-An obstacle is a fixed obstruction in the non-walkable part of a zone; routes neither end at nor pass through it.
+A segment is a traversal through one zone from an entry portal to an exit portal. Its geometry and distance are part of the routing graph, not the zoning model.
 
-A block is an inaccessible space within the building, represented as a non-navigable zone.
-
-### 2.3
-
-The movement zone is the circulation space within the walkable part.
-
-### 2.4
-
-A movement line is a designer-drawn representation of the path people actually take through a movement zone.
-
-## 3. Zoning and graph construction
-
-Defines how the Zoned SVG is produced from the architectural plans, and how the adjacency, connectivity, and routing graphs are derived.
+## 3. Graphs and routing configuration
 
 ### 3.1
 
-The adjacency graph is the machine-readable abstraction of the spaces and separators in the architectural plans. Its nodes are spaces and its edges are separators.
+The connectivity graph represents floors, zones, portals, and movement lines. Its nodes are zones and its edges are portals.
 
 ### 3.2
 
-Zoning is the process of converting spaces and separators into zones and boundaries and creating portals, movement zones, and movement lines that form essential elements of the conceptual model.
-
-The connectivity graph is produced alongside the Zoned SVG. Its nodes are zones and its edges are portals.
-
-Crossability determines whether a navigable zone may also be passed through.
-
-Navigability determines whether a zone can be entered or used as a route endpoint.
+The routing graph is derived from the connectivity graph and routing configuration. It represents directed transitions through portals and segments between portals.
 
 ### 3.3
 
-The routing graph is constructed from the connectivity graph using movement geometry and routing decisions. Its nodes are portals, and its edges are segments.
+A routing variant may restrict zones by making them non-crossable or non-navigable. A restriction narrows the available routes; it does not add connections.
 
-Marking additional navigable zones as non-crossable creates a variant of the routing graph.
-
-## 4. Queries and search
-
-Defines queries, states, routes, costs, and the search for lowest-cost routes.
+## 4. Queries and routes
 
 ### 4.1
 
-A query is a navi-user's request for navigation from one location to another. Start and target locations can only be specified as navigable zones. Precise positions within those zones are not represented.
+A navigation query specifies a start zone, a target zone, and a routing variant. The start and target must be navigable.
 
 ### 4.2
 
-A state is a directed transition from one zone through a portal into another zone. It is written `zone_from | portal | zone_to`. A state may be assigned special costs.
+A state is a directed transition from one zone through a portal into another zone. It is written `zone_from | portal | zone_to`.
 
 ### 4.3
 
-A segment between two consecutive states is written `portal | zone | portal`. A segment may be assigned special costs in addition to its distance cost.
+A segment between two consecutive states is written `entry_portal | zone | exit_portal`. A segment has a distance cost and may have an additional cost. A state may also have an additional cost.
 
 ### 4.4
 
 A route is an alternating sequence of zones and portals, beginning with the start zone and ending with the target zone. It is written `zone | portal | zone | ... | portal | zone`.
 
-Total route cost is the sum of distances and special costs from its segments and states.
+The total route cost is the sum of its segment distances and any additional state and segment costs.
 
 ### 4.5
 
-The search is multi-source and multi-target and returns the route with the lowest total cost. The routing graph is searched from the outbound states of the start zone to the inbound states of the target zone.
-
-### 4.6
-
-The search produces a portal chain. The portal chain determines the zone sequence and the zone of each segment. The route is interpreted as navigation instructions and rendered on the Navigation SVG.
+The route computer finds the lowest-cost route for each supported start, target, and variant. The precomputed routes dataset is used by the navigation module to serve a navi-user's request.

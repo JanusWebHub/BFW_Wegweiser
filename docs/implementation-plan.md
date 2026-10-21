@@ -1,95 +1,41 @@
 # Implementation plan
 
-The rulebook and system-design define what the system is and must be. This document lists the planned development work of building the program itself, ordered into phases by dependency. Each phase outlines what to build (a script, a process, a test suite) and the constraints, properties, and criteria it must satisfy.
+This plan sequences development of the plan tracer, zoning, routing, and navigation modules. Their requirements and data contracts are defined in the module specifications and file-format specification.
 
 ## Development lifecycle
 
 ```mermaid
 flowchart LR
-A[Model and design] --> B[Shared data contracts]
-B --> C[Implement tools and browser]
-B --> D[Author plans and configuration]
-C --> E[Test with fixtures and verified building data]
-D --> E
-E --> F[Integrate and release]
+A[Model and contracts] --> B[Build module tools]
+B --> C[Author plans and zoning data]
+C --> D[Tune and precompute routes]
+D --> E[Integrate and test navigation]
+E --> F[Release]
 F --> G[Maintain and extend]
-G --> B
+G --> A
 ```
 
 ## Phases
 
-Ordered by dependency: each phase builds on the previous phase's output.
+Ordered by dependency; each phase provides inputs to the next.
 
-1. Floor plan and connectivity graph. Zoning produces the simplified floor plan, authored as a semantic SVG, and the connectivity graph, together. The SVG satisfies the implementation contract. Validated by its own validator script, checking SVG contract compliance and graph connectivity. Minimal smoke test only; full coverage in Phase 4.
+1. **Plan tracer.** Produce and maintain a plan SVG for each floor from the architectural plans. Validate drawing, saving, and reopening against the plan-tracer specification.
+2. **Zoning module.** Build the zoning editor around the zoning file and plan SVG. Support model editing, checks, approval and checkpoints, and generation of the zone SVG, connectivity graph JSON, and Navigation SVG from an explicitly selected finalized version.
+3. **Routing module.** Build the tuning editor, graph compiler, and route computer. Consume the connectivity graph and zone SVG; support costs and routing variants; produce the routing graph and precomputed routes dataset.
+4. **Navigation module.** Consume the Navigation SVG and precomputed routes dataset; resolve user input to navigable zones, select a route, and display it with instructions.
+5. **Integration and testing.** Verify each module's file contracts and behavior independently, then test complete flows with controlled fixtures and verified building data. Keep algorithm tests distinct from interface compatibility tests.
 
-2. Routing graph and compiler. Parse the authored asset, derive the zone index and segment list, construct the routing graph from the connectivity graph using movement geometry, including segment distances and special costs assigned to states and segments, and serialize the routing graph. Minimal smoke test only; full coverage in Phase 4.
+## Development criteria
 
-3. Zone queries and route search. Implement queries between zones, directed states, canonical alternating routes, and lowest-cost search. Serialize the resulting routes for the browser client. Minimal smoke test only; full coverage in Phase 4.
-
-4. Test suite. Review the minimal tests written during Phases 1-3 against the rulebook's constraints, close any gaps, and remove any duplication or contradiction between checks.
-
-## Additional planned work
-
-- Zoning module: editable working review view, Navigation SVG, Zoned SVG and connectivity graph JSON generation.
-- Routing module interface: specify the movement-geometry encoding and derive routing data from compatible zoning outputs.
-- Routing/tuning editor: implement editing of costs and variants within the Routing module, iteratively adjusting route outcomes.
-- Navigation module: consume the precomputed dataset and Navigation SVG for direct-file navigation.
+- Generated zoning outputs identify the finalized zoning-file version from which they derive.
+- Plan and route geometry use compatible coordinate frames.
+- Routing variants only narrow the available graph.
+- Route selection minimizes total distance and additional costs.
+- Tests cover reachable and unreachable queries, zone restrictions, file compatibility, and route rendering.
 
 ## Future direction
 
-Distant, surface-level ideas, not yet detailed to the level of the phases above.
+These ideas are not yet detailed enough to be phases:
 
-- Facility coverage. Extend the proven asset and compiler pipeline to the complete building.
-- Adjacency graph. Interpret architectural plans into a machine-readable adjacency graph.
-
-## Phase details
-
-### Phase 1
-
-#### Contract
-
-The SVG representation has:
-
-- semantic groups for zones, portals, and obstacles
-- movement zones and movement lines
-- absolute coordinates in the shared `viewBox`; the plan and the route overlay share one frame of reference, so they cannot drift apart
-- stable ids for zones and portals
-- portals that reference exactly two zones
-- at least one portal for every zone
-- no transforms on routing groups
-- no dangling portal references
-- no editor metadata in routing assets
-- consistent coordinate conventions across floors
-- the wing boundary made explicit as its own labeled zone
-- virtual boundaries drawn as dashed lines
-
-#### Validator
-
-A validator script:
-
-- checks the authored SVG against the contract above
-- verifies that every zone's portals are mutually reachable without obstruction
-- verifies no overlapping zones
-- verifies connectivity of the resulting graph
-
-#### Authoring procedure
-
-1. Submit the source material with the contract above as explicit instructions.
-2. The model emits a schematic SVG: simplified geometry, wall thickness, door leaves, furniture and dimensions removed; zones and portals tagged.
-3. Human verification against the source is the quality gate: room numbering, adjacency correctness, portal placement at real door positions, corridor connectivity, missing rooms. Reading the source: a door is a line plus a quarter-circle arc.
-4. Correct by direct edit or by iterating with the model; normalize transforms, strip metadata and chrome.
-
-### Phase 2
-
-- Serialize the routing graph.
-
-### Phase 4
-
-- Add parser tests, validator tests, a fixture SVG, and contract tests.
-- Use controlled fixtures to test changes before and after real plans are available, including when adding buildings or maintaining the program.
-
-## future directions
-
-- Direct-file deployment (opening the HTML without a server) and HTTP deployment remain intended options. HTTP implementation is deferred to a later implementation level.
-
-- Algorithm tests check routing behavior separately from interface tests that check compatibility between compiler output and browser-client input.
+- **Facility coverage.** Extend the proven asset and compiler pipeline to the complete building.
+- **Adjacency graph.** Interpret architectural plans into a machine-readable adjacency graph.
